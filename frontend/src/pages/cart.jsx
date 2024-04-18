@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from "../components/Navbar";
 
-const product = [
+export const product = [
     { 
         id: "1",
         name: 'Basic Tee 6-Pack',
@@ -225,13 +225,9 @@ const product = [
   ]
 
 export default function Cart() {
-
-    const blue = "block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500";
-    const gray = "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700";
-    
     return (
       <div>
-        <Navbar blue1={gray} blue2={gray} blue3={gray} blue4={blue} blue5={gray}/>
+        <Navbar/>
         {/* Products map */}
             <div className="card rounded-lg shadow-md mt-5 mx-10 bg-white">
                 <div className=" relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
@@ -261,7 +257,7 @@ export default function Cart() {
                                 {product.map((products) => (
                                     <div className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200">
                                     <div className="w-full md:max-w-[126px]">
-                                        <img src={products.imageSrc} alt={products.imageAlt} className="mx-auto"/>
+                                      <img src={products.imageSrc} alt={products.imageAlt} className="mx-auto"/>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-4 w-full">
                                         <div className="md:col-span-2">
