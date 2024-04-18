@@ -2,8 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
-import jwt from 'jsonwebtoken';
 import 'dotenv/config'
+import jwt from 'jsonwebtoken';
+
 
 const app = express();
 const PORT = process.env.PORT;
