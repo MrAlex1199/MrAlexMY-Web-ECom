@@ -5,7 +5,6 @@ import cors from 'cors';
 import 'dotenv/config'
 import jwt from 'jsonwebtoken';
 
-
 const app = express();
 const PORT = process.env.PORT;
 
@@ -39,60 +38,56 @@ const User = mongoose.model('User', userSchema);
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
-    try {
-      const { email, password, fname, lname } = req.body;
+  try {
+    const { email, password, fname, lname } = req.body;
 
-      // Validate email and password
-      if (!email || !password) {
-        return res.status(400).json({ message: 'Missing required fields' });
-      }
-  
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(409).json({ message: 'Email already in use' });
-      }
-  
-      const user = new User({ email, password, fname, lname });
-      await user.save();
-  
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Registration failed' });
+    // Validate email and password
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: 'Email already in use' });
+    }
+
+    const user = new User({ email, password, fname, lname });
+    await user.save();
+
+    res.status(201).json({ success: true, message: 'User registered successfully', isLoggedIn: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Registration failed', isLoggedIn: false });
+  }
 });
 
 // Login endpoint
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validate email and password
     if (!email || !password) {
-      return res.status(400).json({ message: 'Missing required fields' });
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    // Compare hashed password with provided password
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password', isLoggedIn: false }); // Set isLoggedIn to false on failed login
     }
-    const user = { id: existingUser._id, email: existingUser.email }; // Create user object for JWT
-    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' }); // Generate JWT with secret and expiry time
 
-    // Set appropriate storage method (cookie or local storage) for the token
-    res.cookie('jwt', token, { httpOnly: true, secure: true }); // Example for secure cookie
+    const user = { id: existingUser._id, email: existingUser.email };
+    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    res.status(200).json({ message: 'Login successful', token });
+    res.cookie('jwt', token, { httpOnly: true, secure: true });
+    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true }); // Set isLoggedIn to true on successful login
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Login failed' });
+    res.status(500).json({ success: false, message: 'Login failed', isLoggedIn: false }); // Set isLoggedIn to false on server error
   }
 });
 

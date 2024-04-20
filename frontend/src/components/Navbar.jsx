@@ -1,7 +1,6 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
 import { product } from '../pages/cart'
 
 const navigation = {
@@ -122,8 +121,8 @@ const navigation = {
       },
     ],
     pages: [
-      { name: 'Company', href: '#' },
-      { name: 'Stores', href: '#' },
+      { name: 'Company', href: '/about' },
+      { name: 'Stores', href: 'Products' },
     ],
   }
 
@@ -131,8 +130,9 @@ function classNames(...classes) {
  return classes.filter(Boolean).join(' ')
 }
 
-export default function Navbar() {
- const [open, setOpen] = useState(false)
+export default function Navbar({ isLoggedIn }) {
+  const [open, setOpen] = useState(false);
+
 
  return (
   <div className="bg-white">
@@ -248,17 +248,30 @@ export default function Navbar() {
         </div>
 
         <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-         <div className="flow-root">
-          <a href="/login" className="-m-2 block p-2 font-medium text-gray-900">
-           Sign in
-          </a>
-         </div>
-         <div className="flow-root">
-          <a href="/register" className="-m-2 block p-2 font-medium text-gray-900">
-           Create account
-          </a>
-         </div>
+          {isLoggedIn ? (
+            <>
+            <span className="text-sm font-medium text-gray-700">User's Name</span>
+              <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+              <a href="/logout" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                Logout
+              </a>
+            </>
+          ) : (
+            <> 
+            <div className="flow-root">
+              <a href="/login" className="-m-2 block p-2 font-medium text-gray-900">
+              Sign in
+            </a>
+            </div>
+            <div className="flow-root">
+              <a href="/register" className="-m-2 block p-2 font-medium text-gray-900">
+              Create account
+              </a>
+            </div>
+            </>
+          )}
         </div>
+        
 
         <div className="border-t border-gray-200 px-4 py-6">
          <a href="/" className="-m-2 flex items-center p-2">
@@ -297,7 +310,7 @@ export default function Navbar() {
 
        {/* Logo */}
        <div className="ml-4 flex lg:ml-0">
-        <a href="/">
+        <a href="/about">
          <span className="sr-only">Your Company</span>
          <img
           className="h-8 w-auto"
@@ -408,16 +421,32 @@ export default function Navbar() {
        </Popover.Group>
 
        <div className="ml-auto flex items-center">
-        <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-         <a href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-          Sign in
-         </a>
-         <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-         <a href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-          Create account
-         </a>
-        </div>
-
+       {isLoggedIn ? (
+        <>
+          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+              <a href="/" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                AlexGreen
+              </a>
+              <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+              <a href="/"  className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                logout
+              </a>
+            </div>
+        </>
+       ) : (
+        <> 
+            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+              <a href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                Sign in
+              </a>
+              <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+              <a href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                Create account
+              </a>
+            </div>
+        </>
+       )}
+       
         <div className="hidden lg:ml-8 lg:flex">
          <a href="/" className="flex items-center text-gray-700 hover:text-gray-800">
           <img

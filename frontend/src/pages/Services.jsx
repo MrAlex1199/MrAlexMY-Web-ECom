@@ -1,13 +1,8 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 
   export default function Services() {
-    const blue = "block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500";
-    const gray = "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700";
-    
     return (
       <div>
-      <Navbar blue1={gray} blue2={gray} blue3={blue} blue4={gray} blue5={gray}/>
         <div className="pt-5 bg-gray-900 min-h-screen" id="pricing">
           <div className="mx-auto pb-20 mt-4 max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-4xl text-center">

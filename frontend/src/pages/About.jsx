@@ -1,13 +1,8 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 
 export default function about() {
-    const blue = "block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500";
-    const gray = "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700";
-    
     return (
       <div>
-      <Navbar blue1={gray} blue2={blue} blue3={gray} blue4={gray} blue5={gray}/>
             <div className="bg-center  bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/conference.jpg')] bg-gray-700 bg-blend-multiply">
                 <div className="px-4 mx-auto max-w-screen-2xl text-center py-24 lg:py-56">
                     <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">Company potential</h1>

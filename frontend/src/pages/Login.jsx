@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-
-export default function Login() {
+export default function Login({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -18,7 +17,9 @@ export default function Login() {
       });
 
       if (response.ok) {
-        console.log('Login successful');
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // Store the token in local storage
+        setIsLoggedIn(true);
         navigate('/');
       } else {
         const errorData = await response.json();

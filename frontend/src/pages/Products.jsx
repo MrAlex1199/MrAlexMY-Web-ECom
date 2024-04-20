@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
-import Navbar from "../components/Navbar";
 
 export const products = [
     { 
@@ -621,12 +620,8 @@ export const products = [
   
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    const blue = "block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500";
-    const gray = "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700";
-    
     return (
       <div>
-      <Navbar blue1={gray} blue2={gray} blue3={gray} blue4={blue} blue5={gray}/>
       {/* Products map */}
         <div className="card rounded-lg shadow-md mt-1 mx-10 bg-white">
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
