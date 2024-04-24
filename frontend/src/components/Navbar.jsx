@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { product } from '../pages/cart'
@@ -130,9 +130,12 @@ function classNames(...classes) {
  return classes.filter(Boolean).join(' ')
 }
 
-export default function Navbar({ isLoggedIn }) {
+export default function Navbar({ isLoggedIn, userData }) {
   const [open, setOpen] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+  };
 
  return (
   <div className="bg-white">
@@ -252,7 +255,7 @@ export default function Navbar({ isLoggedIn }) {
             <>
             <span className="text-sm font-medium text-gray-700">User's Name</span>
               <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-              <a href="/logout" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+              <a href="/" onClick={handleLogout} className="text-sm font-medium text-gray-700 hover:text-gray-800">
                 Logout
               </a>
             </>
@@ -424,14 +427,18 @@ export default function Navbar({ isLoggedIn }) {
        {isLoggedIn ? (
         <>
           <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-              <a href="/" className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                AlexGreen
+            {userData ? (
+              <a href="/setting" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                {userData.fname} {userData.lname}
               </a>
-              <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-              <a href="/"  className="text-sm font-medium text-gray-700 hover:text-gray-800">
-                logout
-              </a>
-            </div>
+            ) : (
+              <span className="text-sm font-medium text-gray-700">Loading...</span>
+            )}
+            <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+            <a href="/" onClick={handleLogout} className="text-sm font-medium text-gray-700 hover:text-gray-800">
+              Logout
+            </a>
+          </div>
         </>
        ) : (
         <> 

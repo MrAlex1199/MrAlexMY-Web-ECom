@@ -16,18 +16,33 @@ import Navbar from "./components/Navbar";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState({ fname: '', lname: '' });
 
   useEffect(() => {
-    // Check if a valid JWT is stored in local storage
     const token = localStorage.getItem('token');
     if (token) {
-      setIsLoggedIn(true);
+      fetch('http://localhost:3001/user', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          setUserData({ fname: data.fname, lname: data.lname });
+          setIsLoggedIn(true);
+        } else {
+          console.error('Failed to fetch user details');
+        }
+      })
+      .catch(error => console.error('Error:', error));
     }
   }, []);
-
+  
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} userData={userData}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -38,7 +53,7 @@ export default function App() {
         <Route path="/product/:id" element={<ProdutsDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register/>} />
       </Routes>
       <Footer />
     </Router>
