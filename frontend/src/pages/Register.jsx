@@ -21,7 +21,7 @@ export default function Register() {
         
             if (response.ok) {
                 console.error('Registration is successful');
-              navigate('/');
+              navigate('/login');
             } else {
               console.log('Registration failed');
             }

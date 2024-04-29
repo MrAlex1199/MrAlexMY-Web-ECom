@@ -17,7 +17,6 @@ import Navbar from "./components/Navbar";
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({ fname: '', lname: '' });
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -52,7 +51,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/product/:id" element={<ProdutsDetails />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register/>} />
       </Routes>
       <Footer />

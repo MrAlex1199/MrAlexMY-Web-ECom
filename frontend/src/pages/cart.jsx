@@ -223,6 +223,8 @@ export const product = [
       },
   ]
 
+const total = product.reduce((acc, item) => acc + Number(item.price.slice(1)), 0);
+
 export default function Cart() {
     return (
       <div>
@@ -325,8 +327,8 @@ export default function Cart() {
                                     Order Summary</h2>
                                 <div className="mt-8">
                                     <div className="flex items-center justify-between pb-6">
-                                        <p className="font-normal text-lg leading-8 text-black">3 Items</p>
-                                        <p className="font-medium text-lg leading-8 text-black">$480.00</p>
+                                        <p className="font-normal text-lg leading-8 text-black">{product.length} Items</p>
+                                        <p className="font-medium text-lg leading-8 text-black">Total: ${total.toFixed(2)}</p>
                                     </div>
                                     <form>
                                         <label className="flex  items-center mb-1.5 text-gray-600 text-sm font-medium">Shipping
@@ -423,8 +425,8 @@ export default function Cart() {
                                                 className="rounded-full w-full bg-black py-3 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80">Apply</button>
                                         </div>
                                         <div className="flex items-center justify-between py-8">
-                                            <p className="font-medium text-xl leading-8 text-black">3 Items</p>
-                                            <p className="font-semibold text-xl leading-8 text-indigo-600">$485.00</p>
+                                            <p className="font-medium text-xl leading-8 text-black">{product.length} Items</p>
+                                            <p className="font-semibold text-xl leading-8 text-indigo-600">Total: ${total.toFixed(2)}</p>
                                         </div>
                                         <button
                                             className="w-full text-center bg-indigo-600 rounded-full py-4 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-indigo-700">Checkout</button>

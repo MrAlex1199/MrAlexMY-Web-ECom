@@ -313,7 +313,7 @@ export default function Navbar({ isLoggedIn, userData }) {
 
        {/* Logo */}
        <div className="ml-4 flex lg:ml-0">
-        <a href="/about">
+        <a href="/">
          <span className="sr-only">Your Company</span>
          <img
           className="h-8 w-auto"
@@ -427,13 +427,11 @@ export default function Navbar({ isLoggedIn, userData }) {
        {isLoggedIn ? (
         <>
           <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-            {userData ? (
+            {userData && 
               <a href="/setting" className="text-sm font-medium text-gray-700 hover:text-gray-800">
                 {userData.fname} {userData.lname}
               </a>
-            ) : (
-              <span className="text-sm font-medium text-gray-700">Loading...</span>
-            )}
+              }
             <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
             <a href="/" onClick={handleLogout} className="text-sm font-medium text-gray-700 hover:text-gray-800">
               Logout

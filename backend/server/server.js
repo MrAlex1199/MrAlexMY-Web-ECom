@@ -35,6 +35,7 @@ userSchema.pre('save', async function (next) {
 
 const User = mongoose.model('User', userSchema);
 
+
 app.get('/user', async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
@@ -75,24 +76,24 @@ app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' });
+      return res.status(400).json({ success: false, message: 'Missing required fields' , loginStatus: false });
     }
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' ,loginStatus: false });
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password', isLoggedIn: false });
+      return res.status(401).json({ success: false, message: 'Invalid email or password', isLoggedIn: false , loginStatus: false });
     }
 
     const user = { id: existingUser._id, email: existingUser.email, fname: existingUser.fname, lname: existingUser.lname };
     const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' });
-    
+
     res.cookie('jwt', token, { httpOnly: true, secure: true });
-    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true });
+    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true, fname: existingUser.fname, lname: existingUser.lname , loginStatus: true });
 
   } catch (error) {
     console.error(error);
@@ -100,6 +101,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// logout endpoint
 app.post('/logout', async (req, res) => {
   try {
     res.status(200).json({ success: true, message: 'Logged out successfully' });
@@ -108,7 +110,6 @@ app.post('/logout', async (req, res) => {
     res.status(500).json({ success: false, message: 'Logout failed' });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
