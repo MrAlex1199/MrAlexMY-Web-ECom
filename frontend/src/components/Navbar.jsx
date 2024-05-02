@@ -253,9 +253,13 @@ export default function Navbar({ isLoggedIn, userData }) {
         <div className="space-y-6 border-t border-gray-200 px-4 py-6">
           {isLoggedIn ? (
             <>
-            <span className="text-sm font-medium text-gray-700">User's Name</span>
+            {userData && 
+              <a href="/setting" className="-m-2 block p-2 font-medium text-gray-900">
+                {userData.fname} {userData.lname}
+              </a>
+              }
               <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-              <a href="/" onClick={handleLogout} className="text-sm font-medium text-gray-700 hover:text-gray-800">
+              <a href="/" onClick={handleLogout} className="-m-2 block p-2 font-medium text-gray-900">
                 Logout
               </a>
             </>

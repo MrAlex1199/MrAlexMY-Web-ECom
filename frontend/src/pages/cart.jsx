@@ -422,7 +422,7 @@ export default function Cart() {
                                         </div>
                                         <div className="flex items-center border-b border-gray-200">
                                             <button
-                                                className="rounded-full w-full bg-black py-3 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80">Apply</button>
+                                                className="rounded-full w-full bg-indigo-600 py-3 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80">Apply</button>
                                         </div>
                                         <div className="flex items-center justify-between py-8">
                                             <p className="font-medium text-xl leading-8 text-black">{product.length} Items</p>

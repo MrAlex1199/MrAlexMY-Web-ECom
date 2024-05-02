@@ -16,10 +16,6 @@ export default function ProductsDetails() {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
 
-  if (!product) {
-    return <div>Product not found</div>;
-  }
-
   return (
     <div className="bg-white">
       <div className="pt-6">

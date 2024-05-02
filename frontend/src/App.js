@@ -38,10 +38,12 @@ export default function App() {
       .catch(error => console.error('Error:', error));
     }
   }, []);
+
+  const shouldShowNavbar = !['/login', '/register'].includes(window.location.pathname);
   
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} userData={userData}/>
+      {shouldShowNavbar && <Navbar isLoggedIn={isLoggedIn} userData={userData} />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
