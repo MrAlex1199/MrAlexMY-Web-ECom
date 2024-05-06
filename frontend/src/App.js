@@ -16,7 +16,7 @@ import Navbar from "./components/Navbar";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({ fname: '', lname: '' });
+  const [userData, setUserData] = useState({ fname: '', lname: '', userId: '',});
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -29,7 +29,11 @@ export default function App() {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          setUserData({ fname: data.fname, lname: data.lname });
+          setUserData({ 
+            fname: data.fname,
+            lname: data.lname,
+            userId: data.userId 
+          });
           setIsLoggedIn(true);
         } else {
           console.error('Failed to fetch user details');
@@ -41,6 +45,8 @@ export default function App() {
 
   const shouldShowNavbar = !['/login', '/register'].includes(window.location.pathname);
   
+  console.log(userData);
+  
   return (
     <Router>
       {shouldShowNavbar && <Navbar isLoggedIn={isLoggedIn} userData={userData} />}
@@ -51,7 +57,7 @@ export default function App() {
         <Route path="/setting" element={<Setting />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/product/:id" element={<ProdutsDetails />} />
+        <Route path="/product/:id" element={<ProdutsDetails userId={userData.userId} />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register/>} />

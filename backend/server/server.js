@@ -21,7 +21,13 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   fname: { type: String, required: true },
   lname: { type: String, required: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  selectedProducts: [{
+    productId: { type: String, required: true },
+    selectedColor: { type: String, required: true },
+    selectedSize: { type: String, required: true },
+    quantity: { type: Number, default: 1 }
+  }]
 });
 
 // Hash password before saving
@@ -35,16 +41,47 @@ userSchema.pre('save', async function (next) {
 
 const User = mongoose.model('User', userSchema);
 
-
 app.get('/user', async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the user's ID or email
     const user = await User.findById(decodedToken.id); // Assuming user ID is stored in the token
-    res.status(200).json({ success: true, fname: user.fname, lname: user.lname });
+    
+    res.status(200).json({ success: true, fname: user.fname, lname: user.lname, userId: user._id});
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to fetch user details' });
+  }
+});
+
+// Endpoint to save selected products
+app.post('/save-selected-products', async (req, res) => {
+  try {
+    const { userId, productId, selectedColor, selectedSize } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    let productExists = false;
+    user.selectedProducts.forEach(product => {
+      if (product.productId === productId && product.selectedColor === selectedColor && product.selectedSize === selectedSize) {
+        product.quantity += 1;
+        productExists = true;
+      }
+    });
+
+    if (!productExists) {
+      user.selectedProducts.push({ productId, selectedColor, selectedSize });
+    }
+
+    await user.save();
+
+    res.status(201).json({ success: true, message: 'Selected product saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to save selected product' });
   }
 });
 

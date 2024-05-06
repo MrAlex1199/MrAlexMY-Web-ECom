@@ -10,12 +10,42 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function ProductsDetails() {
+export default function ProductsDetails({ userId }) {
   const { id } = useParams();
   const product = products.find((p) => p.id === id);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const [selectedColor, setSelectedColor] = useState(product.colors[0].name.toString());
+  const [selectedSize, setSelectedSize] = useState(product.sizes[2].name.toString());
 
+
+  const handleAddToBag = async () => {
+    try {
+      if (!product) {
+        console.error('Product not found');
+        return;
+      }
+  
+      const response = await fetch('http://localhost:3001/save-selected-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          productId: product.id,
+          selectedColor: selectedColor.name, // Assuming `selectedColor` is an object with a `name` property
+          selectedSize: selectedSize.name, // Assuming `selectedSize` is an object with a `name` property
+        }),
+      });
+  
+      if (response.ok) {
+        console.log('AddToBag is successful');
+      } else {
+        console.error('AddToBag is Failed');
+      }
+    } catch (error) {
+      console.error('Error adding product to bag:', error);
+    }
+  };
+  
+  
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -215,7 +245,8 @@ export default function ProductsDetails() {
                 </RadioGroup>
               </div>
 
-              <button 
+              <button
+              onClick={handleAddToBag}
               type="submit"
               className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
               Add to bag
