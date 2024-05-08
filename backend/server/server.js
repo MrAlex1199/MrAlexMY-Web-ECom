@@ -24,9 +24,13 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   selectedProducts: [{
     productId: { type: String, required: true },
+    productName: { type: String, required: true},
+    imageSrc: { type: String, required: true },
     selectedColor: { type: String, required: true },
     selectedSize: { type: String, required: true },
-    quantity: { type: Number, default: 1 }
+    quantity: { type: Number, default: 1 },
+    price: { type: Number, required: true },
+    totalPrice: { type: Number, required: true }
   }]
 });
 
@@ -54,10 +58,25 @@ app.get('/user', async (req, res) => {
   }
 });
 
+// Endpoint to fetch selected products for a user
+app.get('/cart/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.status(200).json({ success: true, selectedProducts: user.selectedProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch selected products' });
+  }
+});
+
 // Endpoint to save selected products
 app.post('/save-selected-products', async (req, res) => {
   try {
-    const { userId, productId, selectedColor, selectedSize } = req.body;
+    const { userId, productName, productId, selectedColor, selectedSize, price, imageSrc } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -67,13 +86,26 @@ app.post('/save-selected-products', async (req, res) => {
     let productExists = false;
     user.selectedProducts.forEach(product => {
       if (product.productId === productId && product.selectedColor === selectedColor && product.selectedSize === selectedSize) {
+        product.productName = productName;
         product.quantity += 1;
+        product.price = parseFloat(price.replace(/[^0-9.-]+/g,""));
+        product.totalPrice = product.quantity * product.price;
+        product.imageSrc = imageSrc;
         productExists = true;
       }
     });
 
     if (!productExists) {
-      user.selectedProducts.push({ productId, selectedColor, selectedSize });
+      user.selectedProducts.push({
+        productId,
+        productName,
+        imageSrc,
+        selectedColor,
+        selectedSize,
+        price: parseFloat(price.replace(/[^0-9.-]+/g,"")),
+        quantity: 1,
+        totalPrice: parseFloat(price.replace(/[^0-9.-]+/g,"")),
+      });
     }
 
     await user.save();
@@ -84,6 +116,7 @@ app.post('/save-selected-products', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to save selected product' });
   }
 });
+
 
 // Registration endpoint
 app.post('/register', async (req, res) => {

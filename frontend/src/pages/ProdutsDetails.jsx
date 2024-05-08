@@ -23,15 +23,20 @@ export default function ProductsDetails({ userId }) {
         console.error('Product not found');
         return;
       }
+
+      console.log('Product:', product);
   
       const response = await fetch('http://localhost:3001/save-selected-products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
+          productName: product.name,
           productId: product.id,
-          selectedColor: selectedColor.name, // Assuming `selectedColor` is an object with a `name` property
-          selectedSize: selectedSize.name, // Assuming `selectedSize` is an object with a `name` property
+          price: product.price,
+          imageSrc: product.imageSrc,
+          selectedColor: selectedColor.name,
+          selectedSize: selectedSize.name,
         }),
       });
   

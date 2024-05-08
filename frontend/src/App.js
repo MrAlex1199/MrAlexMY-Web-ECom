@@ -58,7 +58,7 @@ export default function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/product/:id" element={<ProdutsDetails userId={userData.userId} />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart userId={userData.userId} />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register/>} />
       </Routes>
