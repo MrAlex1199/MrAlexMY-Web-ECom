@@ -1,30 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 
-export default function Cart( { userId } ) {
-const [selectedProducts, setSelectedProducts] = useState([]);
-const [totalPrice, setTotalPrice] = useState(0);
-
-useEffect(() => {
-  const fetchSelectedProducts = async () => {
+export default function Cart({ userId, selectedProducts, totalPrice, setSelectedProducts, setTotalPrice }) {
+  const handleQuantityChange = async (productId, newQuantity) => {
     try {
-      const response = await fetch(`http://localhost:3001/cart/${userId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch selected products');
+      if (!userId) {
+        throw new Error('User ID is missing');
       }
-      const data = await response.json();
-      setSelectedProducts(data.selectedProducts);
 
-      const totalPrice = data.selectedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
-        setTotalPrice(totalPrice.toFixed(2));
+      const response = await fetch(`http://localhost:3001/cart/update-quantity/${userId}/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: newQuantity}),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update product quantity');
+      }
+
+      // Update the quantity in the selectedProducts array
+      const updatedProducts = selectedProducts.map((product) => {
+        if (product.productId === productId) {
+          return { ...product, quantity: newQuantity, totalPrice: product.price * newQuantity };
+        }
+        return product;
+      });
+
+      setSelectedProducts(updatedProducts);
+
+      // Calculate the new total price
+      const newTotalPrice = updatedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
+      setTotalPrice(newTotalPrice.toFixed(2));
+
+      console.log('Product quantity updated successfully');
     } catch (error) {
-      console.error(error);
+      console.error('Failed to update product quantity', error);
     }
   };
-
-  fetchSelectedProducts();
-}, [userId]);
-
+  
 return (
   <div>
     {/* Products map */}
@@ -67,30 +82,30 @@ return (
                       </div>
                       <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                         <div className="flex items-center h-full">
-                          <button className="group rounded-l-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                          <button onClick={() => handleQuantityChange(products.productId, products.quantity - 1)} className="group rounded-l-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                               <svg className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
                                   xmlns="https://www.w3.org/TR/SVG2/" width="22" height="22"
                                   viewBox="0 0 22 22" fill="none">
-                                  <path d="M16.5 11H5.5" stroke="currentColor" stroke-width="1.6"
-                                      stroke-linecap="round" />
-                                  <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" stroke-width="1.6"
-                                                            stroke-linecap="round" />
-                                  <path d="M16.5 11H5.5" stroke="" stroke-opacity="0.2" stroke-width="1.6"
-                                      stroke-linecap="round" />
+                                  <path d="M16.5 11H5.5" stroke="currentColor" strokeWidth="1.6"
+                                      strokeiinecap="round" />
+                                  <path d="M16.5 11H5.5" stroke="" strokeOpacity="0.2" strokeWidth="1.6"
+                                                            strokeiinecap="round" />
+                                  <path d="M16.5 11H5.5" stroke="" strokeOpacity="0.2" strokeWidth="1.6"
+                                      strokeiinecap="round" />
                               </svg>
                           </button>
                           <input type="text" className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[15px]  text-center bg-transparent"
-                            placeholder={products.quantity}/>
-                          <button className="group rounded-r-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
+                            value={products.quantity} readOnly/>
+                          <button onClick={() => handleQuantityChange(products.productId, products.quantity + 1)} className="group rounded-r-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300">
                             <svg className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
                                 xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                 viewBox="0 0 22 22" fill="none">
-                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="currentColor" stroke-width="1.6"
-                                    stroke-linecap="round" />
-                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="" stroke-opacity="0.2"
-                                    stroke-width="1.6" stroke-linecap="round" />
-                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="" stroke-opacity="0.2"
-                                    stroke-width="1.6" stroke-linecap="round" />
+                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="currentColor" strokeWidth="1.6"
+                                    strokeiinecap="round" />
+                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="" strokeOpacity="0.2"
+                                    strokeWidth="1.6" strokeiinecap="round" />
+                                <path d="M11 5.5V16.5M16.5 11H5.5" stroke="" strokeOpacity="0.2"
+                                    strokeWidth="1.6" strokeiinecap="round" />
                             </svg>
                           </button>
                         </div>
@@ -108,7 +123,7 @@ return (
                     fill="none">
                     <path
                       d="M12.7757 5.5L18.3319 11.0562M18.3319 11.0562L12.7757 16.6125M18.3319 11.0562L1.83203 11.0562"
-                      stroke="#4F46E5" stroke-width="1.6" stroke-linecap="round" />
+                      stroke="#4F46E5" strokeWidth="1.6" strokeiinecap="round" />
                     </svg>
                 </button>
               </div>
@@ -141,8 +156,8 @@ return (
                       fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                       d="M1 1.5L4.58578 5.08578C5.25245 5.75245 5.58579 6.08579 6 6.08579C6.41421 6.08579 6.74755 5.75245 7.41421 5.08579L11 1.5"
-                      stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"
-                      stroke-linejoin="round">
+                      stroke="#6B7280" strokeWidth="1.5" strokeiinecap="round"
+                      strokeLinejoin="round">
                       </path>
                       </svg>
                       </button>
@@ -184,8 +199,8 @@ return (
                           fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path
                             d="M1 1.5L4.58578 5.08578C5.25245 5.75245 5.58579 6.08579 6 6.08579C6.41421 6.08579 6.74755 5.75245 7.41421 5.08579L11 1.5"
-                            stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
+                            stroke="#6B7280" strokeWidth="1.5" strokeiinecap="round"
+                            strokeLinejoin="round">
                           </path>
                         </svg>
                       </button>

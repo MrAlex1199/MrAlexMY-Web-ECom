@@ -73,6 +73,34 @@ app.get('/cart/:userId', async (req, res) => {
   }
 });
 
+// Endpoint to update the quantity of a product
+app.put('/cart/update-quantity/:userId/:productId', async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    const { quantity } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const productIndex = user.selectedProducts.findIndex(product => product.productId === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    user.selectedProducts[productIndex].quantity = quantity;
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Product quantity updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to update product quantity' });
+  }
+});
+
+
 // Endpoint to save selected products
 app.post('/save-selected-products', async (req, res) => {
   try {
@@ -116,7 +144,6 @@ app.post('/save-selected-products', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to save selected product' });
   }
 });
-
 
 // Registration endpoint
 app.post('/register', async (req, res) => {
