@@ -73,11 +73,11 @@ app.get('/cart/:userId', async (req, res) => {
   }
 });
 
-// Endpoint to update the quantity of a product
+// Endpoint to update the quantity and  Newtotal price of a product
 app.put('/cart/update-quantity/:userId/:productId', async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const { quantity } = req.body;
+    const { quantity, totalPrice } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -89,14 +89,43 @@ app.put('/cart/update-quantity/:userId/:productId', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
+    // Update product quantity and total price in the database
     user.selectedProducts[productIndex].quantity = quantity;
+    user.selectedProducts[productIndex].totalPrice = totalPrice;
 
-    await user.save();
+    await user.save(); // Persist changes to the database
 
     res.status(200).json({ success: true, message: 'Product quantity updated successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to update product quantity' });
+  }
+});
+
+app.delete('/cart/delete-product/:userId/:productId', async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const productIndex = user.selectedProducts.findIndex(product => product.productId === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Product not found in cart' });
+    }
+
+    // Remove the product from the user's selectedProducts array
+    user.selectedProducts.splice(productIndex, 1);
+
+    // Save the updated user document to the database
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Product deleted from cart successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to delete product from cart' });
   }
 });
 
@@ -187,7 +216,7 @@ app.post('/login', async (req, res) => {
     }
 
     const user = { id: existingUser._id, email: existingUser.email, fname: existingUser.fname, lname: existingUser.lname };
-    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.cookie('jwt', token, { httpOnly: true, secure: true });
     res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true, fname: existingUser.fname, lname: existingUser.lname , loginStatus: true });

@@ -8,7 +8,7 @@ function footer() {
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <a href="https://flowbite.com/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
         
-                        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UR</span>
+                        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">U-SShop</span>
                     </a>
                     <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                         <li>
@@ -18,10 +18,10 @@ function footer() {
                             <a href="#top" className="hover:underline me-4 md:me-6">Privacy Policy</a>
                         </li>
                         <li>
-                            <a href="#top" className="hover:underline me-4 md:me-6">Licensing</a>
+                            <a href="/contact" className="hover:underline me-4 md:me-6">Contact</a>
                         </li>
                         <li>
-                            <a href="/contact" className="hover:underline">Contact</a>
+                            <a href="#top" className="hover:underline">Licensing</a>
                         </li>
                     </ul>
                 </div>

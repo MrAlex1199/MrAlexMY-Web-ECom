@@ -1,42 +1,68 @@
 import React from 'react';
 
-
-export default function Cart({ userId, selectedProducts, totalPrice, setSelectedProducts, setTotalPrice }) {
+export default function cart({ userId, selectedProducts, totalPrice, setSelectedProducts, setTotalPrice }) {
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
       if (!userId) {
         throw new Error('User ID is missing');
       }
 
+      if (newQuantity <= 0) {
+        // Delete product from cart if quantity reaches 0
+
+        const response = await fetch(`http://localhost:3001/cart/delete-product/${userId}/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ quantity: newQuantity, }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete product');
+        }
+
+        const updatedProducts = selectedProducts.filter(product => product.productId !== productId);
+        setSelectedProducts(updatedProducts);
+
+        const newTotalPriceF = updatedProducts.reduce((acc, product) => acc + product.totalPrice, 0.00);
+        setTotalPrice(newTotalPriceF.toFixed(2));
+
+        console.log('Product deleted from cart');
+        return; // Exit the function after deletion
+      }
+
+     // Calculate new total price for the product (if quantity remains above 0)
+     const newProductTotalPrice = newQuantity * selectedProducts.find(product => product.productId === productId).price;
+
       const response = await fetch(`http://localhost:3001/cart/update-quantity/${userId}/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ quantity: newQuantity}),
+        body: JSON.stringify({ quantity: newQuantity, totalPrice: newProductTotalPrice }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to update product quantity');
       }
 
-      // Update the quantity in the selectedProducts array
+      // Optimistic UI update (assuming successful backend update)
       const updatedProducts = selectedProducts.map((product) => {
         if (product.productId === productId) {
-          return { ...product, quantity: newQuantity, totalPrice: product.price * newQuantity };
+          return { ...product, quantity: newQuantity, totalPrice: newProductTotalPrice };
         }
         return product;
       });
 
       setSelectedProducts(updatedProducts);
-
-      // Calculate the new total price
-      const newTotalPrice = updatedProducts.reduce((acc, product) => acc + product.totalPrice, 0);
-      setTotalPrice(newTotalPrice.toFixed(2));
+      const newTotalPriceF = updatedProducts.reduce((acc, product) => acc + product.totalPrice, 0.00);
+      setTotalPrice(newTotalPriceF.toFixed(2));
 
       console.log('Product quantity updated successfully');
     } catch (error) {
-      console.error('Failed to update product quantity', error);
+      console.error('Failed to update product quantity:', error);
+      // Handle potential error scenarios (e.g., display error message to user)
     }
   };
   
@@ -68,7 +94,7 @@ return (
                 </div>
               </div>
                   {selectedProducts.map((products) => (
-                  <div className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200">
+                  <div key={products.id} className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200">
                     <div className="w-full md:max-w-[126px]">
                       <img src={products.imageSrc} alt='' className="mx-auto"/>
                     </div>

@@ -20,6 +20,8 @@ export default function App() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.00);
 
+  console.log(totalPrice);
+  
   // Conditional rendering for Navbar based on route
   const shouldShowNavbar = !['/login', '/register'].includes(window.location.pathname);
 
@@ -80,6 +82,7 @@ export default function App() {
 
     fetchSelectedProducts();
   }, [userData.userId]);
+  
 
   return (
     <Router>
