@@ -2,8 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
-import 'dotenv/config'
 import jwt from 'jsonwebtoken';
+import 'dotenv/config'
 
 const app = express();
 const PORT = process.env.PORT;
@@ -45,13 +45,19 @@ userSchema.pre('save', async function (next) {
 
 const User = mongoose.model('User', userSchema);
 
+// Endpoint to get user data and send it to Frontend
 app.get('/user', async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the user's ID or email
     const user = await User.findById(decodedToken.id); // Assuming user ID is stored in the token
     
-    res.status(200).json({ success: true, fname: user.fname, lname: user.lname, userId: user._id});
+    res.status(200).json({ success: true,
+      userId: user._id,
+      email: user.email,
+      fname: user.fname,
+      lname: user.lname,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to fetch user details' });
@@ -102,33 +108,32 @@ app.put('/cart/update-quantity/:userId/:productId', async (req, res) => {
   }
 });
 
-app.delete('/cart/delete-product/:userId/:productId', async (req, res) => {
+// Endpoint to change password
+app.put('/change-password', async (req, res) => {
   try {
-    const { userId, productId } = req.params;
+      const { currentPassword, newPassword } = req.body;
+      const token = req.headers.authorization.split(' ')[1];
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+      const user = await User.findById(decodedToken.id);
+      if (!user) {
+          return res.status(404).json({ success: false, message: 'User not found' });
+      }
 
-    const productIndex = user.selectedProducts.findIndex(product => product.productId === productId);
-    if (productIndex === -1) {
-      return res.status(404).json({ success: false, message: 'Product not found in cart' });
-    }
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+          return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+      }
 
-    // Remove the product from the user's selectedProducts array
-    user.selectedProducts.splice(productIndex, 1);
+      user.password = await (newPassword);
+      await user.save();
 
-    // Save the updated user document to the database
-    await user.save();
-
-    res.status(200).json({ success: true, message: 'Product deleted from cart successfully' });
+      res.status(200).json({ success: true, UpdatedPassdWord: true,  message: 'Password updated successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to delete product from cart' });
+      console.error(error);
+      res.status(500).json({ success: false, UpdatedPassdWord: false, message: 'Failed to update password' });
   }
 });
-
 
 // Endpoint to save selected products
 app.post('/save-selected-products', async (req, res) => {
@@ -182,12 +187,14 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const lowercaseEmail = email.toLowerCase();
+
+    const existingUser = await User.findOne({ email: lowercaseEmail });
     if (existingUser) {
       return res.status(409).json({ success: false, message: 'Email already in use' });
     }
 
-    const user = new User({ email, password, fname, lname });
+    const user = new User({ email: lowercaseEmail, password, fname, lname });
     await user.save();
 
     res.status(201).json({ success: true, message: 'User registered successfully', isLoggedIn: true });
@@ -202,24 +209,26 @@ app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' , loginStatus: false });
+      return res.status(400).json({ success: false, message: 'Missing required fields', loginStatus: false });
     }
+    
+    const lowercaseEmail = email.toLowerCase();
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: lowercaseEmail });
     if (!existingUser) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' ,loginStatus: false });
+      return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password', isLoggedIn: false , loginStatus: false });
+      return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
     }
 
     const user = { id: existingUser._id, email: existingUser.email, fname: existingUser.fname, lname: existingUser.lname };
     const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.cookie('jwt', token, { httpOnly: true, secure: true });
-    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true, fname: existingUser.fname, lname: existingUser.lname , loginStatus: true });
+    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true, fname: existingUser.fname, lname: existingUser.lname, loginStatus: true });
 
   } catch (error) {
     console.error(error);
@@ -234,6 +243,51 @@ app.post('/logout', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Logout failed' });
+  }
+});
+
+//Endpoint to Delete product from Cart 
+app.delete('/cart/delete-product/:userId/:productId', async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const productIndex = user.selectedProducts.findIndex(product => product.productId === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Product not found in cart' });
+    }
+
+    // Remove the product from the user's selectedProducts array
+    user.selectedProducts.splice(productIndex, 1);
+
+    // Save the updated user document to the database
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Product deleted from cart successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to delete product from cart' });
+  }
+});
+
+// Endpoint to delete Account by userID
+app.delete('/deleteAccount/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'User account deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to delete user account' });
   }
 });
 

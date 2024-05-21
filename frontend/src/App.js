@@ -13,6 +13,7 @@ import Setting from "./pages/SettingUser";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
+import CheckoutPage from "./pages/CheckoutPage";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +24,7 @@ export default function App() {
   console.log(totalPrice);
   
   // Conditional rendering for Navbar based on route
-  const shouldShowNavbar = !['/login', '/register'].includes(window.location.pathname);
+  const shouldShowNavbar = !['/login', '/register', '/CheckoutPage'].includes(window.location.pathname);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -43,7 +44,12 @@ export default function App() {
 
           const data = await response.json();
           if (data.success) {
-            setUserData({ fname: data.fname, lname: data.lname, userId: data.userId });
+            setUserData({
+              userId: data.userId,
+              email: data.email,
+              fname: data.fname, 
+              lname: data.lname
+            });
             setIsLoggedIn(true);
           } else {
             console.error('Failed to retrieve user data');
@@ -91,11 +97,18 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/setting" element={<Setting />} />
+        <Route path="/setting" element={<Setting  userData={userData} />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/checkoutPage" element={<CheckoutPage />} />
         <Route path="/product/:id" element={<ProdutsDetails userId={userData.userId} />} />
-        <Route path="/cart" element={<Cart userId={userData.userId} selectedProducts={selectedProducts} totalPrice={totalPrice} setSelectedProducts={setSelectedProducts} setTotalPrice={setTotalPrice}/>}/>
+        <Route path="/cart" element={ <Cart 
+          userId={userData.userId}
+          selectedProducts={selectedProducts}
+          totalPrice={totalPrice}
+          setSelectedProducts={setSelectedProducts}
+          setTotalPrice={setTotalPrice}
+        /> }/>
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register />} />
       </Routes>
