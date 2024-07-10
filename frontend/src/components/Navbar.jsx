@@ -1,7 +1,8 @@
 import { Fragment, useState} from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-// import { product } from '../pages/cart'
+import logo from './logo/weblogo.jpg';
+
 
 const navigation = {
     categories: [
@@ -321,7 +322,7 @@ export default function Navbar({ isLoggedIn, userData, selectedProducts }) {
          <span className="sr-only">Your Company</span>
          <img
           className="h-8 w-auto"
-          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+          src={logo}
           alt=""
          />
         </a>

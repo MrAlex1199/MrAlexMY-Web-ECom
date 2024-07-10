@@ -447,12 +447,12 @@ export const products = [
 export default function home() {
   return (
     <div>
-        <div className="bg-center bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/conference.jpg')] bg-gray-700 bg-blend-multiply">
+        <div className="bg-center bg-[url('../components/bg/bg2.jpg')] bg-gray-700 bg-blend-multiply">
           <div className="px-4 mx-auto max-w-screen-2xl text-center py-24 lg:py-56">
             <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-              We invest in the world’s potential</h1>
+            Built for the Mission. Ready for Anything.</h1>
             <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-                Here at UR we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
+            With a focus on durability, functionality, and performance, our military clothing and equipment is designed to meet the demanding needs of today's warfighter.</p>
           </div>
         </div>
         <div className="flex flex-col -mt-10 ">
@@ -462,27 +462,24 @@ export default function home() {
                 <div className="w-full md:w-1/2 lg:w-1/3 p-4 ">
                   <div className="card rounded-lg ">
                     <div className="px-4 py-4">
-                      <h2 className="text-3xl text-center">70+</h2>
-                      <p className="text-3xl text-center">Praesent commodo</p>
-                      <p className="text-1xl text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                      <p className="text-3xl text-center ">Massive Selection. Mission-Ready Gear.</p>
+                      <p className="text-1xl text-center">100+ Ready Gear.</p>
                     </div>
                   </div>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3 p-4">
                   <div className="card rounded-lg">
                     <div className="px-4 py-4">
-                      <h2 className="text-3xl text-center">70+</h2>
-                      <p className="text-3xl text-center">Praesent commodo</p>
-                      <p className="text-1xl text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                      <p className="text-3xl text-center">Your One-Stop Shop for Military Clothing and Equipment.</p>
+                      <p className="text-1xl text-center">100+ Clothing and Equipment.</p>
                     </div>
                   </div>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3 p-4">
                   <div className="card rounded-lg">
                     <div className="px-4 py-4">
-                      <h2 className="text-3xl text-center">70+</h2>
-                      <p className="text-3xl text-center">Praesent commodo</p>
-                      <p className="text-1xl text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                      <p className="text-3xl text-center">Everything You Need to Get the Job Done.</p>
+                      <p className="text-1xl text-center">Everything You Need to Get the Job Done.</p>
                     </div>
                   </div>
                 </div>
