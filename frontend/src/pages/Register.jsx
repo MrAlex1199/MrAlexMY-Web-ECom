@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../components/logo/weblogo.jpg'
 
 
 export default function Register() {
@@ -35,7 +36,7 @@ export default function Register() {
             <div className="bg-white dark:bg-gray-900">
                 <div className="container flex items-center justify-center min-h-screen px-6 mx-auto">
                     <form className="w-full max-w-md" onSubmit={handleRegister}>
-                        <img className="w-auto h-7 sm:h-8" src="https://merakiui.com/images/logo.svg" alt="login"/>
+                        <img className="w-auto h-7 sm:h-8" src={logo} alt="login"/>
                         <h1 className="mt-3 text-2xl font-semibold text-gray-800 capitalize sm:text-3xl dark:text-white">sign up</h1>
                         <div className="relative flex items-center mt-8">
                             <span className="absolute">
