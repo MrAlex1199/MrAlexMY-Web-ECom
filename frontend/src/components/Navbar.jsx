@@ -122,8 +122,8 @@ const navigation = {
     },
   ],
   pages: [
-    { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
+    { name: 'Company', href: 'About' },
+    { name: 'Stores', href: 'Products' },
   ],
 }
 

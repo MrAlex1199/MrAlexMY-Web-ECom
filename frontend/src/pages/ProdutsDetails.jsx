@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
 import { useParams } from 'react-router-dom'
-import { products } from './Products';
+import { products } from '../ProductsData/ProductsData'; 
 
 const reviews = { href: '#', average: 4, totalCount: 117 }
 
