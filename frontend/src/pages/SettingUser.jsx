@@ -5,6 +5,7 @@ export default function Setting({ userData }) {
     const [newPassword, setNewPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    
     // Function to handle password change
     const handleChangePassword = async (e) => {
         e.preventDefault();
