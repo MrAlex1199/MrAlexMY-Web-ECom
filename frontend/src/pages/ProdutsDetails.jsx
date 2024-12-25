@@ -4,52 +4,64 @@ import { RadioGroup } from '@headlessui/react'
 import { useParams } from 'react-router-dom'
 import { products } from '../ProductsData/ProductsData'; 
 
+// Reviews data for displaying rating and total review count
 const reviews = { href: '#', average: 4, totalCount: 117 }
 
+// Helper function to join class names dynamically
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function ProductsDetails({ userId }) {
+  // Extract the product ID from the URL parameters
   const { id } = useParams();
+
+  // Find the product from the product data using the ID from the URL
   const product = products.find((p) => p.id === id);
+
+  // State to manage the selected color (default to the first color in the product)
   const [selectedColor, setSelectedColor] = useState(product.colors[0].name.toString());
+
+  // State to manage the selected size (default to a specific size index)
   const [selectedSize, setSelectedSize] = useState(product.sizes[2].name.toString());
 
-
+  // Function to handle adding the product to the bag
   const handleAddToBag = async () => {
     try {
+      // Ensure the product is found before proceeding
       if (!product) {
         console.error('Product not found');
         return;
       }
 
-      console.log('Product:', product);
-  
+      console.log('Product:', product); // Log product details for debugging
+
+      // Make a POST request to save the selected product data on the server
       const response = await fetch('http://localhost:3001/save-selected-products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId,
-          productName: product.name,
-          productId: product.id,
-          price: product.price,
-          imageSrc: product.imageSrc,
-          selectedColor: selectedColor.name,
-          selectedSize: selectedSize.name,
+          userId, // User ID of the current user
+          productName: product.name, // Name of the selected product
+          productId: product.id, // ID of the selected product
+          price: product.price, // Price of the selected product
+          imageSrc: product.imageSrc, // Image source of the product
+          selectedColor: selectedColor.name, // Name of the selected color
+          selectedSize: selectedSize.name, // Name of the selected size
         }),
       });
-  
+
+      // Check if the request was successful
       if (response.ok) {
         console.log('AddToBag is successful');
       } else {
         console.error('AddToBag is Failed');
       }
     } catch (error) {
+      // Handle any errors that occur during the fetch request
       console.error('Error adding product to bag:', error);
     }
   };
-  
   
   return (
     <div className="bg-white">
