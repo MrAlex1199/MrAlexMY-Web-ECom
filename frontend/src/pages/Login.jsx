@@ -2,43 +2,48 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../components/logo/weblogo.jpg'
 
+// Login component
 export default function Login({ setIsLoggedIn, setUserData }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token); // Store the token in local storage
-        setIsLoggedIn(true);
-
-        setUserData({ fname: data.fname, lname: data.lname });
-
-        navigate('/');
-      } else {
-        const errorData = await response.json();
-        console.error(errorData.message);
-        if (errorData.loginStatus === false) {
+    // State variables for email and password
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+  
+    // Function to handle login
+    const handleLogin = async () => {
+      try {
+        // Send POST request to login endpoint
+        const response = await fetch('http://localhost:3001/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+  
+        if (response.ok) {
+          // If login is successful, store token and update state
+          const data = await response.json();
+          localStorage.setItem('token', data.token); // Store the token in local storage
+          setIsLoggedIn(true);
+          setUserData({ fname: data.fname, lname: data.lname });
+          navigate('/'); // Navigate to home page
+        } else {
+          // If login fails, display error message
+          const errorData = await response.json();
+          console.error(errorData.message);
+          if (errorData.loginStatus === false) {
             alert('Login failed. Please check your email and password.');
           }
+        }
+      } catch (error) {
+        // Log any errors
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    };
 
     return (
         <div>
-            <from onSubmit={(e) => { e.preventDefault(); handleLogin(); return false;
-            }}>
+            {/* Form to handle login */}
+            <from onSubmit={(e) => { e.preventDefault(); handleLogin(); return false; }}>
                 <div className="bg-white dark:bg-gray-900">
                     <div className="container flex items-center justify-center min-h-screen px-6 mx-auto">
                         <form className="w-full max-w-md" onSubmit={handleLogin}>
