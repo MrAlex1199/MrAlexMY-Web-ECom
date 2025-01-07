@@ -4,6 +4,9 @@ import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config'
+import multer from 'multer';
+import csv from 'csv-parser';
+import fs from 'fs';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -44,6 +47,79 @@ userSchema.pre('save', async function (next) {
 });
 
 const User = mongoose.model('User', userSchema);
+
+// Product Schema
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  imageSrc: { type: String, required: true },
+  description: { type: String },
+  colors: [{ name: String, class: String, selectedClass: String }],
+  sizes: [{ name: String, inStock: Boolean }],
+  highlights: [String],
+  details: String,
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+const upload = multer({ dest: 'uploads/' });
+
+// const adminAuth = (req, res, next) => {
+//   const token = req.headers.authorization?.split(' ')[1];
+//   if (!token) return res.status(403).json({ message: 'Access denied' });
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     if (decoded.role !== 'admin') throw new Error('Not authorized');
+//     next();
+//   } catch (error) {
+//     res.status(403).json({ message: 'Invalid token' });
+//   }
+// };
+
+// Endpoint สำหรับอัปโหลดไฟล์ CSV
+app.post('/api/upload-csv', upload.single('file'), async (req, res) => {
+  const filePath = req.file.path;
+
+  const products = [];
+  try {
+    // อ่านข้อมูลจากไฟล์ CSV
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => {
+        products.push({
+          name: row.name,
+          price: parseFloat(row.price),
+          imageSrc: row.imageSrc,
+          description: row.description,
+          colors: JSON.parse(row.colors || '[]'), // JSON string to array
+          sizes: JSON.parse(row.sizes || '[]'),   // JSON string to array
+          highlights: JSON.parse(row.highlights || '[]'),
+          details: row.details,
+        });
+      })
+      .on('end', async () => {
+        // เพิ่มข้อมูลใน MongoDB
+        await Product.insertMany(products);
+        res.status(200).json({ message: 'Products added successfully!' });
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error uploading products' });
+  } finally {
+    fs.unlinkSync(filePath); // ลบไฟล์หลังอัปโหลดเสร็จ
+  }
+});
+
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching products' });
+  }
+});
 
 // Endpoint to get user data and send it to Frontend
 app.get('/user', async (req, res) => {

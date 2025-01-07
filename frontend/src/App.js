@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import CheckoutPage from "./pages/CheckoutPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +25,10 @@ export default function App() {
   console.log(totalPrice);
   
   // Conditional rendering for Navbar based on route
-  const shouldShowNavbar = !['/login', '/register', '/CheckoutPage'].includes(window.location.pathname);
+  const shouldShowNavbar = !['/login', '/register', '/CheckoutPage', '/AdminDashboard'].includes(window.location.pathname);
+
+  const shouldShowFooter = !['/AdminDashboard'].includes(window.location.pathname);
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -111,9 +115,11 @@ export default function App() {
         /> }/>
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
       </Routes>
-      <Footer />
+      {shouldShowFooter && <Footer />}
     </Router>
   );
 }
 
+//ทำต่อ ให้มีการเช็คว่าเป็น admin หรือไม่ ถ้าเป็น admin จะแสดงหน้า admin ถ้าไม่ให้แสดงหน้า user
