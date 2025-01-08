@@ -48,6 +48,25 @@ userSchema.pre('save', async function (next) {
 
 const User = mongoose.model('User', userSchema);
 
+// Admin schema with email and hashed password
+const adminSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  employeeID: { type: String, required: true },
+  role: { type: String, default: 'admin' }
+});
+
+// Hash password before saving
+adminSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  next();
+});
+
+const Admin = mongoose.model('Admin', adminSchema);
+
 // Product Schema
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -137,6 +156,24 @@ app.get('/user', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to fetch user details' });
+  }
+});
+
+// Endpoint to fetch admin data and send it to Frontend
+app.get('/admin', async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the admin's ID or email
+    const admin = await Admin.findById(decodedToken.id); // Assuming admin ID is stored in the token
+    
+    res.status(200).json({ success: true,
+      adminId: admin._id,
+      email: admin.email,
+      role: admin.role,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch admin details' });
   }
 });
 
@@ -311,6 +348,70 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: 'Login failed', isLoggedIn: false });
   }
 });
+
+// Admin registration endpoint
+app.post('/admin-register', async (req, res) => {
+  try {
+    const { email, password, fname, lname, employeeID } = req.body;
+    if (!email || !password || !employeeID) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    // Check if the provided employeeID matches the one in the .env file
+    if (employeeID !== process.env.EMPLOYEE_ID) {
+      return res.status(403).json({ success: false, message: 'Unauthorized employee ID' });
+    }
+
+    const lowercaseEmail = email.toLowerCase();
+
+    const existingAdmin = await Admin.findOne({ email: lowercaseEmail });
+    if (existingAdmin) {
+      return res.status(409).json({ success: false, message: 'Email already in use' });
+    }
+
+    const admin = new Admin({ email: lowercaseEmail, password, fname, lname, employeeID });
+    await admin.save();
+
+    res.status(201).json({ success: true, message: 'Admin registered successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Registration failed' });
+  }
+});
+
+// Admin login endpoint
+app.post('/admin-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Missing required fields', loginStatus: false });
+    }
+
+    const lowercaseEmail = email.toLowerCase();
+
+    const existingAdmin = await Admin.findOne({ email: lowercaseEmail });
+    if(!existingAdmin) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
+    }
+
+    const isMatch = await bcrypt.compare(password, existingAdmin.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
+    }
+
+    const admin = { id: existingAdmin._id, email: existingAdmin.email, role: existingAdmin.role };
+    const token = jwt.sign(admin, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.cookie('jwt', token, { httpOnly: true, secure: true });
+    res.status(200).json({ success: true, message: 'Login successful', token, fname: existingAdmin.fname, lname: existingAdmin.lname, loginStatus: true });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Login failed', loginStatus: false });
+  }
+});
+
+//เตรียมเทสระบบ Admin สำหรับการล็อคอินพรุ่งนี้
 
 // logout endpoint
 app.post('/logout', async (req, res) => {

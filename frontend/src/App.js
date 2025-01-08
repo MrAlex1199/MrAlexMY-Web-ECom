@@ -15,19 +15,70 @@ import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import CheckoutPage from "./pages/CheckoutPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminRegister from "./pages/AdminRegister";
+import AdminLogin from "./pages/AdminLogin";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({ fname: '', lname: '', userId: '' });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.00);
+  const [isAdminIn, setIsAdmin] = useState(false);
+  const [adminData, setAdminData] = useState({ adminid: '', email: '', role: '' });
 
   console.log(totalPrice);
   
   // Conditional rendering for Navbar based on route
-  const shouldShowNavbar = !['/login', '/register', '/CheckoutPage', '/AdminDashboard'].includes(window.location.pathname);
+  const shouldShowNavbar = ![
+    '/login',
+    '/register',
+    '/CheckoutPage',
+    '/AdminDashboard',
+    '/admin-register',
+    '/admin-login'
+  ].includes(window.location.pathname);
 
-  const shouldShowFooter = !['/AdminDashboard'].includes(window.location.pathname);
+  const shouldShowFooter = ![
+    '/AdminDashboard',
+    '/admin-register',
+    '/admin-login'
+  ].includes(window.location.pathname);
+
+  useEffect(() => {
+    const fetchAdminDetails = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:3001/admin', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch admin details');
+          }
+
+          const data = await response.json();
+          if (data.success) {
+            setAdminData({
+              adminid: data.adminid,
+              email: data.email,
+              role: data.role
+            });
+            setIsAdmin(true);
+          } else {
+            console.error('Failed to retrieve admin data');
+          }
+        } catch (error) {
+          console.error('Error fetching admin details:', error);
+        }
+      }
+    };
+
+    fetchAdminDetails();
+  }, []);
 
 
   useEffect(() => {
@@ -115,11 +166,13 @@ export default function App() {
         /> }/>
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admindashboard" element={<AdminDashboard />} />
+        <Route path="/admindashboard" element={<AdminDashboard AdminData={adminData} IsAdmin={isAdminIn}/>} />
+        <Route path="/admin-register" element={<AdminRegister />} />
+        <Route path="/admin-login" element={<AdminLogin setIsAdmin={setIsAdmin} setAdminData={setAdminData} />} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>
   );
 }
 
-//ทำต่อ ให้มีการเช็คว่าเป็น admin หรือไม่ ถ้าเป็น admin จะแสดงหน้า admin ถ้าไม่ให้แสดงหน้า user
+//ให้มีการเช็ค Email ล็อกอินว่าเป็น admin ที่กำหนดไว้ไหมหรือไม่ ถ้าเป็น admin จะแสดงหน้า admin ถ้าไม่ใช่ให้แสดงหน้า user
