@@ -3,36 +3,38 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../components/logo/weblogo.jpg'
 
 // Admin registration component
-export default function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export default function AdminRegister() {
+    const [adminemail, setAdminEmail] = useState('');
+    const [adminpassword, setAdminPassword] = useState('');
+    const [Afname, setAfname] = useState('');
+    const [Alname, setAlname] = useState('');
     const [employeeID, setEmployeeID] = useState('');
-    const [fname, setFname] = useState('');
-    const [lname, setLname] = useState('');
     const navigate = useNavigate();
-
+  
     const handleRegister = async (e) => {
         e.preventDefault();
+        // console.log({ adminemail, adminpassword, Afname, Alname, employeeID }); // Debug: log the form data
+    
         try {
             const response = await fetch('http://localhost:3001/admin-register', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({email, password, fname, lname , employeeID}),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminemail, adminpassword, Afname, Alname, employeeID }),
             });
-        
+    
+            const data = await response.json();
             if (response.ok) {
-                console.log('Registration is successful');
-              navigate('/login');
+                alert('Registration successful');
+                navigate('/admin-login');
             } else {
-              console.log('Registration failed');
+                alert(`Registration failed: ${data.message}`);
             }
-          } catch (error) {
-            console.error(error);
-          }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Registration failed');
+        }
     };
-
-    // ต้องเพิ่ม รหัสพนักงานสำหรับการลงทะเบียนเป็น admin
-
+    
     return (
         <div>
             <div className="bg-white dark:bg-gray-900">
@@ -47,17 +49,17 @@ export default function Register() {
                                 </svg>
                             </span>
                             <input 
-                                type="email" onChange={(e) => { setEmail(e.target.value)}} 
+                                type="email" onChange={(e) => { setAdminEmail(e.target.value)}} 
                                 className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                 placeholder="Email address"
                                 />
                         </div>
                         <div className="relative flex items-center mt-4">
-                            <input type="fname" onChange={(e) => { setFname(e.target.value)}} 
+                            <input type="fname" onChange={(e) => { setAfname(e.target.value)}} 
                                 className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                 placeholder="First Name"
                                 />
-                            <input type="lname" onChange={(e) => { setLname(e.target.value)}} 
+                            <input type="lname" onChange={(e) => { setAlname(e.target.value)}} 
                                 className="block w-full ml-1 px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                                 placeholder="Last Name"
                                 />
@@ -68,7 +70,7 @@ export default function Register() {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </span>
-                            <input type="password" onChange={(e) => { setPassword(e.target.value)}} 
+                            <input type="password" onChange={(e) => { setAdminPassword(e.target.value)}} 
                                 className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" 
                                 placeholder="Password"
                             />
@@ -82,7 +84,7 @@ export default function Register() {
                                 Register
                             </button>
                             <div className="mt-6 text-center ">
-                                <Link to="/login" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
+                                <Link to="/admin-login" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
                                     Already have an account? Sign in
                                 </Link>
                             </div>

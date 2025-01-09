@@ -50,17 +50,20 @@ const User = mongoose.model('User', userSchema);
 
 // Admin schema with email and hashed password
 const adminSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  adminemail: { type: String, required: true, unique: true },
+  adminpassword: { type: String, required: true },
+  Afname: { type: String, required: true },
+  Alname: { type: String, required: true },
   employeeID: { type: String, required: true },
   role: { type: String, default: 'admin' }
 });
 
+
 // Hash password before saving
 adminSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+  if (this.isModified('adminpassword')) {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.adminpassword = await bcrypt.hash(this.adminpassword, salt);
   }
   next();
 });
@@ -82,19 +85,6 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model('Product', productSchema);
 
 const upload = multer({ dest: 'uploads/' });
-
-// const adminAuth = (req, res, next) => {
-//   const token = req.headers.authorization?.split(' ')[1];
-//   if (!token) return res.status(403).json({ message: 'Access denied' });
-
-//   try {
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     if (decoded.role !== 'admin') throw new Error('Not authorized');
-//     next();
-//   } catch (error) {
-//     res.status(403).json({ message: 'Invalid token' });
-//   }
-// };
 
 // Endpoint สำหรับอัปโหลดไฟล์ CSV
 app.post('/api/upload-csv', upload.single('file'), async (req, res) => {
@@ -154,7 +144,6 @@ app.get('/user', async (req, res) => {
       lname: user.lname,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, message: 'Failed to fetch user details' });
   }
 });
@@ -238,7 +227,8 @@ app.put('/change-password', async (req, res) => {
           return res.status(401).json({ success: false, message: 'Current password is incorrect' });
       }
 
-      user.password = await (newPassword);
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
       await user.save();
 
       res.status(200).json({ success: true, UpdatedPassdWord: true,  message: 'Password updated successfully' });
@@ -341,7 +331,14 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.cookie('jwt', token, { httpOnly: true, secure: true });
-    res.status(200).json({ success: true, message: 'Login successful', token, isLoggedIn: true, fname: existingUser.fname, lname: existingUser.lname, loginStatus: true });
+    res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      token, isLoggedIn: true,
+      fname: existingUser.fname,
+      lname: existingUser.lname,
+      loginStatus: true
+    });
 
   } catch (error) {
     console.error(error);
@@ -352,66 +349,78 @@ app.post('/login', async (req, res) => {
 // Admin registration endpoint
 app.post('/admin-register', async (req, res) => {
   try {
-    const { email, password, fname, lname, employeeID } = req.body;
-    if (!email || !password || !employeeID) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' });
-    }
+      const { adminemail, adminpassword, Afname, Alname, employeeID } = req.body;
 
-    // Check if the provided employeeID matches the one in the .env file
-    if (employeeID !== process.env.EMPLOYEE_ID) {
-      return res.status(403).json({ success: false, message: 'Unauthorized employee ID' });
-    }
+      // Check if any required field is missing
+      if (!adminemail || !adminpassword || !Afname || !Alname || !employeeID) {
+          return res.status(400).json({ success: false, message: 'All fields are required' });
+      }
 
-    const lowercaseEmail = email.toLowerCase();
+      const lowercaseEmail = adminemail.toLowerCase();
 
-    const existingAdmin = await Admin.findOne({ email: lowercaseEmail });
-    if (existingAdmin) {
-      return res.status(409).json({ success: false, message: 'Email already in use' });
-    }
+      // Check if admin already exists
+      const existingAdmin = await Admin.findOne({ adminemail: lowercaseEmail });
+      if (existingAdmin) {
+          return res.status(409).json({ success: false, message: 'Email already in use' });
+      }
 
-    const admin = new Admin({ email: lowercaseEmail, password, fname, lname, employeeID });
-    await admin.save();
+      // Create and save new admin
+      const admin = new Admin({
+          adminemail: lowercaseEmail,
+          adminpassword,
+          Afname,
+          Alname,
+          employeeID
+      });
+      await admin.save();
 
-    res.status(201).json({ success: true, message: 'Admin registered successfully' });
+      res.status(201).json({ success: true, message: 'Admin registered successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Registration failed' });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Registration failed' });
   }
 });
 
-// Admin login endpoint
+
+// Admin Login endpoint
 app.post('/admin-login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const {  adminemail, adminpassword } = req.body;
+    if (! adminemail || !adminpassword) {
       return res.status(400).json({ success: false, message: 'Missing required fields', loginStatus: false });
     }
 
-    const lowercaseEmail = email.toLowerCase();
+    const lowercaseEmail =  adminemail.toLowerCase();
 
-    const existingAdmin = await Admin.findOne({ email: lowercaseEmail });
+    const existingAdmin = await Admin.findOne({  adminemail: lowercaseEmail });
     if(!existingAdmin) {
       return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
     }
 
-    const isMatch = await bcrypt.compare(password, existingAdmin.password);
+    const isMatch = await bcrypt.compare(adminpassword, existingAdmin.adminpassword);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
     }
 
-    const admin = { id: existingAdmin._id, email: existingAdmin.email, role: existingAdmin.role };
-    const token = jwt.sign(admin, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const admin = { id: existingAdmin._id,  adminemail: existingAdmin.adminemail, role: existingAdmin.role };
+    const Atoken = jwt.sign(admin, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    res.cookie('jwt', token, { httpOnly: true, secure: true });
-    res.status(200).json({ success: true, message: 'Login successful', token, fname: existingAdmin.fname, lname: existingAdmin.lname, loginStatus: true });
+    res.cookie('jwt', Atoken, { httpOnly: true, secure: true });
+    res.status(200).json({ 
+      success: true,
+      message: 'Login successful',
+      Atoken,
+      adminemail: existingAdmin.adminemail,
+      Afname: existingAdmin.Afname,
+      Alname: existingAdmin.Alname,
+      loginStatus: true
+    });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Login failed', loginStatus: false });
   }
 });
-
-//เตรียมเทสระบบ Admin สำหรับการล็อคอินพรุ่งนี้
 
 // logout endpoint
 app.post('/logout', async (req, res) => {

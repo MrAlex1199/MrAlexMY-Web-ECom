@@ -17,13 +17,14 @@ import CheckoutPage from "./pages/CheckoutPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRegister from "./pages/AdminRegister";
 import AdminLogin from "./pages/AdminLogin";
+import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({ fname: '', lname: '', userId: '' });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.00);
-  const [isAdminIn, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [adminData, setAdminData] = useState({ adminid: '', email: '', role: '' });
 
   console.log(totalPrice);
@@ -166,9 +167,13 @@ export default function App() {
         /> }/>
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admindashboard" element={<AdminDashboard AdminData={adminData} IsAdmin={isAdminIn}/>} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-login" element={<AdminLogin setIsAdmin={setIsAdmin} setAdminData={setAdminData} />} />
+        <Route path="/admindashboard" element={
+          <ProtectedRoute isAdmin={isAdmin}>
+            <AdminDashboard adminData={adminData} />
+          </ProtectedRoute>
+        } />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>
