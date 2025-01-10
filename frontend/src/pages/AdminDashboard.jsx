@@ -41,10 +41,19 @@
 
 // export default AdminDashboard;
 
+
+// const handleAdminLogout = () => {
+//   localStorage.removeItem('AToken');
+//   localStorage.removeItem('isAdmin');
+//   setIsAdmin(false);
+//   setAdminData({ adminid: '', email: '', role: '' });
+// };
+
+
 import React from "react";
 import Sidebar from "../components/Sidebar";
 
-export default function AdminDashboard() {
+export default function admindashboard() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}

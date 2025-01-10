@@ -46,23 +46,22 @@ export default function ProductsDetails({ userId }) {
           productId: product.id, // ID of the selected product
           price: product.price, // Price of the selected product
           imageSrc: product.imageSrc, // Image source of the product
-          selectedColor: selectedColor.name, // Name of the selected color
-          selectedSize: selectedSize.name, // Name of the selected size
+          selectedColor: selectedColor, // Name of the selected color
+          selectedSize: selectedSize, // Name of the selected size
         }),
       });
 
       // Check if the request was successful
       if (response.ok) {
-        console.log('AddToBag is successful');
+        console.log('Product added to bag successfully');
       } else {
-        console.error('AddToBag is Failed');
+        console.error('Failed to add product to bag');
       }
     } catch (error) {
-      // Handle any errors that occur during the fetch request
       console.error('Error adding product to bag:', error);
     }
   };
-  
+
   return (
     <div className="bg-white">
       <div className="pt-6">

@@ -120,6 +120,7 @@ app.post('/api/upload-csv', upload.single('file'), async (req, res) => {
   }
 });
 
+//Endpoint to get all products
 app.get('/api/products', async (req, res) => {
   try {
     const products = await Product.find();
@@ -151,8 +152,11 @@ app.get('/user', async (req, res) => {
 // Endpoint to fetch admin data and send it to Frontend
 app.get('/admin', async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the admin's ID or email
+    const Atoken = req.headers.authorization?.split(' ')[1] || req.headers['x-admin-token']; // Extract the token from the Authorization header
+    const decodedToken = jwt.verify(Atoken, process.env.JWT_SECRET); // Decode the token to get the admin's ID or email
+    if (decodedToken.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
     const admin = await Admin.findById(decodedToken.id); // Assuming admin ID is stored in the token
     
     res.status(200).json({ success: true,
@@ -334,7 +338,8 @@ app.post('/login', async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Login successful',
-      token, isLoggedIn: true,
+      token,
+      isLoggedIn: true,
       fname: existingUser.fname,
       lname: existingUser.lname,
       loginStatus: true
@@ -402,11 +407,11 @@ app.post('/admin-login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password', loginStatus: false });
     }
 
-    const admin = { id: existingAdmin._id,  adminemail: existingAdmin.adminemail, role: existingAdmin.role };
+    const admin = { id: existingAdmin._id, adminemail: existingAdmin.adminemail, role: 'admin' }; // Explicit role
     const Atoken = jwt.sign(admin, process.env.JWT_SECRET, { expiresIn: '7d' });
-
+    
     res.cookie('jwt', Atoken, { httpOnly: true, secure: true });
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
       message: 'Login successful',
       Atoken,
@@ -415,10 +420,20 @@ app.post('/admin-login', async (req, res) => {
       Alname: existingAdmin.Alname,
       loginStatus: true
     });
-
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Login failed', loginStatus: false });
+  }
+});
+
+// admin logout endpoint
+app.post('/admin-logout', async (req, res) => {
+  try {
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Logout failed' });
   }
 });
 
