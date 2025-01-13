@@ -48,20 +48,22 @@ export default function AdminDashboard({ isAdmin, setIsAdmin, setAdminData }) {
       alert('Please select a file!');
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('file', file);
-
+  
     try {
-      const response = await axios.post('/api/upload-csv', formData, {
+      const response = await axios.post('http://localhost:3001/api/upload-csv', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      console.log('Response:', response.data); // Log success response
       alert(response.data.message);
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error.response || error); // Log error details
       alert('Failed to upload file');
     }
   };
+  
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -119,6 +121,3 @@ export default function AdminDashboard({ isAdmin, setIsAdmin, setAdminData }) {
     </div>
   );
 }
-
-
-

@@ -33,12 +33,15 @@ export default function App() {
     '/register',
     '/CheckoutPage',
     '/AdminDashboard',
+    '/admindashboard',
+    '/admin-register',
     '/admin-register',
     '/admin-login'
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
     '/AdminDashboard',
+    '/admindashboard',
     '/admin-register',
     '/admin-login'
   ].includes(window.location.pathname);

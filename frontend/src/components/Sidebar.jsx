@@ -3,8 +3,9 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="h-screen bg-gray-800 text-white w-64 p-5">
-      <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
+    <div className="h-screen bg-gray-800 text-white w-70 p-5">
+      <h2 className="text-2xl font-bold mb-6">SERGENTX Dashboard</h2>
+      <h3 className="text-2xl font-bold mb-6">Admin Alex</h3>
       <nav className="space-y-4">
         <NavLink
           to="/admin-dashboard"

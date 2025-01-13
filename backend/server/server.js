@@ -7,9 +7,20 @@ import 'dotenv/config'
 import multer from 'multer';
 import csv from 'csv-parser';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+// Get the current file's directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Configure Multer
+const upload = multer({ dest: join(__dirname, 'uploads/') });
 
 const app = express();
 const PORT = process.env.PORT;
+
 
 app.use(cors());
 app.use(express.json());
@@ -84,41 +95,39 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-const upload = multer({ dest: 'uploads/' });
-
-// Endpoint สำหรับอัปโหลดไฟล์ CSV
+// Endpoint to upload CSV file and add products to MongoDB
 app.post('/api/upload-csv', upload.single('file'), async (req, res) => {
-  const filePath = req.file.path;
-
-  const products = [];
+  const filePath = req.file.path; // Corrected path handling
   try {
-    // อ่านข้อมูลจากไฟล์ CSV
+    const products = [];
     fs.createReadStream(filePath)
       .pipe(csv())
       .on('data', (row) => {
         products.push({
           name: row.name,
-          price: parseFloat(row.price),
+          price: parseFloat(row.price.replace('$', '')),
           imageSrc: row.imageSrc,
           description: row.description,
-          colors: JSON.parse(row.colors || '[]'), // JSON string to array
-          sizes: JSON.parse(row.sizes || '[]'),   // JSON string to array
+          colors: JSON.parse(row.colors || '[]'),
+          sizes: JSON.parse(row.sizes || '[]').map((size) => ({
+            ...size,
+            inStock: Boolean(size.inStock),
+          })),
           highlights: JSON.parse(row.highlights || '[]'),
           details: row.details,
         });
       })
       .on('end', async () => {
-        // เพิ่มข้อมูลใน MongoDB
         await Product.insertMany(products);
+        fs.unlinkSync(filePath); // Clean up the file
         res.status(200).json({ message: 'Products added successfully!' });
       });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error uploading products' });
-  } finally {
-    fs.unlinkSync(filePath); // ลบไฟล์หลังอัปโหลดเสร็จ
   }
 });
+
 
 //Endpoint to get all products
 app.get('/api/products', async (req, res) => {
