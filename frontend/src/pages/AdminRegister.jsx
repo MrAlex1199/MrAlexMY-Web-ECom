@@ -4,13 +4,22 @@ import logo from '../components/logo/weblogo.jpg'
 
 // Admin registration component
 export default function AdminRegister() {
+    // State variables for Email,Password,FirstName,LastName,employeeID fields
     const [adminemail, setAdminEmail] = useState('');
     const [adminpassword, setAdminPassword] = useState('');
     const [Afname, setAfname] = useState('');
     const [Alname, setAlname] = useState('');
     const [employeeID, setEmployeeID] = useState('');
     const navigate = useNavigate();
-  
+
+    // Check if the admin is already logged in
+    React.useEffect(() => {
+        if (localStorage.getItem('isAdmin') === 'true') {
+            navigate('/admindashboard');
+        }
+    }, [navigate]);
+
+    // Function to handle admin registration
     const handleRegister = async (e) => {
         e.preventDefault();
         // console.log({ adminemail, adminpassword, Afname, Alname, employeeID }); // Debug: log the form data

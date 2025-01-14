@@ -9,7 +9,14 @@ export default function AdminLogin({ setIsAdmin, setAdminData }) {
   const [adminpassword, setAPassword] = useState('');
   const navigate = useNavigate();
 
-  // Function to handle login
+    // Check if the admin is already logged in
+    React.useEffect(() => {
+      if (localStorage.getItem('isAdmin') === 'true') {
+        navigate('/admindashboard');
+      }
+    }, [navigate]);
+
+  // Function to handle admin login
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
