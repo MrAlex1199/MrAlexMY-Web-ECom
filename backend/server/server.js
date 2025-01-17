@@ -14,13 +14,11 @@ import { dirname, join } from 'path';
 // Get the current file's directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 // Configure Multer
 const upload = multer({ dest: join(__dirname, 'uploads/') });
 
 const app = express();
 const PORT = process.env.PORT;
-
 
 app.use(cors());
 app.use(express.json());

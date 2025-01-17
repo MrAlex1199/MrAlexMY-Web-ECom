@@ -17,6 +17,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRegister from "./pages/AdminRegister";
 import AdminLogin from "./pages/AdminLogin";
+import AdminManageProducts from './pages/AdminManageProducts';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {
@@ -182,7 +183,12 @@ export default function App() {
           <ProtectedRoute isAdmin={isAdmin}>
             <AdminDashboard adminData={adminData} />
           </ProtectedRoute>
-        } />
+        }/>
+        <Route path="/adminmanageproducts" element={
+          <ProtectedRoute isAdmin={isAdmin}>
+            <AdminManageProducts adminData={adminData} />
+          </ProtectedRoute>
+        }/>
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>

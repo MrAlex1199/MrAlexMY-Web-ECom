@@ -1,27 +1,27 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const Sidebar = () => {
+export default function Sidebar(){
   return (
     <div className="h-screen font-semibold bg-white text-slate-900 w-70 p-5">
       <h2 className="text-2xl font-bold mb-6">SERGENTX Dashboard</h2>
       <nav className="space-y-4">
-        <NavLink
-          to="/admin-dashboard"
+      <NavLink
+          to="/AdminDashboard"
           className={({ isActive }) =>
             isActive
-              ? "block px-4 py-2 text-blue-700 rounded-md"
-              : "block px-4 py-2 hover:text-blue-700 rounded-md"
+              ? "block px-4 py-2 text-white bg-blue-500 rounded-md"
+              : "block px-4 py-2 text-blue-700 rounded-md"
           }
         >
           Dashboard
         </NavLink>
         <NavLink
-          to="/admin-dashboard/products"
+          to="/AdminManageProducts"
           className={({ isActive }) =>
             isActive
-              ? "block px-4 py-2 text-blue-700 rounded-md"
-              : "block px-4 py-2 hover:text-blue-700 rounded-md"
+              ? "block px-4 py-2 text-white bg-blue-500 rounded-md"
+              : "block px-4 py-2 text-blue-700 rounded-md"
           }
         >
           Manage Products
@@ -30,8 +30,8 @@ const Sidebar = () => {
           to="/admin-dashboard/orders"
           className={({ isActive }) =>
             isActive
-              ? "block px-4 py-2 text-blue-700 rounded-md"
-              : "block px-4 py-2 hover:text-blue-700 rounded-md"
+              ? "block px-4 py-2 text-white bg-blue-500 rounded-md"
+              : "block px-4 py-2 text-blue-700 rounded-md"
           }
         >
           Manage Orders
@@ -40,8 +40,8 @@ const Sidebar = () => {
           to="/admin-dashboard/users"
           className={({ isActive }) =>
             isActive
-              ? "block px-4 py-2 text-blue-700 rounded-md"
-              : "block px-4 py-2 hover:text-blue-700 rounded-md"
+              ? "block px-4 py-2 text-white bg-blue-500 rounded-md"
+              : "block px-4 py-2 text-blue-700 rounded-md"
           }
         >
           Manage Users
@@ -50,5 +50,3 @@ const Sidebar = () => {
     </div>
   );
 };
-
-export default Sidebar;

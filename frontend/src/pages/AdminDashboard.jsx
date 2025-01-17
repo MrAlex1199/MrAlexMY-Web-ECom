@@ -18,16 +18,16 @@ export default function AdminDashboard({ isAdmin, setIsAdmin, setAdminData }) {
         label: "# of Votes",
         data: [120, 45, 300],
         backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
+          "rgb(255, 99, 133)",
+          "rgb(54, 163, 235)",
+          "rgb(255, 207, 86)",
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
+          "rgb(255, 0, 0)",
+          "rgb(0, 153, 255)",
+          "rgb(238, 255, 0)",
         ],
-        borderWidth: 1,
+        borderWidth: 0,
       },
     ],
   };
