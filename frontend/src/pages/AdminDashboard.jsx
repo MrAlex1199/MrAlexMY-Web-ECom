@@ -1,202 +1,103 @@
-import React, { useState } from "react";
+import React from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from "chart.js";
+import { Pie, Bar } from "react-chartjs-2";
 import Sidebar from "../components/Sidebar";
-import axios from "axios";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
 
 // Register ChartJS components
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
-export default function AdminDashboard({ isAdmin, setIsAdmin, setAdminData }) {
-  const [file, setFile] = useState(null);
+const pieChartOptions = {
+  maintainAspectRatio: false, // Allow custom dimensions
+  responsive: true,
+};
 
+export default function Overview() {
   // Sample data for pie chart
   const pieChartData = {
     labels: ["Products", "Orders", "Users"],
     datasets: [
       {
-        label: "# of Votes",
         data: [120, 45, 300],
-        backgroundColor: [
-          "rgb(255, 99, 133)",
-          "rgb(54, 163, 235)",
-          "rgb(255, 207, 86)",
-        ],
-        borderColor: [
-          "rgb(255, 0, 0)",
-          "rgb(0, 153, 255)",
-          "rgb(238, 255, 0)",
-        ],
-        borderWidth: 0,
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
     ],
   };
 
-  const handleAdminLogout = () => {
-    localStorage.removeItem("AToken");
-    localStorage.removeItem("isAdmin");
-    setIsAdmin(false);
-    setAdminData({ adminid: "", email: "", role: "" });
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file!");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/upload-csv",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      console.log("Response:", response.data); // Log success response
-      alert(response.data.message);
-    } catch (error) {
-      console.error("Error:", error.response || error); // Log error details
-      alert("Failed to upload file");
-    }
+  // Sample data for bar chart
+  const barChartData = {
+    labels: ["January", "February", "March", "April", "May"],
+    datasets: [
+      {
+        label: "Monthly Sales ($)",
+        data: [5000, 7000, 4000, 8000, 6000],
+        backgroundColor: "#36A2EB",
+      },
+    ],
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar />
+
       {/* Main Content */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
-          <button
-            onClick={handleAdminLogout}
-            className="text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
-          >
+          <h1 className="text-2xl font-bold text-gray-800">
+            Admin Dashboard - Overview
+          </h1>
+          <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
             Logout
           </button>
         </div>
-        {/* Dashboard Overview with Chart */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <Pie data={pieChartData} />
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+          <div className="bg-white shadow rounded-lg p-4">
+            <h2 className="text-sm font-semibold text-gray-500">
+              Total Products
+            </h2>
+            <p className="text-2xl font-bold text-blue-600">120</p>
           </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Products</h2>
-              <span className="text-2xl font-bold text-blue-600">120</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Orders</h2>
-              <span className="text-2xl font-bold text-green-600">45</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
-              <span className="text-2xl font-bold text-purple-600">300</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Sales</h2>
-              <span className="text-2xl font-bold text-red-600">$2,500</span>
-            </div>
+          <div className="bg-white shadow rounded-lg p-4">
+            <h2 className="text-sm font-semibold text-gray-500">
+              Total Orders
+            </h2>
+            <p className="text-2xl font-bold text-green-600">45</p>
           </div>
-        {/* Product Summaly */}
-          <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Products</h2>
-              <span className="text-2xl font-bold text-blue-600">120</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Orders</h2>
-              <span className="text-2xl font-bold text-green-600">45</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
-              <span className="text-2xl font-bold text-purple-600">300</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Sales</h2>
-              <span className="text-2xl font-bold text-red-600">$2,500</span>
-            </div>
+          <div className="bg-white shadow rounded-lg p-4">
+            <h2 className="text-sm font-semibold text-gray-500">Total Users</h2>
+            <p className="text-2xl font-bold text-purple-600">300</p>
           </div>
-        {/* User list */}
-          <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Products</h2>
-              <span className="text-2xl font-bold text-blue-600">120</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Orders</h2>
-              <span className="text-2xl font-bold text-green-600">45</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
-              <span className="text-2xl font-bold text-purple-600">300</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Sales</h2>
-              <span className="text-2xl font-bold text-red-600">$2,500</span>
-            </div>
-          </div>
-        {/* Order list */}
-          <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Products</h2>
-              <span className="text-2xl font-bold text-blue-600">120</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Orders</h2>
-              <span className="text-2xl font-bold text-green-600">45</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
-              <span className="text-2xl font-bold text-purple-600">300</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Sales</h2>
-              <span className="text-2xl font-bold text-red-600">$2,500</span>
-            </div>
-          </div>
-        {/* Sales Summary */}
-          <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Products</h2>
-              <span className="text-2xl font-bold text-blue-600">120</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Orders</h2>
-              <span className="text-2xl font-bold text-green-600">45</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
-              <span className="text-2xl font-bold text-purple-600">300</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-700">Sales</h2>
-              <span className="text-2xl font-bold text-red-600">$2,500</span>
-            </div>
+          <div className="bg-white shadow rounded-lg p-4">
+            <h2 className="text-sm font-semibold text-gray-500">Total Sales</h2>
+            <p className="text-2xl font-bold text-red-600">$25,000</p>
           </div>
         </div>
-        {/* File Upload */}
-        <div className="mt-6 bg-white shadow-lg rounded-lg p-6">
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
-          <button
-            onClick={handleUpload}
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Upload CSV
-          </button>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Pie Chart */}
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Overview
+            </h2>
+            <div className="h-48 w-full">
+              {/* Reduce height */}
+              <Pie data={pieChartData} options={pieChartOptions} />
+            </div>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Monthly Sales
+            </h2>
+            <div className="h-64 w-full">
+              <Bar data={barChartData} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
