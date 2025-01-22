@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 export default function Sidebar(){
   return (
-    <div className="h-screen font-semibold bg-white text-slate-900 w-70 p-5">
+    <div className="font-semibold bg-white text-slate-900 w-70 p-5">
       <h2 className="text-2xl font-bold mb-6">SERGENTX Dashboard</h2>
       <nav className="space-y-4">
       <NavLink
