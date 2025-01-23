@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -159,9 +159,9 @@ export default function Overview() {
       product: "Headphones - Sony WH-1000XM4",
       date: "2025-01-03",
       total: "$348.00",
-      payment: "Paid",
-      stock: "15/75",
-      status: "Shipped",
+      payment: "Pending",
+      stock: "5/50",
+      status: "Processing",
     },
     {
       id: 4,
@@ -206,12 +206,12 @@ export default function Overview() {
     {
       id: 8,
       customer: "Sarah Connor",
-      product: "Smart TV - LG OLED 55\"",
+      product: 'Smart TV - LG OLED 55"',
       date: "2025-01-08",
       total: "$1499.99",
       payment: "Paid",
-      stock: "7/35",
-      status: "Shipped",
+      stock: "18/50",
+      status: "Completed",
     },
     {
       id: 9,
@@ -232,23 +232,58 @@ export default function Overview() {
       payment: "Paid",
       stock: "18/50",
       status: "Completed",
-    }
+    },
   ];
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <div className="flex bg-gray-100">
       {/* Sidebar */}
       <Sidebar />
-
       {/* Main Content */}
       <div className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-6">
+        {/* Header */}
+        <div className="flex bg-white shadow rounded-lg p-4 justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
-            Admin Dashboard - Overview
+            Dashboard - Overview
           </h1>
-          <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-            Logout
-          </button>
+          <div className="flex items-center space-x-4">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
+            />
+            <img
+              src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+              alt="Profile Avatar"
+              className="w-10 h-10 rounded-full cursor-pointer"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            />
+            <div className="relative">
+              <button
+                className="block px-4 py-2 text-gray-800 font-medium"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                Admin User
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
+                  <div className="py-2">
+                    <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
+                      Profile
+                    </button>
+                    <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
+                      Settings
+                    </button>
+                    <button className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition">
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Summary Cards */}
@@ -406,7 +441,9 @@ export default function Overview() {
                     <td className="border border-gray-300 px-4 py-2">
                       {order.total}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">Stock</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {order.stock}
+                    </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {order.status === "Completed" && (
                         <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">

@@ -125,7 +125,6 @@ app.post('/api/upload-csv', upload.single('file'), async (req, res) => {
   }
 });
 
-
 //Endpoint to get all products
 app.get('/api/products', async (req, res) => {
   try {
