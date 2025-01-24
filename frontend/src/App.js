@@ -37,12 +37,14 @@ export default function App() {
     '/admindashboard',
     '/admin-register',
     '/admin-register',
+    '/AdminManageProducts',
     '/admin-login'
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
     '/AdminDashboard',
     '/admindashboard',
+    '/AdminManageProducts',
     '/admin-register',
     '/admin-login'
   ].includes(window.location.pathname);
