@@ -25,106 +25,195 @@ export default function AdminManageProducts({
   }, []);
 
   // Sample data for orders list
-  const orders = [
+  const products = [
     {
       id: 1,
-      customer: "John Doe",
-      product: "Smartphone - Galaxy S21",
-      date: "2025-01-01",
+      Category: "Smartphone",
+      product: "Galaxy S21",
+      dateAdd: "2025-01-01",
       total: "$799.99",
-      payment: "Paid",
       stock: "20/100",
-      status: "Completed",
+      totalSell: "100",
     },
     {
       id: 2,
-      customer: "Jane Smith",
-      product: "Laptop - MacBook Pro",
-      date: "2025-01-02",
-      total: "$1299.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      Category: "Laptop",
+      product: "MacBook Pro",
+      dateAdd: "2025-02-15",
+      total: "$1299.99",
+      stock: "15/50",
+      totalSell: "35",
     },
     {
       id: 3,
-      customer: "Bob Johnson",
-      product: "Headphones - Sony WH-1000XM4",
-      date: "2025-01-03",
-      total: "$348.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      Category: "Tablet",
+      product: "iPad Pro",
+      dateAdd: "2025-03-10",
+      total: "$999.99",
+      stock: "30/80",
+      totalSell: "50",
     },
     {
       id: 4,
-      customer: "Alice Brown",
-      product: "Watch - Apple Watch Series 6",
-      date: "2025-01-04",
-      total: "$399.00",
-      payment: "Paid",
-      stock: "10/30",
-      status: "Completed",
+      Category: "Smartwatch",
+      product: "Apple Watch",
+      dateAdd: "2025-04-05",
+      total: "$399.99",
+      stock: "25/60",
+      totalSell: "40",
     },
     {
       id: 5,
-      customer: "Mike Lee",
-      product: "Tablet - iPad Pro",
-      date: "2025-01-05",
-      total: "$799.00",
-      payment: "Unpaid",
-      stock: "8/40",
-      status: "Pending",
+      Category: "Headphones",
+      product: "Sony WH-1000XM4",
+      dateAdd: "2025-05-20",
+      total: "$349.99",
+      stock: "40/100",
+      totalSell: "60",
     },
     {
       id: 6,
-      customer: "Emma Watson",
-      product: "Camera - Canon EOS R",
-      date: "2025-01-06",
-      total: "$1899.00",
-      payment: "Paid",
-      stock: "3/20",
-      status: "Shipping",
+      Category: "Camera",
+      product: "Canon EOS R5",
+      dateAdd: "2025-06-15",
+      total: "$3899.99",
+      stock: "10/30",
+      totalSell: "20",
     },
     {
       id: 7,
-      customer: "David Beckham",
-      product: "Gaming Console - PlayStation 5",
-      date: "2025-01-07",
-      total: "$499.99",
-      payment: "Paid",
-      stock: "12/60",
-      status: "Completed",
+      Category: "Smartphone",
+      product: "iPhone 13",
+      dateAdd: "2025-07-01",
+      total: "$999.99",
+      stock: "50/150",
+      totalSell: "100",
     },
     {
       id: 8,
-      customer: "Sarah Connor",
-      product: 'Smart TV - LG OLED 55"',
-      date: "2025-01-08",
-      total: "$1499.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
+      Category: "Laptop",
+      product: "Dell XPS 13",
+      dateAdd: "2025-08-10",
+      total: "$1199.99",
+      stock: "20/70",
+      totalSell: "45",
     },
     {
       id: 9,
-      customer: "Tom Cruise",
-      product: "Fitness Tracker - Fitbit Charge 4",
-      date: "2025-01-09",
-      total: "$149.95",
-      payment: "Pending",
-      stock: "25/100",
-      status: "Processing",
+      Category: "Tablet",
+      product: "Samsung Galaxy Tab S7",
+      dateAdd: "2025-09-05",
+      total: "$649.99",
+      stock: "35/90",
+      totalSell: "55",
     },
     {
       id: 10,
-      customer: "Angelina Jolie",
-      product: "Coffee Maker - Nespresso Vertuo",
-      date: "2025-01-10",
-      total: "$199.00",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
+      Category: "Smartwatch",
+      product: "Fitbit Versa 3",
+      dateAdd: "2025-10-20",
+      total: "$229.99",
+      stock: "45/120",
+      totalSell: "75",
+    },
+    {
+      id: 11,
+      Category: "Headphones",
+      product: "Bose QuietComfort 35 II",
+      dateAdd: "2025-11-15",
+      total: "$299.99",
+      stock: "30/80",
+      totalSell: "50",
+    },
+    {
+      id: 12,
+      Category: "Camera",
+      product: "Nikon Z6 II",
+      dateAdd: "2025-12-01",
+      total: "$1999.99",
+      stock: "15/40",
+      totalSell: "25",
+    },
+    {
+      id: 13,
+      Category: "Smartphone",
+      product: "Google Pixel 6",
+      dateAdd: "2025-12-25",
+      total: "$699.99",
+      stock: "60/160",
+      totalSell: "110",
+    },
+    {
+      id: 14,
+      Category: "Laptop",
+      product: "HP Spectre x360",
+      dateAdd: "2026-01-10",
+      total: "$1399.99",
+      stock: "25/60",
+      totalSell: "35",
+    },
+    {
+      id: 15,
+      Category: "Tablet",
+      product: "Microsoft Surface Pro 7",
+      dateAdd: "2026-02-05",
+      total: "$899.99",
+      stock: "40/100",
+      totalSell: "60",
+    },
+    {
+      id: 16,
+      Category: "Smartwatch",
+      product: "Garmin Forerunner 945",
+      dateAdd: "2026-03-20",
+      total: "$599.99",
+      stock: "35/90",
+      totalSell: "55",
+    },
+    {
+      id: 17,
+      Category: "Headphones",
+      product: "Jabra Elite 85h",
+      dateAdd: "2026-04-15",
+      total: "$249.99",
+      stock: "50/130",
+      totalSell: "80",
+    },
+    {
+      id: 18,
+      Category: "Camera",
+      product: "Sony Alpha a7 III",
+      dateAdd: "2026-05-01",
+      total: "$1999.99",
+      stock: "20/50",
+      totalSell: "30",
+    },
+    {
+      id: 19,
+      Category: "Smartphone",
+      product: "OnePlus 9",
+      dateAdd: "2026-06-10",
+      total: "$729.99",
+      stock: "55/140",
+      totalSell: "95",
+    },
+    {
+      id: 20,
+      Category: "Laptop",
+      product: "Asus ROG Zephyrus G14",
+      dateAdd: "2026-07-05",
+      total: "$1499.99",
+      stock: "30/80",
+      totalSell: "50",
+    },
+    {
+      id: 21,
+      Category: "Tablet",
+      product: "Lenovo Tab P11 Pro",
+      dateAdd: "2026-08-20",
+      total: "$499.99",
+      stock: "45/110",
+      totalSell: "65",
     },
   ];
 
@@ -177,8 +266,31 @@ export default function AdminManageProducts({
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const [images, setImages] = useState([]);
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = files.map((file) => {
+      const reader = new FileReader();
+      return new Promise((resolve) => {
+        reader.onloadend = () => {
+          resolve({ file, preview: reader.result });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newImages).then((result) => {
+      setImages((prev) => [...prev, ...result]);
+    });
+  };
+
+  const handleDeleteImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar />
       {/* Main Content */}
@@ -231,6 +343,26 @@ export default function AdminManageProducts({
               )}
             </div>
           </div>
+        </div>
+
+        {/* Summary Cards */}
+        <div className="flex flex-wrap gap-4 mb-6">
+          {[
+            { title: "Total Products", value: 120, color: "text-blue-600" },
+            { title: "Total Orders", value: 45, color: "text-green-600" },
+            { title: "Total Users", value: 300, color: "text-purple-600" },
+            { title: "Total Sales", value: "$25,000", color: "text-red-600" },
+          ].map((card, index) => (
+            <div
+              key={index}
+              className="bg-white shadow rounded-lg p-4 flex-1 min-w-[200px]"
+            >
+              <h2 className="text-sm font-semibold text-gray-500">
+                {card.title}
+              </h2>
+              <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-wrap gap-6 mb-6">
@@ -288,28 +420,7 @@ export default function AdminManageProducts({
                   accept="image/*"
                   multiple
                   className="w-full p-2 border border-gray-300 rounded-lg"
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    const previewContainer =
-                      document.getElementById("image-previews");
-
-                    // Clear existing previews
-                    previewContainer.innerHTML = "";
-
-                    Array.from(files).forEach((file) => {
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          const img = document.createElement("img");
-                          img.src = reader.result;
-                          img.className =
-                            "w-24 h-24 object-cover rounded-lg border border-gray-200 m-2";
-                          previewContainer.appendChild(img);
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    });
-                  }}
+                  onChange={handleImageUpload}
                 />
               </div>
               <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors">
@@ -323,17 +434,37 @@ export default function AdminManageProducts({
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Product Media
             </h2>
-            <div
-              className="flex flex-wrap items-center gap-4 bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300"
-              id="image-previews"
-            >
-              <p className="text-gray-500">No images selected yet.</p>
+            <div className="flex flex-wrap items-center gap-4 bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+              {images.length > 0 ? (
+                images.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative group w-24 h-24 rounded-lg overflow-hidden border border-gray-200"
+                  >
+                    <img
+                      src={image.preview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleDeleteImage(index)}
+                    >
+                      X
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No images selected yet.</p>
+              )}
             </div>
             <button
               type="button"
               className="mt-4 w-full bg-gray-200 text-blue-500 py-2 px-4 rounded hover:bg-gray-300"
+              onClick={() => setImages([])}
             >
-              Add More Images
+              Delete All Images
             </button>
           </div>
         </div>
@@ -428,32 +559,36 @@ export default function AdminManageProducts({
           </div>
         </div>
 
-        {/* Orders List */}
+        {/* Products List */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Orders List
+            Products List
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
-            {["All Orders", "Drafts", "Canceled", "Shipping", "Completed"].map(
-              (tab, index) => (
-                <button
-                  key={index}
-                  className={`px-4 py-2 rounded-lg ${
-                    index === 0
-                      ? "bg-purple-500 text-white"
-                      : "bg-gray-200 text-gray-700"
-                  } hover:bg-purple-600 hover:text-white transition duration-300`}
-                >
-                  {tab}
-                </button>
-              )
-            )}
+            {[
+              "All Products",
+              "Electronics",
+              "Clothing",
+              "Home",
+              "Sold Out",
+            ].map((tab, index) => (
+              <button
+                key={index}
+                className={`px-4 py-2 rounded-lg ${
+                  index === 0
+                    ? "bg-purple-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                } hover:bg-purple-600 hover:text-white transition duration-300`}
+              >
+                {tab}
+              </button>
+            ))}
             <button className="ml-auto px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
               Export as CSV
             </button>
             <button className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
-              + Add Customers
+              + Add Product
             </button>
           </div>
 
@@ -468,24 +603,24 @@ export default function AdminManageProducts({
               Filter
             </button>
             <div className="p-2 border border-gray-300 rounded-lg">
-              12 Jul 24 - 20 Jul 24
+              01 Jan 25 - 27 Jan 25
             </div>
           </div>
 
-          {/* Orders Table */}
+          {/* Products Table */}
           <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
                   {[
                     "",
-                    "Order",
-                    "Customer",
-                    "Date",
-                    "Payment",
+                    "ID",
+                    "Category",
+                    "Product",
+                    "Date Added",
                     "Price",
                     "Stock",
-                    "Order Status",
+                    "Total Sold",
                   ].map((header, index) => (
                     <th
                       key={index}
@@ -497,9 +632,9 @@ export default function AdminManageProducts({
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {products.map((product) => (
                   <tr
-                    key={order.id}
+                    key={product.id}
                     className="hover:bg-gray-100 transition duration-300"
                   >
                     <td className="border border-gray-300 px-4 py-2">
@@ -509,44 +644,25 @@ export default function AdminManageProducts({
                       />
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.id}. {order.customer}
+                      {product.id}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.customer}
+                      {product.Category}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.date}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-green-500">
-                      {order.status === "Completed" ? "Paid" : "Unpaid"}
+                      {product.product}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.total}
+                      {product.dateAdd}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.stock}
+                      {product.total}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.status === "Completed" && (
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                          Deliver
-                        </span>
-                      )}
-                      {order.status === "Shipping" && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          Shipping
-                        </span>
-                      )}
-                      {order.status === "Processing" && (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          Processing
-                        </span>
-                      )}
-                      {order.status === "Pending" && (
-                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                          Pending
-                        </span>
-                      )}
+                      {product.stock}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {product.totalSell}
                     </td>
                   </tr>
                 ))}

@@ -27,7 +27,7 @@ export default function Sidebar(){
           Manage Products
         </NavLink>
         <NavLink
-          to="/admin-dashboard/orders"
+          to="/AdminManageOrders"
           className={({ isActive }) =>
             isActive
               ? "block px-4 py-2 text-white bg-blue-500 rounded-md"

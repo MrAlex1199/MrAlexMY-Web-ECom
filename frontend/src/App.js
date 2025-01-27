@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminRegister from "./pages/AdminRegister";
 import AdminLogin from "./pages/AdminLogin";
 import AdminManageProducts from './pages/AdminManageProducts';
+import AdminManageOrders from './pages/AdminManageOrders';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {
@@ -181,16 +182,9 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/admin-login" element={<AdminLogin setIsAdmin={setIsAdmin} setAdminData={setAdminData} />} />
-        <Route path="/admindashboard" element={
-          <ProtectedRoute isAdmin={isAdmin}>
-            <AdminDashboard adminData={adminData} />
-          </ProtectedRoute>
-        }/>
-        <Route path="/adminmanageproducts" element={
-          <ProtectedRoute isAdmin={isAdmin}>
-            <AdminManageProducts adminData={adminData} />
-          </ProtectedRoute>
-        }/>
+        <Route path="/AdminDashboard" element={<ProtectedRoute isAdmin={isAdmin}><AdminDashboard adminData={adminData} /></ProtectedRoute>} />
+        <Route path="/AdminManageProducts" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageProducts adminData={adminData} /></ProtectedRoute>} />
+        <Route path="/AdminManageOrders" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageOrders adminData={adminData} /></ProtectedRoute>} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>

@@ -1,36 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-} from "chart.js";
-import { Pie, Bar, Line } from "react-chartjs-2";
 import Sidebar from "../components/Sidebar";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 // Register ChartJS components
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement
-);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-const chartOptions = {
-  maintainAspectRatio: false,
-  responsive: true,
-};
-
-export default function Overview() {
+export default function AdminManageOrders({
+  isAdmin,
+  setIsAdmin,
+  setAdminData,
+}) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -40,106 +19,6 @@ export default function Overview() {
 
     return () => clearInterval(timer);
   }, []);
-
-  // Sample data for pie chart
-  const pieChartData = {
-    labels: ["ReactJS", "Angular", "XueJS", "Svelte", "VueJS"],
-    datasets: [
-      {
-        data: [35.3, 27.8, 7.3, 5.8, 23.8], // Sample data
-        backgroundColor: [
-          "#916AFF",
-          "#FF9F40",
-          "#4CAF50",
-          "#FF6B6B",
-          "#46B6AC",
-        ], // Colors
-        hoverBackgroundColor: [
-          "#7F5BE6",
-          "#E58C3B",
-          "#429947",
-          "#E05757",
-          "#3EA496",
-        ], // Hover colors
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const pieChartOptions = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function (tooltipItem) {
-            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
-          },
-        },
-      },
-      legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-          usePointStyle: true,
-          boxWidth: 10,
-          font: {
-            size: 14,
-          },
-        },
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
-  // Sample data for bar charts
-  const barChartDataM = {
-    labels: ["January", "February", "March", "April", "May"],
-    datasets: [
-      {
-        label: "Monthly Sales ($)",
-        data: [5000, 7000, 4000, 8000, 6000],
-        backgroundColor: "#36A2EB",
-      },
-    ],
-  };
-
-  const barChartDataY = {
-    labels: ["2020", "2021", "2022", "2023", "2024"],
-    datasets: [
-      {
-        label: "Year Sales ($)",
-        data: [10000, 12000, 8000, 15000, 9000],
-        backgroundColor: "#36A2EB",
-      },
-    ],
-  };
-
-  // Sample data for line chart
-  const lineChartDataW = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    datasets: [
-      {
-        label: "Weekly Revenue ($)",
-        data: [1500, 2000, 2500, 3000],
-        borderColor: "#FF6384",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const lineChartDataM = {
-    labels: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
-    datasets: [
-      {
-        label: "Quarter Revenue ($)",
-        data: [1500, 2000, 2500, 3000],
-        borderColor: "#FF6384",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        tension: 0.4,
-      },
-    ],
-  };
 
   // Sample data for orders list
   const orders = [
@@ -245,18 +124,25 @@ export default function Overview() {
     },
   ];
 
+  const handleAdminLogout = () => {
+    localStorage.removeItem("AToken");
+    localStorage.removeItem("isAdmin");
+    setIsAdmin(false);
+    setAdminData({ adminid: "", email: "", role: "" });
+  };
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <div className="flex bg-gray-100">
+    <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar />
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 overflow-y-auto">
         {/* Header */}
         <div className="flex bg-white shadow rounded-lg p-4 justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
-            Dashboard - Overview
+            Manage - Products
           </h1>
           {/* Digital Clock */}
           <div className="text-2xl font-semibold text-gray-700 mr-4">
@@ -290,7 +176,10 @@ export default function Overview() {
                     <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
                       Settings
                     </button>
-                    <button className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition">
+                    <button
+                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition"
+                      onClick={handleAdminLogout}
+                    >
                       Logout
                     </button>
                   </div>
@@ -300,71 +189,11 @@ export default function Overview() {
           </div>
         </div>
 
-        {/* Summary Cards */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          {[
-            { title: "Total Products", value: 120, color: "text-blue-600" },
-            { title: "Total Orders", value: 45, color: "text-green-600" },
-            { title: "Total Users", value: 300, color: "text-purple-600" },
-            { title: "Total Sales", value: "$25,000", color: "text-red-600" },
-          ].map((card, index) => (
-            <div
-              key={index}
-              className="bg-white shadow rounded-lg p-4 flex-1 min-w-[200px]"
-            >
-              <h2 className="text-sm font-semibold text-gray-500">
-                {card.title}
-              </h2>
-              <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Charts Section */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          {/* Pie Chart */}
-          <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Overview
-            </h2>
-            <div className="w-[400px] h-[400px]">
-              <Pie data={pieChartData} options={pieChartOptions} />
-            </div>
-          </div>
-
-          {/* Bar Charts */}
-          <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Sales Overview
-            </h2>
-            <div className="h-64">
-              <Bar data={barChartDataM} options={chartOptions} />
-            </div>
-            <div className="h-64 mt-6">
-              <Bar data={barChartDataY} options={chartOptions} />
-            </div>
-          </div>
-
-          {/* Line Chart */}
-          <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Weekly Revenue
-            </h2>
-            <div className="h-64">
-              <Line data={lineChartDataW} options={chartOptions} />
-            </div>
-            <div className="h-64 mt-6">
-              <Line data={lineChartDataM} options={chartOptions} />
-            </div>
-          </div>
-        </div>
-
-        {/* Orders List Section */}
+        {/* Orders List */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Orders List
           </h2>
-
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
             {["All Orders", "Drafts", "Canceled", "Shipping", "Completed"].map(
@@ -504,6 +333,28 @@ export default function Overview() {
                 <span>»</span>
               </button>
             </nav>
+          </div>
+          {/* Product Delete */}
+          <div className="flex flex-wrap gap-6 mb-6">
+            {/* Delete Product */}
+            <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                Delete Product
+              </h2>
+              <form>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Product ID</label>
+                  <input
+                    type="number"
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Enter product ID"
+                  />
+                </div>
+                <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                  Delete Product
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
