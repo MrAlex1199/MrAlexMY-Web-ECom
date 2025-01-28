@@ -142,7 +142,7 @@ export default function AdminManageOrders({
         {/* Header */}
         <div className="flex bg-white shadow rounded-lg p-4 justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
-            Manage - Products
+            Manage - Orders
           </h1>
           {/* Digital Clock */}
           <div className="text-2xl font-semibold text-gray-700 mr-4">
@@ -339,7 +339,7 @@ export default function AdminManageOrders({
             {/* Delete Product */}
             <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Delete Product
+                Delete Order
               </h2>
               <form>
                 <div className="mb-4">
@@ -351,7 +351,7 @@ export default function AdminManageOrders({
                   />
                 </div>
                 <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
-                  Delete Product
+                  Delete Order
                 </button>
               </form>
             </div>

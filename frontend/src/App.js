@@ -19,6 +19,7 @@ import AdminRegister from "./pages/AdminRegister";
 import AdminLogin from "./pages/AdminLogin";
 import AdminManageProducts from './pages/AdminManageProducts';
 import AdminManageOrders from './pages/AdminManageOrders';
+import AdminManageCustomrs from './pages/AdminManageCustomers';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {
@@ -34,18 +35,20 @@ export default function App() {
     '/login',
     '/register',
     '/CheckoutPage',
+    '/admin-register',
+    '/admin-register',
     '/AdminDashboard',
-    '/admindashboard',
-    '/admin-register',
-    '/admin-register',
     '/AdminManageProducts',
+    '/AdminManageOrders',
+    '/AdminManageCustomrs',
     '/admin-login'
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
     '/AdminDashboard',
-    '/admindashboard',
     '/AdminManageProducts',
+    '/AdminManageOrders',
+    '/AdminManageCustomrs',
     '/admin-register',
     '/admin-login'
   ].includes(window.location.pathname);
@@ -185,6 +188,7 @@ export default function App() {
         <Route path="/AdminDashboard" element={<ProtectedRoute isAdmin={isAdmin}><AdminDashboard adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminManageProducts" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageProducts adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminManageOrders" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageOrders adminData={adminData} /></ProtectedRoute>} />
+        <Route path="/AdminManageCustomrs" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageCustomrs adminData={adminData} /></ProtectedRoute>} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>

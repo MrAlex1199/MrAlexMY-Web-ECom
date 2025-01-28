@@ -43,7 +43,7 @@ export default function Overview() {
 
   // Sample data for pie chart
   const pieChartData = {
-    labels: ["ReactJS", "Angular", "XueJS", "Svelte", "VueJS"],
+    labels: ["18-22", "23-30", "31-40", "41-50", "51+"],
     datasets: [
       {
         data: [35.3, 27.8, 7.3, 5.8, 23.8], // Sample data
@@ -325,7 +325,7 @@ export default function Overview() {
           {/* Pie Chart */}
           <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Overview
+              Customer Age Group
             </h2>
             <div className="w-[400px] h-[400px]">
               <Pie data={pieChartData} options={pieChartOptions} />
