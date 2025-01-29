@@ -17,9 +17,9 @@ import CheckoutPage from "./pages/CheckoutPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRegister from "./pages/AdminRegister";
 import AdminLogin from "./pages/AdminLogin";
-import AdminManageProducts from './pages/AdminManageProducts';
-import AdminManageOrders from './pages/AdminManageOrders';
-import AdminManageCustomrs from './pages/AdminManageCustomers';
+import AdminManageProducts from './pages/AdminProducts';
+import AdminManageOrders from './pages/AdminOrders';
+import AdminManageCustomrs from './pages/AdminCustomers';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {
@@ -35,22 +35,33 @@ export default function App() {
     '/login',
     '/register',
     '/CheckoutPage',
+    '/Admin-Register',
     '/admin-register',
-    '/admin-register',
+    '/Admin-Login',
+    '/admin-login',
     '/AdminDashboard',
+    '/admindashboard',
     '/AdminManageProducts',
+    '/adminmanageproducts',
     '/AdminManageOrders',
+    '/adminmanageorders',
     '/AdminManageCustomrs',
-    '/admin-login'
+    '/adminmanagecustomrs'
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
-    '/AdminDashboard',
-    '/AdminManageProducts',
-    '/AdminManageOrders',
-    '/AdminManageCustomrs',
+    '/Admin-Register',
     '/admin-register',
-    '/admin-login'
+    '/Admin-Login',
+    '/admin-login',
+    '/AdminDashboard',
+    '/admindashboard',
+    '/AdminManageProducts',
+    '/adminmanageproducts',
+    '/AdminManageOrders',
+    '/adminmanageorders',
+    '/AdminManageCustomrs',
+    '/adminmanagecustomrs'
   ].includes(window.location.pathname);
 
   useEffect(() => {

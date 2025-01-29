@@ -300,7 +300,12 @@ export default function AdminManageCustomrs({
             { title: "Total Account", value: 21, color: "text-blue-600" },
             { title: "Active Account", value: 18, color: "text-green-600" },
             { title: "Delete Account", value: 2, color: "text-purple-600" },
-            { title: "Total Sales", value: "$2,500,000", color: "text-red-600" },
+            { title: "Month Sales", value: "$500,000", color: "text-red-600" },
+            {
+              title: "Total Sales",
+              value: "$2,500,000",
+              color: "text-red-100",
+            },
           ].map((card, index) => (
             <div
               key={index}
@@ -364,16 +369,22 @@ export default function AdminManageCustomrs({
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
-                  {["ID", "Name", "Sex", "Age", "Date", "Email", "Phone Number"].map(
-                    (header, index) => (
-                      <th
-                        key={index}
-                        className="border border-gray-300 px-4 py-2 text-left"
-                      >
-                        {header}
-                      </th>
-                    )
-                  )}
+                  {[
+                    "ID",
+                    "Name",
+                    "Sex",
+                    "Age",
+                    "Date",
+                    "Email",
+                    "Phone Number",
+                  ].map((header, index) => (
+                    <th
+                      key={index}
+                      className="border border-gray-300 px-4 py-2 text-left"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -395,7 +406,7 @@ export default function AdminManageCustomrs({
                       {account.age}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                        {account.registered}
+                      {account.registered}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {account.email}

@@ -141,9 +141,7 @@ export default function AdminManageOrders({
       <div className="flex-1 p-6 overflow-y-auto">
         {/* Header */}
         <div className="flex bg-white shadow rounded-lg p-4 justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Manage - Orders
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800">Manage - Orders</h1>
           {/* Digital Clock */}
           <div className="text-2xl font-semibold text-gray-700 mr-4">
             {time.toLocaleTimeString()}
@@ -239,7 +237,7 @@ export default function AdminManageOrders({
               <thead>
                 <tr className="bg-gray-100">
                   {[
-                    "",
+                    "ID",
                     "Order",
                     "Customer",
                     "Date",
@@ -264,13 +262,10 @@ export default function AdminManageOrders({
                     className="hover:bg-gray-100 transition duration-300"
                   >
                     <td className="border border-gray-300 px-4 py-2">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-4 w-4 text-purple-500"
-                      />
+                      {order.id}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.id}. {order.customer}
+                      {order.customer}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {order.customer}
@@ -278,8 +273,22 @@ export default function AdminManageOrders({
                     <td className="border border-gray-300 px-4 py-2">
                       {order.date}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2 text-green-500">
-                      {order.status === "Completed" ? "Paid" : "Unpaid"}
+                    <td className="border border-gray-300 px-4 py-2">
+                      {order.payment === "Paid" && (
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                          Paid
+                        </span>
+                      )}
+                      {order.payment === "Pending" && (
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          Pending
+                        </span>
+                      )}
+                      {order.payment === "Unpaid" && (
+                        <span className="bg-red-500 text-red-800 px-2 py-1 rounded-full">
+                          Unpaid
+                        </span>
+                      )}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {order.total}
