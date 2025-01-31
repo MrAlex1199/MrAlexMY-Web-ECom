@@ -14,12 +14,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import CheckoutPage from "./pages/CheckoutPage";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminRegister from "./pages/AdminRegister";
-import AdminLogin from "./pages/AdminLogin";
-import AdminManageProducts from './pages/AdminProducts';
-import AdminManageOrders from './pages/AdminOrders';
-import AdminManageCustomrs from './pages/AdminCustomers';
+import AdminDashboard from "./pages/AdminPage/AdminDashboard";
+import AdminRegister from "./pages/AdminPage/AdminRegister";
+import AdminLogin from "./pages/AdminPage/AdminLogin";
+import AdminManageProducts from './pages/AdminPage/AdminProducts';
+import AdminManageOrders from './pages/AdminPage/AdminOrders';
+import AdminManageCustomrs from './pages/AdminPage/AdminCustomers';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function App() {

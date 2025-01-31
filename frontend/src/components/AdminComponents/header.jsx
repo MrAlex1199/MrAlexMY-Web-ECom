@@ -9,6 +9,10 @@ export default function Header({
   setAdminData,
 }) {
   const [time, setTime] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(
+    "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,12 +22,31 @@ export default function Header({
     return () => clearInterval(timer);
   }, []);
 
-    const handleAdminLogout = () => {
-      localStorage.removeItem("AToken");
-      localStorage.removeItem("isAdmin");
-      setIsAdmin(false);
-      setAdminData({ adminid: "", email: "", role: "" });
-    };
+  const handleAdminLogout = () => {
+    localStorage.removeItem("AToken");
+    localStorage.removeItem("isAdmin");
+    setIsAdmin(false);
+    setAdminData({ adminid: "", email: "", role: "" });
+  };
+
+  const handleProfileClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div>
@@ -43,7 +66,7 @@ export default function Header({
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
           />
           <img
-            src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+            src={profileImage}
             alt="Profile Avatar"
             className="w-10 h-10 rounded-full cursor-pointer"
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -56,26 +79,104 @@ export default function Header({
               Admin User
             </button>
             {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
-                  <div className="py-2">
-                    <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
-                      Profile
-                    </button>
-                    <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
-                      Settings
-                    </button>
-                    <button
-                      className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition"
-                      onClick={handleAdminLogout}
-                    >
-                      Logout
-                    </button>
-                  </div>
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
+                <div className="py-2">
+                  <button
+                    className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition"
+                    onClick={handleProfileClick}
+                  >
+                    Profile
+                  </button>
+                  <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition">
+                    Settings
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition"
+                    onClick={handleAdminLogout}
+                  >
+                    Logout
+                  </button>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Profile</h2>
+              <button
+                className="text-gray-500 hover:text-gray-800"
+                onClick={closeModal}
+              >
+                ✕
+              </button>
+            </div>
+            <div>
+              <div className="flex flex-col items-center mb-4">
+                <img
+                  src={profileImage}
+                  alt="Profile Avatar"
+                  className="w-24 h-24 rounded-full mb-2"
+                />
+                <label
+                  htmlFor="profileImageInput"
+                  className="text-blue-600 cursor-pointer"
+                >
+                  Change Profile Image
+                </label>
+                <input
+                  id="profileImageInput"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium">Name</label>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-lg"
+                    value="Amélie"
+                  />
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded-lg"
+                    value="Laurent"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="w-full p-2 border rounded-lg"
+                  value="amelie@untitledui.com"
+                />
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="px-4 py-2 text-gray-800 bg-gray-200 rounded-lg"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+                <button className="px-4 py-2 text-white bg-blue-600 rounded-lg">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

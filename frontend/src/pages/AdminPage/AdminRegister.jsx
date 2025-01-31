@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../components/logo/weblogo.jpg";
+import logo from "../../components/logo/weblogo.jpg";
 
 // Admin registration component
 export default function AdminRegister() {

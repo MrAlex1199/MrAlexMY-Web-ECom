@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../components/logo/weblogo.jpg';
+import logo from '../../components/logo/weblogo.jpg';
 
 // Admin Login component
 export default function AdminLogin({ setIsAdmin, setAdminData }) {

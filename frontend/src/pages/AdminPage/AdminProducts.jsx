@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Papa from "papaparse";
-import Sidebar from "../components/AdminComponents/Sidebar";
-import Header from "../components/AdminComponents/header";
+import Sidebar from "../../components/AdminComponents/Sidebar";
+import Header from "../../components/AdminComponents/header";
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);

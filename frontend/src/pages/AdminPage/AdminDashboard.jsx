@@ -11,8 +11,8 @@ import {
   LineElement,
 } from "chart.js";
 import { Pie, Bar, Line } from "react-chartjs-2";
-import Sidebar from "../components/AdminComponents/Sidebar";
-import Header from "../components/AdminComponents/header";
+import Sidebar from "../../components/AdminComponents/Sidebar";
+import Header from "../../components/AdminComponents/header";
 
 // Register ChartJS components
 ChartJS.register(
