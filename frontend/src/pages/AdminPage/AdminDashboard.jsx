@@ -133,110 +133,215 @@ export default function Overview() {
   };
 
   // Sample data for orders list
-  const orders = [
+  const CustomersAccount = [
     {
       id: 1,
-      customer: "John Doe",
-      product: "Smartphone - Galaxy S21",
-      date: "2025-01-01",
-      total: "$799.99",
-      payment: "Paid",
-      stock: "20/100",
-      status: "Completed",
+      name: "John Cena",
+      sex: "Male",
+      age: "25",
+      email: "Jonhcena@gmail.com",
+      phone: "0877654321",
+      registered: "2022-01-01",
     },
     {
       id: 2,
-      customer: "Jane Smith",
-      product: "Laptop - MacBook Pro",
-      date: "2025-01-02",
-      total: "$1299.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      name: "Jane Doe",
+      sex: "Female",
+      age: "30",
+      email: "janedoe@gmail.com",
+      phone: "0987654321",
+      registered: "2022-02-01",
     },
     {
       id: 3,
-      customer: "Bob Johnson",
-      product: "Headphones - Sony WH-1000XM4",
-      date: "2025-01-03",
-      total: "$348.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      name: "Alice Smith",
+      sex: "Female",
+      age: "28",
+      email: "alicesmith@gmail.com",
+      phone: "1122334455",
+      registered: "2022-03-01",
     },
     {
       id: 4,
-      customer: "Alice Brown",
-      product: "Watch - Apple Watch Series 6",
-      date: "2025-01-04",
-      total: "$399.00",
-      payment: "Paid",
-      stock: "10/30",
-      status: "Completed",
+      name: "Bob Johnson",
+      sex: "Male",
+      age: "35",
+      email: "bobjohnson@gmail.com",
+      phone: "2233445566",
+      registered: "2022-04-01",
     },
     {
       id: 5,
-      customer: "Mike Lee",
-      product: "Tablet - iPad Pro",
-      date: "2025-01-05",
-      total: "$799.00",
-      payment: "Unpaid",
-      stock: "8/40",
-      status: "Pending",
+      name: "Charlie Brown",
+      sex: "Male",
+      age: "40",
+      email: "charliebrown@gmail.com",
+      phone: "3344556677",
+      registered: "2022-05-01",
     },
     {
       id: 6,
-      customer: "Emma Watson",
-      product: "Camera - Canon EOS R",
-      date: "2025-01-06",
-      total: "$1899.00",
-      payment: "Paid",
-      stock: "3/20",
-      status: "Shipping",
+      name: "David Wilson",
+      sex: "Male",
+      age: "45",
+      email: "davidwilson@gmail.com",
+      phone: "4455667788",
+      registered: "2022-06-01",
     },
     {
       id: 7,
-      customer: "David Beckham",
-      product: "Gaming Console - PlayStation 5",
-      date: "2025-01-07",
-      total: "$499.99",
-      payment: "Paid",
-      stock: "12/60",
-      status: "Completed",
+      name: "Eve Davis",
+      sex: "Female",
+      age: "50",
+      email: "evedavis@gmail.com",
+      phone: "5566778899",
+      registered: "2022-07-01",
     },
     {
       id: 8,
-      customer: "Sarah Connor",
-      product: 'Smart TV - LG OLED 55"',
-      date: "2025-01-08",
-      total: "$1499.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
+      name: "Frank Miller",
+      sex: "Male",
+      age: "55",
+      email: "frankmiller@gmail.com",
+      phone: "6677889900",
+      registered: "2022-08-01",
     },
     {
       id: 9,
-      customer: "Tom Cruise",
-      product: "Fitness Tracker - Fitbit Charge 4",
-      date: "2025-01-09",
-      total: "$149.95",
-      payment: "Pending",
-      stock: "25/100",
-      status: "Processing",
+      name: "Grace Lee",
+      sex: "Female",
+      age: "60",
+      email: "gracelee@gmail.com",
+      phone: "7788990011",
+      registered: "2022-09-01",
     },
     {
       id: 10,
-      customer: "Angelina Jolie",
-      product: "Coffee Maker - Nespresso Vertuo",
-      date: "2025-01-10",
-      total: "$199.00",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
+      name: "Hank Moore",
+      sex: "Male",
+      age: "65",
+      email: "hankmoore@gmail.com",
+      phone: "8899001122",
+      registered: "2022-10-01",
+    },
+    {
+      id: 11,
+      name: "Ivy Taylor",
+      sex: "Female",
+      age: "70",
+      email: "ivytaylor@gmail.com",
+      phone: "9900112233",
+      registered: "2022-11-01",
+    },
+    {
+      id: 12,
+      name: "Jack Anderson",
+      sex: "Male",
+      age: "75",
+      email: "jackanderson@gmail.com",
+      phone: "0011223344",
+      registered: "2022-12-01",
+    },
+    {
+      id: 13,
+      name: "Karen Thomas",
+      sex: "Female",
+      age: "80",
+      email: "karenthomas@gmail.com",
+      phone: "1122334455",
+      registered: "2023-01-01",
+    },
+    {
+      id: 14,
+      name: "Larry Jackson",
+      sex: "Male",
+      age: "85",
+      email: "larryjackson@gmail.com",
+      phone: "2233445566",
+      registered: "2023-02-01",
+    },
+    {
+      id: 15,
+      name: "Mona White",
+      sex: "Female",
+      age: "90",
+      email: "monawhite@gmail.com",
+      phone: "3344556677",
+      registered: "2023-03-01",
+    },
+    {
+      id: 16,
+      name: "Nina Harris",
+      sex: "Female",
+      age: "95",
+      email: "ninaharris@gmail.com",
+      phone: "4455667788",
+      registered: "2023-04-01",
+    },
+    {
+      id: 17,
+      name: "Oscar Martin",
+      sex: "Male",
+      age: "100",
+      email: "oscarmartin@gmail.com",
+      phone: "5566778899",
+      registered: "2023-05-01",
+    },
+    {
+      id: 18,
+      name: "Paul Clark",
+      sex: "Male",
+      age: "105",
+      email: "paulclark@gmail.com",
+      phone: "6677889900",
+      registered: "2023-06-01",
+    },
+    {
+      id: 19,
+      name: "Quincy Lewis",
+      sex: "Male",
+      age: "110",
+      email: "quincylewis@gmail.com",
+      phone: "7788990011",
+      registered: "2023-07-01",
+    },
+    {
+      id: 20,
+      name: "Rachel Walker",
+      sex: "Female",
+      age: "115",
+      email: "rachelwalker@gmail.com",
+      phone: "8899001122",
+      registered: "2023-08-01",
+    },
+    {
+      id: 21,
+      name: "Steve Hall",
+      sex: "Male",
+      age: "120",
+      email: "stevehall@gmail.com",
+      phone: "9900112233",
+      registered: "2023-09-01",
     },
   ];
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Pagination logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = CustomersAccount.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(CustomersAccount.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -307,33 +412,33 @@ export default function Overview() {
           </div>
         </div>
 
-        {/* Orders List Section */}
+        {/* Products List */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Orders List
+            Costomers Account
           </h2>
-
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
-            {["All Orders", "Drafts", "Canceled", "Shipping", "Completed"].map(
-              (tab, index) => (
-                <button
-                  key={index}
-                  className={`px-4 py-2 rounded-lg ${
-                    index === 0
-                      ? "bg-purple-500 text-white"
-                      : "bg-gray-200 text-gray-700"
-                  } hover:bg-purple-600 hover:text-white transition duration-300`}
-                >
-                  {tab}
-                </button>
-              )
-            )}
+            {[
+              "All Account",
+              "Male",
+              "Female",
+              "Active Accounts",
+              "Deleted Accounts",
+            ].map((tab, index) => (
+              <button
+                key={index}
+                className={`px-4 py-2 rounded-lg ${
+                  index === 0
+                    ? "bg-purple-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                } hover:bg-purple-600 hover:text-white transition duration-300`}
+              >
+                {tab}
+              </button>
+            ))}
             <button className="ml-auto px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
               Export as CSV
-            </button>
-            <button className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
-              + Add Customers
             </button>
           </div>
 
@@ -348,24 +453,23 @@ export default function Overview() {
               Filter
             </button>
             <div className="p-2 border border-gray-300 rounded-lg">
-              12 Jul 24 - 20 Jul 24
+              01 Jan 25 - 27 Jan 25
             </div>
           </div>
 
-          {/* Orders Table */}
+          {/* Products Table */}
           <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
                   {[
-                    "",
-                    "Order",
-                    "Customer",
+                    "ID",
+                    "Name",
+                    "Sex",
+                    "Age",
                     "Date",
-                    "Payment",
-                    "Price",
-                    "Stock",
-                    "Order Status",
+                    "Email",
+                    "Phone Number",
                   ].map((header, index) => (
                     <th
                       key={index}
@@ -377,78 +481,69 @@ export default function Overview() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {currentItems.map((account) => (
                   <tr
-                    key={order.id}
+                    key={account.id}
                     className="hover:bg-gray-100 transition duration-300"
                   >
                     <td className="border border-gray-300 px-4 py-2">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-4 w-4 text-purple-500"
-                      />
+                      {account.id}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.id}. {order.customer}
+                      {account.name}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.customer}
+                      {account.sex}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.date}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-green-500">
-                      {order.status === "Completed" ? "Paid" : "Unpaid"}
+                      {account.age}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.total}
+                      {account.registered}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.stock}
+                      {account.email}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.status === "Completed" && (
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                          Deliver
-                        </span>
-                      )}
-                      {order.status === "Shipping" && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          Shipping
-                        </span>
-                      )}
-                      {order.status === "Processing" && (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          Processing
-                        </span>
-                      )}
-                      {order.status === "Pending" && (
-                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                          Pending
-                        </span>
-                      )}
+                      {account.phone}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
           {/* Pagination */}
           <div className="flex justify-center mt-4">
             <nav className="inline-flex">
-              <button className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+              <button
+                className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              >
                 <span>«</span>
               </button>
-              {[1, 2, 3, 4, 5, 6].map((page, index) => (
-                <button
-                  key={index}
-                  className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  {page}
-                </button>
-              ))}
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`px-3 py-2 leading-tight border ${
+                      page === currentPage
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    }`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+              <button
+                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
+                onClick={() =>
+                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                }
+                disabled={currentPage === totalPages}
+              >
                 <span>»</span>
               </button>
             </nav>

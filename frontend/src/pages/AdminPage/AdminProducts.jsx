@@ -11,6 +11,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function AdminManageProducts() {
   const [file, setFile] = useState(null);
   const [csvPreview, setCsvPreview] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   // Sample data for orders list
   const products = [
@@ -204,6 +206,31 @@ export default function AdminManageProducts() {
       totalSell: "65",
     },
   ];
+
+  // Calculate the indexes for the current page's products
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Set current page when a pagination button is clicked
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Generate pagination buttons based on total product pages
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  const renderPaginationButtons = () =>
+    Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i}
+        onClick={() => handlePageChange(i + 1)}
+        className={`px-3 py-2 leading-tight border ${
+          i + 1 === currentPage
+            ? "bg-blue-500 text-white"
+            : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ));
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -568,7 +595,7 @@ export default function AdminManageProducts() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {currentProducts.map((product) => (
                   <tr
                     key={product.id}
                     className="hover:bg-gray-100 transition duration-300"
@@ -609,18 +636,19 @@ export default function AdminManageProducts() {
           {/* Pagination */}
           <div className="flex justify-center mt-4">
             <nav className="inline-flex">
-              <button className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+              <button
+                className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              >
                 <span>«</span>
               </button>
-              {[1, 2, 3, 4, 5, 6].map((page, index) => (
-                <button
-                  key={index}
-                  className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  {page}
-                </button>
-              ))}
-              <button className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+              {renderPaginationButtons()}
+              <button
+                className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              >
                 <span>»</span>
               </button>
             </nav>
