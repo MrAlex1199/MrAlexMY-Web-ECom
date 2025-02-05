@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { products } from "../ProductsData/ProductsData.js";
+import Papa from "papaparse";
+import productsData from "../ProductsData/productsdata.csv";
 
 const productsPerPage = 8;
 
 export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Parse the CSV data
+    Papa.parse(productsData, {
+      download: true,
+      header: true,
+      complete: (result) => {
+        setProducts(result.data);
+      },
+    });
+  }, []);
 
   // Calculate the indexes for the current page's products
   const indexOfLastProduct = currentPage * productsPerPage;
