@@ -67,7 +67,7 @@ export default function App() {
   useEffect(() => {
     const fetchAdminDetails = async () => {
       const Atoken = localStorage.getItem('AToken');
-      console.log('Retrieved token from localStorage:', Atoken);
+      // console.log('Retrieved token from localStorage:', Atoken);
       if (!Atoken) {
         console.warn('No token found, redirecting to login');
         setIsAdmin(false); // Explicitly set to false
@@ -170,7 +170,6 @@ export default function App() {
 
     fetchSelectedProducts();
   }, [userData.userId]);
-  
 
   return (
     <Router>
@@ -183,7 +182,7 @@ export default function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkoutPage" element={<CheckoutPage />} />
-        <Route path="/product/:id" element={<ProdutsDetails userId={userData.userId} />} />
+        <Route path="/product/:id" element={<ProdutsDetails userId={userData.userId}/>} />
         <Route path="/cart" element={ 
           <Cart 
             userId={userData.userId}

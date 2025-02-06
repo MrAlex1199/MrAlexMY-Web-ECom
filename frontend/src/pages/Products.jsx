@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { products } from "../ProductsData/ProductsData.js";
+// import { products } from "../ProductsData/ProductsData.js";
 
 const productsPerPage = 8;
 
 export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+
+  // Fetch products from the API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/products');
+        const data = await response.json();
+        setProducts(data);
+      }
+      catch (error) {
+        console.error("Error fetching products: ", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Calculate the indexes for the current page's products
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -42,7 +58,7 @@ export default function Products() {
         {/* Products Grid */}
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {currentProducts.map((product) => (
-            <Link key={product.id} to={`/product/${product.id}`} className="group">
+            <Link key={product._id} to={`/product/${product._id}`} className="group">
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                 <img
                   src={product.imageSrc}
