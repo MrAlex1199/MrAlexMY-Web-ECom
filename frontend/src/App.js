@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Styles/App.css';
 import Footer from './components/footer';
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import ProtectedRoute from './ProtectedRoute';
 import Home from "./pages/home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -20,7 +21,7 @@ import AdminLogin from "./pages/AdminPage/AdminLogin";
 import AdminManageProducts from './pages/AdminPage/AdminProducts';
 import AdminManageOrders from './pages/AdminPage/AdminOrders';
 import AdminManageCustomrs from './pages/AdminPage/AdminCustomers';
-import ProtectedRoute from './ProtectedRoute';
+import AdminPromotions from './pages/AdminPage/AdminPromotions';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,7 +47,8 @@ export default function App() {
     '/AdminManageOrders',
     '/adminmanageorders',
     '/AdminManageCustomrs',
-    '/adminmanagecustomrs'
+    '/adminmanagecustomrs',
+    '/AdminPromotions',
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
@@ -61,7 +63,8 @@ export default function App() {
     '/AdminManageOrders',
     '/adminmanageorders',
     '/AdminManageCustomrs',
-    '/adminmanagecustomrs'
+    '/adminmanagecustomrs',
+    '/AdminPromotions',
   ].includes(window.location.pathname);
 
   useEffect(() => {
@@ -199,6 +202,7 @@ export default function App() {
         <Route path="/AdminManageProducts" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageProducts adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminManageOrders" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageOrders adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminManageCustomrs" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageCustomrs adminData={adminData} /></ProtectedRoute>} />
+        <Route path="/AdminPromotions" element={<ProtectedRoute isAdmin={isAdmin}><AdminPromotions adminData={adminData} /></ProtectedRoute>} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>

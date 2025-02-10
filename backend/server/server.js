@@ -80,6 +80,8 @@ adminSchema.pre("save", async function (next) {
 
 const Admin = mongoose.model("Admin", adminSchema);
 
+
+
 // Product Schema
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -94,9 +96,28 @@ const productSchema = new mongoose.Schema({
   sizes: [{ name: String, inStock: Boolean }],
   highlights: [String],
   details: String,
+  discount: { type: Number, default: 0 }, // Added discount field
 });
 
 const Product = mongoose.model("Product", productSchema);
+
+// Endpoint to add Discount to a product
+app.put("/api/products/:id/add-discount", async (req, res) => {
+  const { id } = req.params;
+  const { discount } = req.body;
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    product.discount = discount;
+    await product.save();
+    res.status(200).json({ message: "Discount added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding discount" });
+  }
+});
 
 // Endpoint to upload CSV file and add products to MongoDB
 app.post("/api/upload-csv", upload.single("file"), async (req, res) => {

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import Papa from "papaparse";
 import Sidebar from "../../components/AdminComponents/Sidebar";
 import Header from "../../components/AdminComponents/header";
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageProducts() {
-  const [file, setFile] = useState(null);
-  const [csvPreview, setCsvPreview] = useState([]);
+export default function AdminPromotions() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Pagination logic
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
 
@@ -58,89 +58,38 @@ export default function AdminManageProducts() {
       </button>
     ));
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-
-    if (selectedFile) {
-      Papa.parse(selectedFile, {
-        header: true, // Parse as JSON
-        skipEmptyLines: true,
-        complete: (results) => {
-          setCsvPreview(results.data.slice(0, 5)); // Show only the first 5 rows
-        },
-      });
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file!");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/upload-csv",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      console.log("Response:", response.data); // Log success response
-      alert(response.data.message);
-    } catch (error) {
-      console.error("Error:", error.response || error); // Log error details
-      alert("Failed to upload file");
-    }
-  };
-
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [images, setImages] = useState([]);
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const newImages = files.map((file) => {
-      const reader = new FileReader();
-      return new Promise((resolve) => {
-        reader.onloadend = () => {
-          resolve({ file, preview: reader.result });
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(newImages).then((result) => {
-      setImages((prev) => [...prev, ...result]);
-    });
-  };
-
-  const handleDeleteImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <Sidebar />
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-y-auto">
         <Header
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
-          textpage="Products"
+          textpage="Promotions"
         />
 
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 mb-6">
           {[
-            { title: "Total Products", value: 120, color: "text-blue-600" },
-            { title: "Total Orders", value: 45, color: "text-green-600" },
-            { title: "Total Users", value: 300, color: "text-purple-600" },
-            { title: "Total Sales", value: "$25,000", color: "text-red-600" },
+            { title: "Total Products", value: 21, color: "text-blue-600" },
+            { title: "Active Discount", value: 18, color: "text-green-600" },
+            { title: "Remove Discount", value: 2, color: "text-purple-600" },
+            {
+              title: "SoldOut Products",
+              value: "30",
+              color: "text-red-600",
+            },
+            {
+              title: "Total Discount Value",
+              value: "$30,000",
+              color: "text-red-600",
+            },
+            {
+              title: "Total Sales",
+              value: "$2,500,000",
+              color: "text-red-100",
+            },
           ].map((card, index) => (
             <div
               key={index}
@@ -154,183 +103,31 @@ export default function AdminManageProducts() {
           ))}
         </div>
 
+        {/* Add Promotions */}
         <div className="flex flex-wrap gap-6 mb-6">
-          {/* Add Product Form */}
+          {/* Apply Promotions */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Add New Product
+              Apply Promotions
             </h2>
             <form>
               <div className="mb-4">
-                <label className="block text-gray-700">Product Name</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter product name"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Description</label>
-                <textarea
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter product description"
-                ></textarea>
-              </div>
-              <div className="mb-4 grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700">Base Price</label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Enter base price"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700">Discount (%)</label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Enter discount percentage"
-                  />
-                </div>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Stock</label>
+                <label className="block text-gray-700">Product ID</label>
                 <input
                   type="number"
                   className="w-full p-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter product stock"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Images</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  onChange={handleImageUpload}
+                  placeholder="Enter product ID"
                 />
               </div>
               <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors">
-                Add Product
+                Apply Promotion
               </button>
             </form>
           </div>
-
-          {/* Image Preview */}
+          {/* Delete Promotions */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Product Media
-            </h2>
-            <div className="flex flex-wrap items-center gap-4 bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
-              {images.length > 0 ? (
-                images.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative group w-24 h-24 rounded-lg overflow-hidden border border-gray-200"
-                  >
-                    <img
-                      src={image.preview}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => handleDeleteImage(index)}
-                    >
-                      X
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No images selected yet.</p>
-              )}
-            </div>
-            <button
-              type="button"
-              className="mt-4 w-full bg-gray-200 text-blue-500 py-2 px-4 rounded hover:bg-gray-300"
-              onClick={() => setImages([])}
-            >
-              Delete All Images
-            </button>
-          </div>
-        </div>
-
-        {/* Upload CSV */}
-        <div className="flex flex-wrap gap-6 mb-6">
-          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Upload Products CSV file
-            </h2>
-            <input
-              type="file"
-              accept=".csv"
-              className="p-2 border border-gray-300 rounded-lg mb-4 py-2 px-4"
-              onChange={handleFileChange}
-            />
-            <button
-              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-              onClick={handleUpload}
-            >
-              Upload CSV
-            </button>
-          </div>
-        </div>
-
-        {/* CSV Preview */}
-        {csvPreview && csvPreview.length > 0 ? (
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              CSV Preview (First 5 Rows)
-            </h2>
-            <table className="table-auto w-full border-collapse border border-gray-200">
-              <thead>
-                <tr className="bg-gray-100">
-                  {Object.keys(csvPreview[0]).map((header, index) => (
-                    <th
-                      key={index}
-                      className="border border-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700"
-                    >
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {csvPreview.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {Object.keys(row).map((key, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        className="border border-gray-200 px-4 py-2 text-sm text-gray-600"
-                      >
-                        {row[key]}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="text-gray-500 text-sm mt-2">
-              Showing the first 5 rows of the CSV file.
-            </p>
-          </div>
-        ) : (
-          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6 mb-6">
-            <p className="text-gray-500 text-sm mt-2">
-              No CSV data available. Please select a file.
-            </p>
-          </div>
-        )}
-
-        {/* Product Delete */}
-        <div className="flex flex-wrap gap-6 mb-6">
-          {/* Delete Product */}
-          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Delete Product
+              Remove Promotions
             </h2>
             <form>
               <div className="mb-4">
@@ -342,7 +139,7 @@ export default function AdminManageProducts() {
                 />
               </div>
               <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
-                Delete Product
+                Remove Promotion
               </button>
             </form>
           </div>
@@ -351,16 +148,16 @@ export default function AdminManageProducts() {
         {/* Products List */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Products List
+            Products Promotions List
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
             {[
-              "All Products",
-              "Electronics",
-              "Clothing",
-              "Home",
-              "Sold Out",
+              "All Products Promotions",
+              "Ative Pronotions",
+              "Rrmove Promotions",
+              "Sold out Products",
+              "Deleted Products",
             ].map((tab, index) => (
               <button
                 key={index}
@@ -375,9 +172,6 @@ export default function AdminManageProducts() {
             ))}
             <button className="ml-auto px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
               Export as CSV
-            </button>
-            <button className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
-              + Add Product
             </button>
           </div>
 
