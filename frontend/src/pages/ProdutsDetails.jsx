@@ -52,7 +52,7 @@ export default function ProductsDetails({ userId }) {
             userId,
             productName: product.name,
             productId: product._id,
-            price: product.price,
+            price: product.price.toString(),
             imageSrc: product.imageSrc,
             selectedColor,
             selectedSize,

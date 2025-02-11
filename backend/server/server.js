@@ -361,7 +361,7 @@ app.post("/save-selected-products", async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-
+    
     let productExists = false;
     user.selectedProducts.forEach((product) => {
       if (
@@ -371,38 +371,40 @@ app.post("/save-selected-products", async (req, res) => {
       ) {
         product.productName = productName;
         product.quantity += 1;
-        product.price = parseFloat(price.replace(/[^0-9.-]+/g, ""));
+        const priceValue = typeof price === 'string' ? price.replace(/[^0-9.-]+/g, "") : price;
+        product.price = parseFloat(priceValue || 0);
         product.totalPrice = product.quantity * product.price;
         product.imageSrc = imageSrc;
         productExists = true;
       }
     });
-
+    
     if (!productExists) {
+      const priceValue = typeof price === 'string' ? price.replace(/[^0-9.-]+/g, "") : price;
       user.selectedProducts.push({
         productId,
         productName,
         imageSrc,
         selectedColor,
         selectedSize,
-        price: parseFloat(price.replace(/[^0-9.-]+/g, "")),
+        price: parseFloat(priceValue || 0),
         quantity: 1,
-        totalPrice: parseFloat(price.replace(/[^0-9.-]+/g, "")),
+        totalPrice: parseFloat(priceValue || 0),
       });
     }
-
+    
     await user.save();
-
+    
     res
       .status(201)
       .json({ success: true, message: "Selected product saved successfully" });
-  } catch (error) {
+    } catch (error) {
     console.error(error);
     res
       .status(500)
       .json({ success: false, message: "Failed to save selected product" });
-  }
-});
+    }
+    });
 
 // Registration endpoint
 app.post("/register", async (req, res) => {

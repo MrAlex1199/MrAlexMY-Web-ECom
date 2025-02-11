@@ -431,7 +431,7 @@ export default function AdminManageOrders() {
                       {order.id}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {order.customer}
+                      {order.product}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {order.customer}
