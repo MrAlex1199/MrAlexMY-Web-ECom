@@ -56,6 +56,16 @@ export default function Sidebar() {
         >
           Promotions
         </NavLink>
+        <NavLink
+          to="/AdminTeam"
+          className={({ isActive }) =>
+            isActive
+              ? "block px-4 py-2 text-white bg-blue-500 rounded-md sticky top-0"
+              : "block px-4 py-2 text-blue-700 rounded-md"
+          }
+        >
+          AdminTeam
+        </NavLink>
       </nav>
     </div>
   );

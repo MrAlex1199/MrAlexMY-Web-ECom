@@ -134,9 +134,7 @@ export default function AdminPromotions() {
           </div>
           {/* Apply Promotions Code */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Apply Promotions Code
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">Apply Promotions Code</h2>
             <form>
               <div className="mb-4">
                 <label className="block text-gray-700">Promotion Code</label>
@@ -149,34 +147,29 @@ export default function AdminPromotions() {
               <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors">
                 Apply Promotion Code
               </button>
-            <div className="mt-4">
-              <h3 className="text-md font-semibold text-gray-700 mb-2">Active Promotion Codes</h3>
-              <table className="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-4 py-2 text-left">Code</th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">Discount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="hover:bg-gray-100 transition duration-300">
-                    <td className="border border-gray-300 px-4 py-2">PROMO2024</td>
-                    <td className="border border-gray-300 px-4 py-2">20%</td>
-                  </tr>
-                  <tr className="hover:bg-gray-100 transition duration-300">
-                    <td className="border border-gray-300 px-4 py-2">PROMO2024</td>
-                    <td className="border border-gray-300 px-4 py-2">15%</td>
-                  </tr>
-                  <tr className="hover:bg-gray-100 transition duration-300">
-                    <td className="border border-gray-300 px-4 py-2">PROMO2024</td>
-                    <td className="border border-gray-300 px-4 py-2">10%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </form>
-          </div>
-          {/* Delete Promotions */}
+              <div className="mt-4">
+                <h3 className="text-md font-semibold text-gray-700 mb-2">Active Promotion Codes</h3>
+                <div className="overflow-y-auto max-h-40">
+                  <table className="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border border-gray-300 px-4 py-2 text-left">Code</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">Discount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {["PROMO2024", "PROMO2023", "PROMO2022", "PROMO2021"].slice(0, 3).map((code, index) => (
+                        <tr key={index} className="hover:bg-gray-100 transition duration-300">
+                          <td className="border border-gray-300 px-4 py-2">{code}</td>
+                          <td className="border border-gray-300 px-4 py-2">{`${20 - index * 5}%`}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </form>
+          </div>}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Remove Promotions
@@ -191,7 +184,7 @@ export default function AdminPromotions() {
                   placeholder="Enter product ID"
                 />
               </div>
-              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors">
                 Remove Promotion
               </button>
             </form>
@@ -205,7 +198,7 @@ export default function AdminPromotions() {
                   placeholder="Enter Promotion Code"
                 />
               </div>
-              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors">
                 Remove Promotion Code
               </button>
             </form>
@@ -269,7 +262,6 @@ export default function AdminPromotions() {
                     "Price",
                     "Breadcrumbs",
                     "Colors",
-                    "Description",
                     "Highlights",
                   ].map((header, index) => (
                     <th
@@ -300,16 +292,13 @@ export default function AdminPromotions() {
                       {product.name}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {product.price}
+                      ${product.price}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {product.breadcrumbs}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {product.colors.map((color) => color.name).join(", ")}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {product.description}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {product.highlights.join(", ")}

@@ -22,6 +22,7 @@ import AdminManageProducts from './pages/AdminPage/AdminProducts';
 import AdminManageOrders from './pages/AdminPage/AdminOrders';
 import AdminManageCustomrs from './pages/AdminPage/AdminCustomers';
 import AdminPromotions from './pages/AdminPage/AdminPromotions';
+import AdminTeam from './pages/AdminPage/AdminTeam';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,6 +50,7 @@ export default function App() {
     '/AdminManageCustomrs',
     '/adminmanagecustomrs',
     '/AdminPromotions',
+    '/AdminTeam',
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
@@ -65,6 +67,7 @@ export default function App() {
     '/AdminManageCustomrs',
     '/adminmanagecustomrs',
     '/AdminPromotions',
+    '/AdminTeam',
   ].includes(window.location.pathname);
 
   useEffect(() => {
@@ -203,6 +206,7 @@ export default function App() {
         <Route path="/AdminManageOrders" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageOrders adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminManageCustomrs" element={<ProtectedRoute isAdmin={isAdmin}><AdminManageCustomrs adminData={adminData} /></ProtectedRoute>} />
         <Route path="/AdminPromotions" element={<ProtectedRoute isAdmin={isAdmin}><AdminPromotions adminData={adminData} /></ProtectedRoute>} />
+        <Route path="/AdminTeam" element={<ProtectedRoute isAdmin={isAdmin}><AdminTeam adminData={adminData} /></ProtectedRoute>} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </Router>
