@@ -4,6 +4,7 @@ export default function Header({
   setDropdownOpen,
   dropdownOpen,
   textpage,
+  AdminData,
   isAdmin,
   setIsAdmin,
   setAdminData,
@@ -76,7 +77,7 @@ export default function Header({
               className="block px-4 py-2 text-gray-800 font-medium"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              Admin User
+              {AdminData.Afname} {AdminData.Alname}
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -143,12 +144,12 @@ export default function Header({
                   <input
                     type="text"
                     className="w-full p-2 border rounded-lg"
-                    value="Amélie"
+                    value={AdminData.Afname}
                   />
                   <input
                     type="text"
                     className="w-full p-2 border rounded-lg"
-                    value="Laurent"
+                    value={AdminData.Alname}
                   />
                 </div>
               </div>
@@ -159,7 +160,17 @@ export default function Header({
                 <input
                   type="email"
                   className="w-full p-2 border rounded-lg"
-                  value="amelie@untitledui.com"
+                  value={AdminData.adminemail}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  className="w-full p-2 border rounded-lg"
+                  value={AdminData.phoneNumber}
                 />
               </div>
               <div className="flex justify-end space-x-4">

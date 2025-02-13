@@ -6,7 +6,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageCustomrs() {
+export default function AdminManageCustomrs( { adminData } ) {
   // Sample data for orders list
   const CustomersAccount = [
     {
@@ -227,6 +227,7 @@ export default function AdminManageCustomrs() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage="Customers Account"
+          AdminData={adminData}
         />
 
         {/* Summary Cards */}

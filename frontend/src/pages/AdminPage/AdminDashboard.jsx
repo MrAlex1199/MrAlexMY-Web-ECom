@@ -31,7 +31,7 @@ const chartOptions = {
   responsive: true,
 };
 
-export default function Overview() {
+export default function Overview( {adminData} ) {
   // Sample data for pie chart
   const pieChartData = {
     labels: ["18-22", "23-30", "31-40", "41-50", "51+"],
@@ -352,6 +352,7 @@ export default function Overview() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage="Overview"
+          AdminData={adminData}
         />
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 mb-6">

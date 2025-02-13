@@ -66,6 +66,7 @@ const adminSchema = new mongoose.Schema({
   Afname: { type: String, required: true },
   Alname: { type: String, required: true },
   employeeID: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
   role: { type: String, default: "admin" },
 });
 
@@ -79,8 +80,6 @@ adminSchema.pre("save", async function (next) {
 });
 
 const Admin = mongoose.model("Admin", adminSchema);
-
-
 
 // Product Schema
 const productSchema = new mongoose.Schema({
@@ -192,15 +191,13 @@ app.get("/user", async (req, res) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the user's ID or email
     const user = await User.findById(decodedToken.id); // Assuming user ID is stored in the token
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        userId: user._id,
-        email: user.email,
-        fname: user.fname,
-        lname: user.lname,
-      });
+    res.status(200).json({
+      success: true,
+      userId: user._id,
+      email: user.email,
+      fname: user.fname,
+      lname: user.lname,
+    });
   } catch (error) {
     res
       .status(500)
@@ -219,14 +216,15 @@ app.get("/admin", async (req, res) => {
     }
     const admin = await Admin.findById(decodedToken.id); // Assuming admin ID is stored in the token
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        adminId: admin._id,
-        email: admin.email,
-        role: admin.role,
-      });
+    res.status(200).json({
+      success: true,
+      adminId: admin._id,
+      Aemail: admin.adminemail,
+      Afname: admin.Afname,
+      Alname: admin.Alname,
+      phoneNumber: admin.phoneNumber,
+      role: admin.role,
+    });
   } catch (error) {
     console.error(error);
     res
@@ -284,12 +282,10 @@ app.put("/cart/update-quantity/:userId/:productId", async (req, res) => {
 
     await user.save(); // Persist changes to the database
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Product quantity updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Product quantity updated successfully",
+    });
   } catch (error) {
     console.error(error);
     res
@@ -323,22 +319,18 @@ app.put("/change-password", async (req, res) => {
     user.password = await bcrypt.hash(newPassword, salt);
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        UpdatedPassdWord: true,
-        message: "Password updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      UpdatedPassdWord: true,
+      message: "Password updated successfully",
+    });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        UpdatedPassdWord: false,
-        message: "Failed to update password",
-      });
+    res.status(500).json({
+      success: false,
+      UpdatedPassdWord: false,
+      message: "Failed to update password",
+    });
   }
 });
 
@@ -361,7 +353,7 @@ app.post("/save-selected-products", async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    
+
     let productExists = false;
     user.selectedProducts.forEach((product) => {
       if (
@@ -371,16 +363,18 @@ app.post("/save-selected-products", async (req, res) => {
       ) {
         product.productName = productName;
         product.quantity += 1;
-        const priceValue = typeof price === 'string' ? price.replace(/[^0-9.-]+/g, "") : price;
+        const priceValue =
+          typeof price === "string" ? price.replace(/[^0-9.-]+/g, "") : price;
         product.price = parseFloat(priceValue || 0);
         product.totalPrice = product.quantity * product.price;
         product.imageSrc = imageSrc;
         productExists = true;
       }
     });
-    
+
     if (!productExists) {
-      const priceValue = typeof price === 'string' ? price.replace(/[^0-9.-]+/g, "") : price;
+      const priceValue =
+        typeof price === "string" ? price.replace(/[^0-9.-]+/g, "") : price;
       user.selectedProducts.push({
         productId,
         productName,
@@ -392,19 +386,19 @@ app.post("/save-selected-products", async (req, res) => {
         totalPrice: parseFloat(priceValue || 0),
       });
     }
-    
+
     await user.save();
-    
+
     res
       .status(201)
       .json({ success: true, message: "Selected product saved successfully" });
-    } catch (error) {
+  } catch (error) {
     console.error(error);
     res
       .status(500)
       .json({ success: false, message: "Failed to save selected product" });
-    }
-    });
+  }
+});
 
 // Registration endpoint
 app.post("/register", async (req, res) => {
@@ -428,22 +422,18 @@ app.post("/register", async (req, res) => {
     const user = new User({ email: lowercaseEmail, password, fname, lname });
     await user.save();
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "User registered successfully",
-        isLoggedIn: true,
-      });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      isLoggedIn: true,
+    });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Registration failed",
-        isLoggedIn: false,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Registration failed",
+      isLoggedIn: false,
+    });
   }
 });
 
@@ -452,37 +442,31 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Missing required fields",
-          loginStatus: false,
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+        loginStatus: false,
+      });
     }
 
     const lowercaseEmail = email.toLowerCase();
 
     const existingUser = await User.findOne({ email: lowercaseEmail });
     if (!existingUser) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Invalid email or password",
-          loginStatus: false,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+        loginStatus: false,
+      });
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Invalid email or password",
-          loginStatus: false,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+        loginStatus: false,
+      });
     }
 
     const user = {
@@ -514,10 +498,24 @@ app.post("/login", async (req, res) => {
 // Admin registration endpoint
 app.post("/admin-register", async (req, res) => {
   try {
-    const { adminemail, adminpassword, Afname, Alname, employeeID } = req.body;
+    const {
+      adminemail,
+      adminpassword,
+      Afname,
+      Alname,
+      employeeID,
+      phoneNumber,
+    } = req.body;
 
     // Check if any required field is missing
-    if (!adminemail || !adminpassword || !Afname || !Alname || !employeeID) {
+    if (
+      !adminemail ||
+      !adminpassword ||
+      !Afname ||
+      !Alname ||
+      !employeeID ||
+      !phoneNumber
+    ) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
@@ -540,6 +538,7 @@ app.post("/admin-register", async (req, res) => {
       Afname,
       Alname,
       employeeID,
+      phoneNumber,
     });
     await admin.save();
 
@@ -557,26 +556,22 @@ app.post("/admin-login", async (req, res) => {
   try {
     const { adminemail, adminpassword } = req.body;
     if (!adminemail || !adminpassword) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Missing required fields",
-          loginStatus: false,
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+        loginStatus: false,
+      });
     }
 
     const lowercaseEmail = adminemail.toLowerCase();
 
     const existingAdmin = await Admin.findOne({ adminemail: lowercaseEmail });
     if (!existingAdmin) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Invalid email or password",
-          loginStatus: false,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+        loginStatus: false,
+      });
     }
 
     const isMatch = await bcrypt.compare(
@@ -584,13 +579,11 @@ app.post("/admin-login", async (req, res) => {
       existingAdmin.adminpassword
     );
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Invalid email or password",
-          loginStatus: false,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+        loginStatus: false,
+      });
     }
 
     const admin = {
@@ -665,12 +658,10 @@ app.delete("/cart/delete-product/:userId/:productId", async (req, res) => {
     // Save the updated user document to the database
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Product deleted from cart successfully",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Product deleted from cart successfully",
+    });
   } catch (error) {
     console.error(error);
     res

@@ -8,7 +8,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageProducts() {
+export default function AdminManageProducts( {adminData} ) {
   const [file, setFile] = useState(null);
   const [csvPreview, setCsvPreview] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,6 +132,7 @@ export default function AdminManageProducts() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage="Products"
+          AdminData={adminData}
         />
 
         {/* Summary Cards */}

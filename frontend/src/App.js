@@ -30,7 +30,7 @@ export default function App() {
   const [userData, setUserData] = useState({ fname: '', lname: '', userId: '' });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.00);
-  const [adminData, setAdminData] = useState({ adminid: '', email: '', role: '' });
+  const [adminData, setAdminData] = useState({ adminid: '', email: '', role: '', Afname: '', Alname: '', phoneNumber: '' });
   
   // Conditional rendering for Navbar based on route
   const shouldShowNavbar = ![
@@ -95,7 +95,10 @@ export default function App() {
         if (data.success) {
           setAdminData({
             adminid: data.adminId,
-            email: data.email,
+            adminemail: data.Aemail,
+            Afname: data.Afname,
+            Alname: data.Alname,
+            phoneNumber: data.phoneNumber,
             role: data.role,
           });
           setIsAdmin(true);

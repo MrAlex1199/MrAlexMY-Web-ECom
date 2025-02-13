@@ -90,7 +90,7 @@ export default function AdminLogin({ setIsAdmin, setAdminData }) {
                 Sign in
               </button>
               <div className="mt-6 text-center">
-                <a href="/register" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
+                <a href="/admin-register" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
                   Don't have an account? Sign up
                 </a>
               </div>

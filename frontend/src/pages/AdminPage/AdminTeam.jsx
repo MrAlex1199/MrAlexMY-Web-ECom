@@ -6,7 +6,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminTeam() {
+export default function AdminTeam( { adminData } ) {
   // Sample data for team members
   const teamMembers = [
     {
@@ -60,6 +60,7 @@ export default function AdminTeam() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage="Admin Members"
+          AdminData={adminData}
         />
 
         {/* Summary Cards */}

@@ -10,6 +10,7 @@ export default function AdminRegister() {
   const [Afname, setAfname] = useState("");
   const [Alname, setAlname] = useState("");
   const [employeeID, setEmployeeID] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const navigate = useNavigate();
 
   // Check if the admin is already logged in
@@ -34,6 +35,7 @@ export default function AdminRegister() {
           Afname,
           Alname,
           employeeID,
+          phoneNumber,
         }),
       });
 
@@ -133,8 +135,18 @@ export default function AdminRegister() {
                 onChange={(e) => {
                   setEmployeeID(e.target.value);
                 }}
-                className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                className="block w-full ml-1 px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Employee ID"
+              />
+            </div>
+            <div className="relative flex items-center mt-4">
+              <input
+                type="phoneNumber"
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                }}
+                className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                placeholder="Phone Number"
               />
             </div>
             <div className="mt-6">

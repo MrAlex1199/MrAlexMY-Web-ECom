@@ -6,7 +6,7 @@ import Sidebar from "../../components/AdminComponents/Sidebar";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageOrders() {
+export default function AdminManageOrders( { adminData }) {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
@@ -351,6 +351,7 @@ export default function AdminManageOrders() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage={textpage}
+          AdminData={adminData}
         />
 
         {/* Orders List */}

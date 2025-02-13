@@ -7,7 +7,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminPromotions() {
+export default function AdminPromotions( { adminData } ) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Pagination logic
@@ -67,6 +67,7 @@ export default function AdminPromotions() {
           dropdownOpen={dropdownOpen}
           setDropdownOpen={setDropdownOpen}
           textpage="Promotions"
+          AdminData={adminData}
         />
 
         {/* Summary Cards */}
