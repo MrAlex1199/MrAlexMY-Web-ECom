@@ -33,7 +33,30 @@ export default function AdminTeam( { adminData } ) {
       phone: "1122334455",
       joined: "2022-03-01",
     },
-    // Add more team members as needed
+    {
+      id: 4,
+      name: "Bob Johnson",
+      role: "Tester",
+      email: "bobjohnson@gmail.com",
+      phone: "1234567890",
+      joined: "2022-04-01",
+    },
+    {
+      id: 5,
+      name: "Charlie Brown",
+      role: "Support",
+      email: "charliebrown@gmail.com",
+      phone: "0981234567",
+      joined: "2022-05-01",
+    },
+    {
+      id: 6,
+      name: "Diana Prince",
+      role: "HR",
+      email: "dianaprince@gmail.com",
+      phone: "0912345678",
+      joined: "2022-06-01",
+    }
   ];
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -70,6 +93,9 @@ export default function AdminTeam( { adminData } ) {
             { title: "Managers", value: teamMembers.filter(member => member.role === "Manager").length, color: "text-green-600" },
             { title: "Developers", value: teamMembers.filter(member => member.role === "Developer").length, color: "text-purple-600" },
             { title: "Designers", value: teamMembers.filter(member => member.role === "Designer").length, color: "text-red-600" },
+            { title: "Testers", value: teamMembers.filter(member => member.role === "Tester").length, color: "text-yellow-600" },
+            { title: "Support", value: teamMembers.filter(member => member.role === "Support").length, color: "text-indigo-600" },
+            { title: "HR", value: teamMembers.filter(member => member.role === "HR").length, color: "text-pink-600" },
           ].map((card, index) => (
             <div
               key={index}

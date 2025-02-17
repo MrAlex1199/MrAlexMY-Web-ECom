@@ -107,11 +107,11 @@ export default function Overview( {adminData} ) {
 
   // Sample data for line chart
   const lineChartDataW = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
     datasets: [
       {
         label: "Weekly Revenue ($)",
-        data: [1500, 2000, 2500, 3000],
+        data: [1500, 2000, 2500, 3000, 2500, 4000],
         borderColor: "#FF6384",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         tension: 0.4,
@@ -120,11 +120,11 @@ export default function Overview( {adminData} ) {
   };
 
   const lineChartDataM = {
-    labels: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"],
+    labels: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4", "Quarter 5", "Quarter 6"],
     datasets: [
       {
         label: "Quarter Revenue ($)",
-        data: [1500, 2000, 2500, 3000],
+        data: [1500, 2000, 2500, 3000, 2500, 4000],
         borderColor: "#FF6384",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         tension: 0.4,

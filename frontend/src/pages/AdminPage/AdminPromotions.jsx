@@ -159,7 +159,8 @@ export default function AdminPromotions( { adminData } ) {
                       </tr>
                     </thead>
                     <tbody>
-                      {["PROMO2024", "PROMO2023", "PROMO2022", "PROMO2021"].slice(0, 3).map((code, index) => (
+                     {/*Hardcoded promotion codes  and discounts */}
+                      {["PROMO2024", "PROMO2023", "PROMO2022", "PROMO2021" ,"PROMO2020"].slice(0, 5).map((code, index) => (
                         <tr key={index} className="hover:bg-gray-100 transition duration-300">
                           <td className="border border-gray-300 px-4 py-2">{code}</td>
                           <td className="border border-gray-300 px-4 py-2">{`${20 - index * 5}%`}</td>
@@ -170,7 +171,7 @@ export default function AdminPromotions( { adminData } ) {
                 </div>
               </div>
             </form>
-          </div>}
+          </div>
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Remove Promotions
