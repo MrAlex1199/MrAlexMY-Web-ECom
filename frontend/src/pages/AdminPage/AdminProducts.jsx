@@ -11,8 +11,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function AdminManageProducts( {adminData} ) {
   const [file, setFile] = useState(null);
   const [csvPreview, setCsvPreview] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10;
 
   // Fetch products from the database
   const [products, setProducts] = useState([]);
@@ -30,33 +28,24 @@ export default function AdminManageProducts( {adminData} ) {
     fetchProducts();
   }, []);
 
-  // Calculate the indexes for the current page's products
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
 
-  // Set current page when a pagination button is clicked
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  // Pagination logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
-  // Generate pagination buttons based on total product pages
-  const totalPages = Math.ceil(products.length / productsPerPage);
-  const renderPaginationButtons = () =>
-    Array.from({ length: totalPages }, (_, i) => (
-      <button
-        key={i}
-        onClick={() => handlePageChange(i + 1)}
-        className={`px-3 py-2 leading-tight border ${
-          i + 1 === currentPage
-            ? "bg-blue-500 text-white"
-            : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-        }`}
-      >
-        {i + 1}
-      </button>
-    ));
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const [filter, setFilter] = useState("All");
+
+  const filteredItems = filter === "All Products" ? products : filter === "In Stock" ? products.filter(product => product.stock_remaining > 0) : products.filter(product => product.stock_remaining === 0);
+
+  const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -358,9 +347,7 @@ export default function AdminManageProducts( {adminData} ) {
           <div className="flex space-x-4 mb-4">
             {[
               "All Products",
-              "Electronics",
-              "Clothing",
-              "Home",
+              "In Stock",
               "Sold Out",
             ].map((tab, index) => (
               <button
@@ -370,6 +357,7 @@ export default function AdminManageProducts( {adminData} ) {
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
+                onClick={() => setFilter(tab)}
               >
                 {tab}
               </button>
@@ -407,6 +395,7 @@ export default function AdminManageProducts( {adminData} ) {
                     "ID",
                     "Name",
                     "Price",
+                    "Stock",
                     "Breadcrumbs",
                     "Colors",
                     "Description",
@@ -422,7 +411,7 @@ export default function AdminManageProducts( {adminData} ) {
                 </tr>
               </thead>
               <tbody>
-                {currentProducts.map((product, index) => (
+                {currentFilteredItems.map((product, index) => (
                   <tr
                     key={product._id}
                     className="hover:bg-gray-100 transition duration-300"
@@ -443,6 +432,9 @@ export default function AdminManageProducts( {adminData} ) {
                       {product.price}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
+                      {product.stock_remaining}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
                       {product.breadcrumbs}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
@@ -459,6 +451,7 @@ export default function AdminManageProducts( {adminData} ) {
               </tbody>
             </table>
           </div>
+          {/* Pagination */}
           <div className="flex justify-center mt-4">
             <nav className="inline-flex">
               <button
@@ -468,13 +461,27 @@ export default function AdminManageProducts( {adminData} ) {
               >
                 <span>«</span>
               </button>
-              {renderPaginationButtons()}
+              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`px-3 py-2 leading-tight border ${
+                      page === currentPage
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    }`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalFilteredPages}
               >
                 <span>»</span>
               </button>

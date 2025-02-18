@@ -85,6 +85,7 @@ const Admin = mongoose.model("Admin", adminSchema);
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  stock_remaining: { type: Number, required: true },
   href: { type: String },
   imageSrc: { type: String, required: true },
   imageAlt: { type: String },
@@ -129,6 +130,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
         products.push({
           name: row.name,
           price: parseFloat(row.price.replace("$", "")),
+          stock_remaining: parseInt(row.stock_remaining),
           href: row.href,
           imageSrc: row.imageSrc,
           imageAlt: row.imageAlt,

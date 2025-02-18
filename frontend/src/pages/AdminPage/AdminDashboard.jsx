@@ -333,15 +333,17 @@ export default function Overview( {adminData} ) {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = CustomersAccount.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(CustomersAccount.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const [filter, setFilter] = useState("All");
+
+  const filteredItems = filter === "All" ? CustomersAccount : CustomersAccount.filter(account => account.sex === filter);
+
+  const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -416,24 +418,23 @@ export default function Overview( {adminData} ) {
         {/* Products List */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Costomers Account
+            Customers Account
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
             {[
-              "All Account",
+              "All",
               "Male",
               "Female",
-              "Active Accounts",
-              "Deleted Accounts",
             ].map((tab, index) => (
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
-                  index === 0
+                  filter === tab
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
+                onClick={() => setFilter(tab)}
               >
                 {tab}
               </button>
@@ -482,7 +483,7 @@ export default function Overview( {adminData} ) {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((account) => (
+                {currentFilteredItems.map((account) => (
                   <tr
                     key={account.id}
                     className="hover:bg-gray-100 transition duration-300"
@@ -523,7 +524,7 @@ export default function Overview( {adminData} ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
                 (page) => (
                   <button
                     key={page}
@@ -541,9 +542,9 @@ export default function Overview( {adminData} ) {
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalFilteredPages}
               >
                 <span>»</span>
               </button>
