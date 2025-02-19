@@ -353,7 +353,7 @@ export default function AdminManageProducts( {adminData} ) {
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
-                  index === 0
+                  filter === tab
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
@@ -364,9 +364,6 @@ export default function AdminManageProducts( {adminData} ) {
             ))}
             <button className="ml-auto px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
               Export as CSV
-            </button>
-            <button className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
-              + Add Product
             </button>
           </div>
 

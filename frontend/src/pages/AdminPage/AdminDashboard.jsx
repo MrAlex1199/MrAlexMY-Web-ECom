@@ -105,7 +105,7 @@ export default function Overview( {adminData} ) {
     ],
   };
 
-  // Sample data for line chart
+  // Sample data for line chart weekly
   const lineChartDataW = {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
     datasets: [
@@ -119,6 +119,7 @@ export default function Overview( {adminData} ) {
     ],
   };
 
+  // Sample data for line chart Monthly
   const lineChartDataM = {
     labels: ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4", "Quarter 5", "Quarter 6"],
     datasets: [
@@ -324,13 +325,12 @@ export default function Overview( {adminData} ) {
       registered: "2023-09-01",
     },
   ];
-
+  // Dropdown state 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Pagination logic
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -359,10 +359,11 @@ export default function Overview( {adminData} ) {
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 mb-6">
           {[
-            { title: "Total Products", value: 120, color: "text-blue-600" },
-            { title: "Total Orders", value: 45, color: "text-green-600" },
-            { title: "Total Users", value: 300, color: "text-purple-600" },
-            { title: "Total Sales", value: "$25,000", color: "text-red-600" },
+            { title: "Total Account", value: 21, color: "text-blue-600" },
+            { title: "Active Account", value: 18, color: "text-green-600" },
+            { title: "Delete Account", value: 2, color: "text-purple-600" },
+            { title: "Month Sales", value: "$500,000", color: "text-red-600" },
+            { title: "Total Sales", value: "$2,500,000", color: "text-red-100", },
           ].map((card, index) => (
             <div
               key={index}
@@ -459,7 +460,7 @@ export default function Overview( {adminData} ) {
             </div>
           </div>
 
-          {/* Products Table */}
+          {/* Customers Table */}
           <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>

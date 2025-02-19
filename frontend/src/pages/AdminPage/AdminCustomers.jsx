@@ -200,20 +200,20 @@ export default function AdminManageCustomrs( { adminData } ) {
     },
   ];
 
+  // Dropdown state
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   // Pagination logic
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = CustomersAccount.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(CustomersAccount.length / itemsPerPage);
+  // Filter logic
+  const [filter, setFilter] = useState("All");
+  const filteredItems = filter === "All" ? CustomersAccount : CustomersAccount.filter(account => account.sex === filter);
+  const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  // Handle page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -237,10 +237,7 @@ export default function AdminManageCustomrs( { adminData } ) {
             { title: "Active Account", value: 18, color: "text-green-600" },
             { title: "Delete Account", value: 2, color: "text-purple-600" },
             { title: "Month Sales", value: "$500,000", color: "text-red-600" },
-            {
-              title: "Total Sales",
-              value: "$2,500,000",
-              color: "text-red-100",
+            { title: "Total Sales", value: "$2,500,000", color: "text-red-100",
             },
           ].map((card, index) => (
             <div
@@ -255,27 +252,26 @@ export default function AdminManageCustomrs( { adminData } ) {
           ))}
         </div>
 
-        {/* Products List */}
+        {/* Customers Acocout */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Costomers Account
+            Customers Account
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
             {[
-              "All Account",
+              "All",
               "Male",
               "Female",
-              "Active Accounts",
-              "Deleted Accounts",
             ].map((tab, index) => (
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
-                  index === 0
+                  filter === tab
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
+                onClick={() => setFilter(tab)}
               >
                 {tab}
               </button>
@@ -300,7 +296,7 @@ export default function AdminManageCustomrs( { adminData } ) {
             </div>
           </div>
 
-          {/* Products Table */}
+          {/* Customers Table */}
           <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
@@ -324,7 +320,7 @@ export default function AdminManageCustomrs( { adminData } ) {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((account) => (
+                {currentFilteredItems.map((account) => (
                   <tr
                     key={account.id}
                     className="hover:bg-gray-100 transition duration-300"
@@ -365,7 +361,7 @@ export default function AdminManageCustomrs( { adminData } ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
                 (page) => (
                   <button
                     key={page}
@@ -383,9 +379,9 @@ export default function AdminManageCustomrs( { adminData } ) {
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalFilteredPages}
               >
                 <span>»</span>
               </button>
