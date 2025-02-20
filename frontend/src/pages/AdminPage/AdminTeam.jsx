@@ -56,7 +56,39 @@ export default function AdminTeam( { adminData } ) {
       email: "dianaprince@gmail.com",
       phone: "0912345678",
       joined: "2022-06-01",
-    }
+    },
+    {
+      id: 7,
+      name: "Desa Prince",
+      role: "Support",
+      email: "desa123@gmail.com",
+      phone: "0912345554",
+      joined: "2022-06-01",
+    },
+    {
+      id: 8,
+      name: "Ziana Posea",
+      role: "HR",
+      email: "diprince@gmail.com",
+      phone: "0912456678",
+      joined: "2022-06-01",
+    },
+    {
+      id: 9,
+      name: "Fiaza Srince",
+      role: "Developer",
+      email: "Fizzaprince@gmail.com",
+      phone: "0912456678",
+      joined: "2022-06-01",
+    },
+    {
+      id: 10,
+      name: "Eiana Frins",
+      role: "Designer",
+      email: "diance@gmail.com",
+      phone: "0912345778",
+      joined: "2022-06-01",
+    },
   ];
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -67,9 +99,14 @@ export default function AdminTeam( { adminData } ) {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = teamMembers.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(teamMembers.length / itemsPerPage);
 
+  // Filter logic
+  const [filter, setFilter] = useState("All Members");
+  const FilterAdminTeam = filter === "All Members" ? teamMembers : filter === "Managers" ? teamMembers.filter(member => member.role === "Manager") : filter === "Developers" ? teamMembers.filter(member => member.role === "Developer") : teamMembers.filter(member => member.role === "Designer");
+  const CurrentAdminTeamFilter = FilterAdminTeam.slice(indexOfFirstItem, indexOfLastItem);
+  const totalFilteredPages = Math.ceil(FilterAdminTeam.length / itemsPerPage);
+
+  // 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -124,6 +161,7 @@ export default function AdminTeam( { adminData } ) {
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
+                onClick={() => setFilter(tab)}
               >
                 {tab}
               </button>
@@ -164,7 +202,7 @@ export default function AdminTeam( { adminData } ) {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((member) => (
+                {CurrentAdminTeamFilter.map((member) => (
                   <tr
                     key={member.id}
                     className="hover:bg-gray-100 transition duration-300"
@@ -202,7 +240,7 @@ export default function AdminTeam( { adminData } ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
                 (page) => (
                   <button
                     key={page}
@@ -220,9 +258,9 @@ export default function AdminTeam( { adminData } ) {
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={currentPage === totalFilteredPages}
               >
                 <span>»</span>
               </button>

@@ -40,10 +40,9 @@ export default function AdminManageProducts( {adminData} ) {
     setCurrentPage(pageNumber);
   };
 
+  // filter logic
   const [filter, setFilter] = useState("All");
-
   const filteredItems = filter === "All Products" ? products : filter === "In Stock" ? products.filter(product => product.stock_remaining > 0) : products.filter(product => product.stock_remaining === 0);
-
   const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 

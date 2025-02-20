@@ -38,6 +38,10 @@ export default function AdminPromotions( { adminData } ) {
     indexOfLastProduct
   );
 
+  // Filter products based on the selected tab
+  // const [filter, setFilter] = useState("All Products Promotions");
+
+
   // Set current page when a pagination button is clicked
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -219,7 +223,6 @@ export default function AdminPromotions( { adminData } ) {
               "Ative Pronotions",
               "Rrmove Promotions",
               "Sold out Products",
-              "Deleted Products",
             ].map((tab, index) => (
               <button
                 key={index}
@@ -228,6 +231,7 @@ export default function AdminPromotions( { adminData } ) {
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
+                // onClick={() => setFilter(tab)} On going...
               >
                 {tab}
               </button>
