@@ -12,11 +12,10 @@ export default function Products() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/products');
+        const response = await fetch("http://localhost:3001/api/products");
         const data = await response.json();
         setProducts(data);
-      }
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching products: ", error);
       }
     };
@@ -26,7 +25,10 @@ export default function Products() {
   // Calculate the indexes for the current page's products
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   // Set current page when a pagination button is clicked
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -49,16 +51,28 @@ export default function Products() {
 
   return (
     <div className="card rounded-lg shadow-md mt-1 mx-10 bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        {/* Header */}
-        <div className="text-center text-2xl p-10 font-bold">
-          <p>ALL PRODUCTS</p>
-        </div>
+    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+      {/* Header */}
+      <div className="text-center text-2xl p-10 font-bold">
+        <p>ALL PRODUCTS</p>
+      </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {currentProducts.map((product) => (
-            <Link key={product._id} to={`/product/${product._id}`} className="group">
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        {currentProducts.map((product) => {
+          // Calculate discounted price if discount exists
+          const hasDiscount = product.discount > 0;
+          const originalPrice = product.price;
+          const discountedPrice = hasDiscount
+            ? originalPrice * (1 - product.discount / 100)
+            : originalPrice;
+
+          return (
+            <Link
+              key={product._id}
+              to={`/product/${product._id}`}
+              className="group"
+            >
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                 <img
                   src={product.imageSrc}
@@ -67,18 +81,33 @@ export default function Products() {
                 />
               </div>
               <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">{product.price}</p>
+              <div className="mt-1 text-lg font-medium text-gray-900">
+                {hasDiscount ? (
+                  <>
+                    <span className="line-through text-gray-500 mr-2">
+                      ${originalPrice.toFixed(2)}
+                    </span>
+                    <span className="text-red-600">
+                      ${discountedPrice.toFixed(2)}
+                    </span>
+                    <span className="text-sm text-gray-500 ml-2">
+                      ({product.discount}% off)
+                    </span>
+                  </>
+                ) : (
+                  <span>${originalPrice.toFixed(2)}</span>
+                )}
+              </div>
             </Link>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <nav className="mt-8" aria-label="Pagination">
-          <ul className="flex justify-center">{renderPaginationButtons()}</ul>
-        </nav>
+          );
+        })}
       </div>
+
+      {/* Pagination */}
+      <nav className="mt-8" aria-label="Pagination">
+        <ul className="flex justify-center">{renderPaginationButtons()}</ul>
+      </nav>
     </div>
+  </div>
   );
 }
-
-          

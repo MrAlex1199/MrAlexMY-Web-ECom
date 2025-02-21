@@ -121,45 +121,110 @@ app.put("/api/products/:id/add-discount", async (req, res) => {
 
 // Endpoint to upload CSV file and add products to MongoDB
 app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
-  const filePath = req.file.path; // Corrected path handling
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  const filePath = req.file.path;
+
   try {
     const products = [];
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on("data", (row) => {
-        products.push({
-          name: row.name,
-          price: parseFloat(row.price.replace("$", "")),
-          stock_remaining: parseInt(row.stock_remaining),
-          href: row.href,
-          imageSrc: row.imageSrc,
-          imageAlt: row.imageAlt,
-          breadcrumbs: row.breadcrumbs,
-          images: row.images.split(" | ").map((image) => {
-            const [src, alt] = image.split(" > ");
-            return { src, alt };
-          }),
-          description: row.description,
-          colors: row.colors.split(" | ").map((color) => {
-            const [name, classStr, selectedClass] = color.split(" > ");
-            return { name, class: classStr, selectedClass };
-          }),
-          sizes: row.sizes.split(" | ").map((size) => {
-            const [name, inStock] = size.split(" > ");
-            return { name, inStock: inStock === "true" };
-          }),
-          highlights: row.highlights.split(" | "),
-          details: row.details,
-        });
-      })
-      .on("end", async () => {
-        await Product.insertMany(products);
-        fs.unlinkSync(filePath); // Clean up the file
-        res.status(200).json({ message: "Products added successfully!" });
-      });
+
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on("data", (row) => {
+          // Basic validation for required fields
+          if (
+            !row.name ||
+            !row.price ||
+            !row.stock_remaining ||
+            !row.imageSrc
+          ) {
+            console.warn("Skipping row due to missing required fields:", row);
+            return;
+          }
+
+          try {
+            const product = {
+              name: row.name,
+              price: parseFloat(row.price.replace("$", "")),
+              stock_remaining: parseInt(row.stock_remaining),
+              href: row.href || "",
+              imageSrc: row.imageSrc,
+              imageAlt: row.imageAlt || "",
+              breadcrumbs: row.breadcrumbs || "",
+              images: row.images
+                ? row.images.split(" | ").map((image) => {
+                    const [src, alt] = image.split(" > ");
+                    if (!src || !alt) throw new Error("Invalid image format");
+                    return { src, alt };
+                  })
+                : [],
+              colors: row.colors
+                ? row.colors.split(" | ").map((color) => {
+                    const [name, classStr, selectedClass] = color.split(" > ");
+                    if (!name || !classStr || !selectedClass)
+                      throw new Error("Invalid color format");
+                    return { name, class: classStr, selectedClass };
+                  })
+                : [],
+              sizes: row.sizes
+                ? row.sizes.split(" | ").map((size) => {
+                    const [name, inStock] = size.split(" > ");
+                    if (!name || !inStock)
+                      throw new Error("Invalid size format");
+                    return { name, inStock: inStock === "true" };
+                  })
+                : [],
+              highlights: row.highlights ? row.highlights.split(" | ") : [],
+              details: row.details || "",
+              discount: row.discount ? parseInt(row.discount) : 0,
+            };
+
+            // Validate numeric fields
+            if (
+              isNaN(product.price) ||
+              isNaN(product.stock_remaining) ||
+              isNaN(product.discount)
+            ) {
+              throw new Error("Invalid numeric value");
+            }
+
+            products.push(product);
+          } catch (error) {
+            console.warn(
+              `Skipping row due to parsing error: ${error.message}`,
+              row
+            );
+          }
+        })
+        .on("end", () => resolve())
+        .on("error", (error) => reject(error));
+    });
+
+    if (products.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid products found in CSV" });
+    }
+
+    await Product.insertMany(products, { ordered: false }); // ordered: false to continue on duplicates
+    res
+      .status(200)
+      .json({ message: `${products.length} products added successfully!` });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error uploading products" });
+    console.error("Error processing CSV:", error);
+    res
+      .status(500)
+      .json({ message: "Error uploading products", error: error.message });
+  } finally {
+    // Clean up file regardless of success or failure
+    try {
+      fs.unlinkSync(filePath);
+    } catch (cleanupError) {
+      console.error("Error deleting file:", cleanupError);
+    }
   }
 });
 
