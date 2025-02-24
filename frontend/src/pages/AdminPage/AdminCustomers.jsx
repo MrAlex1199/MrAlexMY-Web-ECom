@@ -6,7 +6,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageCustomrs( { adminData } ) {
+export default function AdminManageCustomrs({ adminData }) {
   // Sample data for orders list
   const CustomersAccount = [
     {
@@ -209,8 +209,14 @@ export default function AdminManageCustomrs( { adminData } ) {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // Filter logic
   const [filter, setFilter] = useState("All");
-  const filteredItems = filter === "All" ? CustomersAccount : CustomersAccount.filter(account => account.sex === filter);
-  const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const filteredItems =
+    filter === "All"
+      ? CustomersAccount
+      : CustomersAccount.filter((account) => account.sex === filter);
+  const currentFilteredItems = filteredItems.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   // Handle page change
@@ -236,9 +242,8 @@ export default function AdminManageCustomrs( { adminData } ) {
             { title: "Total Account", value: 21, color: "text-blue-600" },
             { title: "Active Account", value: 18, color: "text-green-600" },
             { title: "Delete Account", value: 2, color: "text-purple-600" },
-            { title: "Month Sales", value: "$500,000", color: "text-red-600" },
-            { title: "Total Sales", value: "$2,500,000", color: "text-red-100",
-            },
+            { title: "Male Account", value: 11, color: "text-blue-600" },
+            { title: "Female Account", value: 10, color: "text-pink-600" },
           ].map((card, index) => (
             <div
               key={index}
@@ -259,11 +264,7 @@ export default function AdminManageCustomrs( { adminData } ) {
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
-            {[
-              "All",
-              "Male",
-              "Female",
-            ].map((tab, index) => (
+            {["All", "Male", "Female"].map((tab, index) => (
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
@@ -361,31 +362,55 @@ export default function AdminManageCustomrs( { adminData } ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    className={`px-3 py-2 leading-tight border ${
-                      page === currentPage
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                    }`}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
+              {Array.from(
+                { length: totalFilteredPages },
+                (_, index) => index + 1
+              ).map((page) => (
+                <button
+                  key={page}
+                  className={`px-3 py-2 leading-tight border ${
+                    page === currentPage
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  }`}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </button>
+              ))}
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
+                  handlePageChange(
+                    Math.min(totalFilteredPages, currentPage + 1)
+                  )
                 }
                 disabled={currentPage === totalFilteredPages}
               >
                 <span>»</span>
               </button>
             </nav>
+          </div>
+        </div>
+        {/* Delete Account */}
+        <div className="flex flex-wrap gap-6 my-6">
+          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Delete Account
+            </h2>
+            <form>
+              <div className="mb-4">
+                <label className="block text-gray-700">Account ID</label>
+                <input
+                  type="number"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product ID"
+                />
+              </div>
+              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
+                Delete Account
+              </button>
+            </form>
           </div>
         </div>
       </div>

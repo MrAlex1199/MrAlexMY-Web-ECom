@@ -361,9 +361,13 @@ export default function Overview( {adminData} ) {
           {[
             { title: "Total Account", value: 21, color: "text-blue-600" },
             { title: "Active Account", value: 18, color: "text-green-600" },
-            { title: "Delete Account", value: 2, color: "text-purple-600" },
-            { title: "Month Sales", value: "$500,000", color: "text-red-600" },
-            { title: "Total Sales", value: "$2,500,000", color: "text-red-100", },
+            { title: "Total Products", value: 21, color: "text-blue-600" },
+            { title: "SoldOut Products", value: 3, color: "text-red-600" },
+            { title: "Active Discount", value: 18, color: "text-green-600" },
+            { title: "Remove Discount", value: 2, color: "text-purple-600" },
+            { title: "Total Discount Value", value: "$30,000", color: "text-red-600"},
+            { title: "Total Sales", value: "$2,500,000", color: "text-red-100"},
+            { title: "Total Revenue", value: "$1,500,000", color: "text-indigo-700"}
           ].map((card, index) => (
             <div
               key={index}
@@ -461,7 +465,7 @@ export default function Overview( {adminData} ) {
           </div>
 
           {/* Customers Table */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-sm">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">

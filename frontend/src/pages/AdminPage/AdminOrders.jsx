@@ -618,27 +618,27 @@ export default function AdminManageOrders({ adminData }) {
               </button>
             </nav>
           </div>
-          {/* Product Delete */}
-          <div className="flex flex-wrap gap-6 mb-6">
-            {/* Delete Product */}
-            <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-700 mb-4">
+        </div>
+        {/* Product Delete */}
+        <div className="flex flex-wrap gap-6 my-6">
+          {/* Delete Product */}
+          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Delete Order
+            </h2>
+            <form>
+              <div className="mb-4">
+                <label className="block text-gray-700">Product ID</label>
+                <input
+                  type="number"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product ID"
+                />
+              </div>
+              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
                 Delete Order
-              </h2>
-              <form>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Product ID</label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Enter product ID"
-                  />
-                </div>
-                <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
-                  Delete Order
-                </button>
-              </form>
-            </div>
+              </button>
+            </form>
           </div>
         </div>
       </div>

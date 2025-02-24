@@ -78,23 +78,12 @@ export default function AdminPromotions( { adminData } ) {
         <div className="flex flex-wrap gap-4 mb-6">
           {[
             { title: "Total Products", value: 21, color: "text-blue-600" },
+            { title: "SoldOut Products", value: 3, color: "text-red-600" },
             { title: "Active Discount", value: 18, color: "text-green-600" },
             { title: "Remove Discount", value: 2, color: "text-purple-600" },
-            {
-              title: "SoldOut Products",
-              value: "30",
-              color: "text-red-600",
-            },
-            {
-              title: "Total Discount Value",
-              value: "$30,000",
-              color: "text-red-600",
-            },
-            {
-              title: "Total Sales",
-              value: "$2,500,000",
-              color: "text-red-100",
-            },
+            { title: "Total Discount Value", value: "$30,000", color: "text-red-600"},
+            { title: "Total Sales", value: "$2,500,000", color: "text-red-100"},
+            { title: "Total Revenue", value: "$1,500,000", color: "text-indigo-700"}
           ].map((card, index) => (
             <div
               key={index}

@@ -41,7 +41,7 @@ export default function AdminManageProducts( {adminData} ) {
   };
 
   // filter logic
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState("All Products");
   const filteredItems = filter === "All Products" ? products : filter === "In Stock" ? products.filter(product => product.stock_remaining > 0) : products.filter(product => product.stock_remaining === 0);
   const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
   const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -126,10 +126,15 @@ export default function AdminManageProducts( {adminData} ) {
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 mb-6">
           {[
-            { title: "Total Products", value: 120, color: "text-blue-600" },
-            { title: "Total Orders", value: 45, color: "text-green-600" },
-            { title: "Total Users", value: 300, color: "text-purple-600" },
-            { title: "Total Sales", value: "$25,000", color: "text-red-600" },
+            { title: "Total Account", value: 21, color: "text-blue-600" },
+            { title: "Active Account", value: 18, color: "text-green-600" },
+            { title: "Total Products", value: 21, color: "text-blue-600" },
+            { title: "SoldOut Products", value: 3, color: "text-red-600" },
+            { title: "Active Discount", value: 18, color: "text-green-600" },
+            { title: "Remove Discount", value: 2, color: "text-purple-600" },
+            { title: "Total Discount Value", value: "$30,000", color: "text-red-600"},
+            { title: "Total Sales", value: "$2,500,000", color: "text-red-100"},
+            { title: "Total Revenue", value: "$1,500,000", color: "text-indigo-700"}
           ].map((card, index) => (
             <div
               key={index}
