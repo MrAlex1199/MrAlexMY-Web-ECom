@@ -17,8 +17,16 @@ export default function ProductsDetails({ userId }) {
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
+  
   // console.log("id:", id);
   // console.log("product:", product);
+
+  // Calculate the discounted price if a discount is available
+  const hasDiscount = product.discount > 0;
+  const originalPrice = product.price;
+  const discountedPrice = hasDiscount
+    ? originalPrice * (1 - product.discount / 100)
+    : originalPrice;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -148,7 +156,22 @@ export default function ProductsDetails({ userId }) {
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-900">
-              {product.price}
+              { hasDiscount ? (
+                <>
+                  <span className="line-through text-gray-500 mr-2">
+                    ${originalPrice.toFixed(2)}
+                  </span>
+                  <span className="text-red-600">
+                    ${discountedPrice.toFixed(2)}
+                  </span>
+                  <span className="text-sm text-gray-500 ml-2">
+                    ({product.discount}% off)
+                  </span>
+                </>
+              ) : (
+                <span>${originalPrice.toFixed(2)}</span>
+              )
+              }
             </p>
 
             {/* Reviews */}
