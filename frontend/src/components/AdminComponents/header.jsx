@@ -5,9 +5,6 @@ export default function Header({
   dropdownOpen,
   textpage,
   AdminData,
-  isAdmin,
-  setIsAdmin,
-  setAdminData,
 }) {
   const [time, setTime] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,13 +19,6 @@ export default function Header({
 
     return () => clearInterval(timer);
   }, []);
-
-  const handleAdminLogout = () => {
-    localStorage.removeItem("AToken");
-    localStorage.removeItem("isAdmin");
-    setIsAdmin(false);
-    setAdminData({ adminid: "", email: "", role: "" });
-  };
 
   const handleProfileClick = () => {
     setIsModalOpen(true);
@@ -90,7 +80,10 @@ export default function Header({
                   </button>
                   <button
                     className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100 transition"
-                    onClick={handleAdminLogout}
+                    onClick={() => {
+                      localStorage.removeItem("isAdmin");
+                      window.location.href = "/admin-login";
+                    }} 
                   >
                     Logout
                   </button>
