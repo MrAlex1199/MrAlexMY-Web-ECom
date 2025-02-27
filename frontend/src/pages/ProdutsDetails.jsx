@@ -21,13 +21,6 @@ export default function ProductsDetails({ userId }) {
   // console.log("id:", id);
   // console.log("product:", product);
 
-  // Calculate the discounted price if a discount is available
-  const hasDiscount = product.discount > 0;
-  const originalPrice = product.price;
-  const discountedPrice = hasDiscount
-    ? originalPrice * (1 - product.discount / 100)
-    : originalPrice;
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -48,6 +41,13 @@ export default function ProductsDetails({ userId }) {
   if (!product) {
     return <div>Loading...</div>;
   }
+
+  // Calculate the discounted price if a discount is available
+  const hasDiscount = product.discount > 0;
+  const originalPrice = product.price;
+  const discountedPrice = hasDiscount
+    ? originalPrice * (1 - product.discount / 100)
+    : originalPrice;
 
   const handleAddToBag = async () => {
     try {

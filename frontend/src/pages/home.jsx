@@ -74,3 +74,5 @@ export default function home() {
   );
 }
 
+// ทำต่อ หน้า home ดึงข้อมูลจาก MogoDB มาแสดงผล แทนการใช้ข้อมูลจากตัวแปร products ที่เราสร้างขึ้นมาเอง
+

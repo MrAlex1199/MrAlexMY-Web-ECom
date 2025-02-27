@@ -101,6 +101,136 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
+
+// New Product Schema
+const NewProductSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  stock_remaining: { type: Number, required: true },
+  href: { type: String },
+  imageSrc: { type: String, required: true },
+  imageAlt: { type: String },
+  breadcrumbs: { type: String },
+  images: [{ src: String, alt: String }],
+  description: { type: String },
+  colors: [{ name: String, class: String, selectedClass: String }],
+  sizes: [{ name: String, inStock: Boolean }],
+  highlights: [String],
+  details: String,
+  discount: { type: Number, default: 0 },
+});
+
+const NewProduct = mongoose.model("NewProduct", NewProductSchema);
+
+// Endpoint to upload CSV file and add new product to MongoDB
+app.post("/api/upload-csv-new-products", upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  const filePath = req.file.path;
+
+  try {
+    const NewProducts = [];
+
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on("data", (row) => {
+          // Basic validation for required fields
+          if (
+            !row.name ||
+            !row.price ||
+            !row.stock_remaining ||
+            !row.imageSrc
+          ) {
+            console.warn("Skipping row due to missing required fields:", row);
+            return;
+          }
+
+          try {
+            const NewProduct = {
+              name: row.name,
+              price: parseFloat(row.price.replace("$", "")),
+              stock_remaining: parseInt(row.stock_remaining),
+              href: row.href || "",
+              imageSrc: row.imageSrc,
+              imageAlt: row.imageAlt || "",
+              breadcrumbs: row.breadcrumbs || "",
+              images: row.images
+                ? row.images.split(" | ").map((image) => {
+                    const [src, alt] = image.split(" > ");
+                    if (!src || !alt) throw new Error("Invalid image format");
+                    return { src, alt };
+                  })
+                : [],
+              colors: row.colors
+                ? row.colors.split(" | ").map((color) => {
+                    const [name, classStr, selectedClass] = color.split(" > ");
+                    if (!name || !classStr || !selectedClass)
+                      throw new Error("Invalid color format");
+                    return { name, class: classStr, selectedClass };
+                  })
+                : [],
+              sizes: row.sizes
+                ? row.sizes.split(" | ").map((size) => {
+                    const [name, inStock] = size.split(" > ");
+                    if (!name || !inStock)
+                      throw new Error("Invalid size format");
+                    return { name, inStock: inStock === "true" };
+                  })
+                : [],
+              highlights: row.highlights ? row.highlights.split(" | ") : [],
+              details: row.details || "",
+              discount: row.discount ? parseInt(row.discount) : 0,
+            };
+
+            // Validate numeric fields
+            if (
+              isNaN(NewProduct.price) ||
+              isNaN(NewProduct.stock_remaining) ||
+              isNaN(NewProduct.discount)
+            ) {
+              throw new Error("Invalid numeric value");
+            }
+
+            NewProducts.push(NewProduct);
+          } catch (error) {
+            console.warn(
+              `Skipping row due to parsing error: ${error.message}`,
+              row
+            );
+          }
+        })
+        .on("end", () => resolve())
+        .on("error", (error) => reject(error));
+    });
+
+    if (NewProducts.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid products found in CSV" });
+    }
+
+    await NewProduct.insertMany(NewProducts, { ordered: false }); // ordered: false to continue on duplicates
+    res
+      .status(200)
+      .json({ message: `${NewProducts.length} products added successfully!` });
+  } catch (error) {
+    console.error("Error processing CSV:", error);
+    res
+      .status(500)
+      .json({ message: "Error uploading products", error: error.message });
+  } finally {
+    // Clean up file regardless of success or failure
+    try {
+      fs.unlinkSync(filePath);
+    } catch (cleanupError) {
+      console.error("Error deleting file:", cleanupError);
+    }
+  }
+});
+    
 // Endpoint to add Discount to a product
 app.put("/api/products/:id/add-discount", async (req, res) => {
   const { id } = req.params;

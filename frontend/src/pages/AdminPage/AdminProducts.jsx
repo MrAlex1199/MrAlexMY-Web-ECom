@@ -8,9 +8,11 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminManageProducts( {adminData} ) {
+export default function AdminManageProducts({ adminData }) {
   const [file, setFile] = useState(null);
+  const [newProductFile, setNewProductFile] = useState(null);
   const [csvPreview, setCsvPreview] = useState([]);
+  const [newProductCsvPreview, setNewProductCsvPreview] = useState([]);
 
   // Fetch products from the database
   const [products, setProducts] = useState([]);
@@ -28,7 +30,6 @@ export default function AdminManageProducts( {adminData} ) {
     fetchProducts();
   }, []);
 
-
   // Pagination logic
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -42,8 +43,16 @@ export default function AdminManageProducts( {adminData} ) {
 
   // filter logic
   const [filter, setFilter] = useState("All Products");
-  const filteredItems = filter === "All Products" ? products : filter === "In Stock" ? products.filter(product => product.stock_remaining > 0) : products.filter(product => product.stock_remaining === 0);
-  const currentFilteredItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+  const filteredItems =
+    filter === "All Products"
+      ? products
+      : filter === "In Stock"
+      ? products.filter((product) => product.stock_remaining > 0)
+      : products.filter((product) => product.stock_remaining === 0);
+  const currentFilteredItems = filteredItems.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const handleFileChange = (e) => {
@@ -73,6 +82,45 @@ export default function AdminManageProducts( {adminData} ) {
     try {
       const response = await axios.post(
         "http://localhost:3001/api/upload-csv",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log("Response:", response.data); // Log success response
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error:", error.response || error); // Log error details
+      alert("Failed to upload file");
+    }
+  };
+
+  const handleNewProductFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setNewProductFile(selectedFile);
+
+    if (selectedFile) {
+      Papa.parse(selectedFile, {
+        header: true, // Parse as JSON
+        skipEmptyLines: true,
+        complete: (results) => {
+          setNewProductCsvPreview(results.data.slice(0, 5)); // Show only the first 5 rows
+        },
+      });
+    }
+  };
+
+  const handleUploadNewProduct = async () => {
+    if (!newProductFile) {
+      alert("Please select a file!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", newProductFile);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/upload-csv-new-products",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -132,9 +180,21 @@ export default function AdminManageProducts( {adminData} ) {
             { title: "SoldOut Products", value: 3, color: "text-red-600" },
             { title: "Active Discount", value: 18, color: "text-green-600" },
             { title: "Remove Discount", value: 2, color: "text-purple-600" },
-            { title: "Total Discount Value", value: "$30,000", color: "text-red-600"},
-            { title: "Total Sales", value: "$2,500,000", color: "text-red-100"},
-            { title: "Total Revenue", value: "$1,500,000", color: "text-indigo-700"}
+            {
+              title: "Total Discount Value",
+              value: "$30,000",
+              color: "text-red-600",
+            },
+            {
+              title: "Total Sales",
+              value: "$2,500,000",
+              color: "text-red-100",
+            },
+            {
+              title: "Total Revenue",
+              value: "$1,500,000",
+              color: "text-indigo-700",
+            },
           ].map((card, index) => (
             <div
               key={index}
@@ -252,6 +312,73 @@ export default function AdminManageProducts( {adminData} ) {
           </div>
         </div>
 
+        {/* Add New Product from CSV */}
+        <div className="flex flex-wrap gap-6 mb-6">
+          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Add Featured New Product CSV
+            </h2>
+            <input
+              type="file"
+              accept=".csv"
+              className="p-2 border border-gray-300 rounded-lg mb-4 py-2 px-4"
+              onChange={handleNewProductFileChange}
+            />
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+              onClick={handleUploadNewProduct}
+            >
+              Upload New Product CSV
+            </button>
+          </div>
+        </div>
+
+        {/* New Product CSV Preview */}
+        {newProductCsvPreview && newProductCsvPreview.length > 0 ? (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Featured Product CSV Preview (First 5 Rows)
+            </h2>
+            <table className="table-auto w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  {Object.keys(newProductCsvPreview[0]).map((header, index) => (
+                    <th
+                      key={index}
+                      className="border border-gray-200 px-4 py-2 text-left text-sm font-medium text-gray-700"
+                    >
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {newProductCsvPreview.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {Object.keys(row).map((key, cellIndex) => (
+                      <td
+                        key={cellIndex}
+                        className="border border-gray-200 px-4 py-2 text-sm text-gray-600"
+                      >
+                        {row[key]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="text-gray-500 text-sm mt-2">
+              Showing the first 5 rows of the CSV file.
+            </p>
+          </div>
+        ) : (
+          <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6 mb-6">
+            <p className="text-gray-500 text-sm mt-2">
+              No CSV data available. Please select a file.
+            </p>
+          </div>
+        )}
+
         {/* Upload CSV */}
         <div className="flex flex-wrap gap-6 mb-6">
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
@@ -268,7 +395,7 @@ export default function AdminManageProducts( {adminData} ) {
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
               onClick={handleUpload}
             >
-              Upload CSV
+              Upload Products CSV
             </button>
           </div>
         </div>
@@ -349,11 +476,7 @@ export default function AdminManageProducts( {adminData} ) {
           </h2>
           {/* Tabs for different order statuses */}
           <div className="flex space-x-4 mb-4">
-            {[
-              "All Products",
-              "In Stock",
-              "Sold Out",
-            ].map((tab, index) => (
+            {["All Products", "In Stock", "Sold Out"].map((tab, index) => (
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
@@ -462,25 +585,28 @@ export default function AdminManageProducts( {adminData} ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    className={`px-3 py-2 leading-tight border ${
-                      page === currentPage
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                    }`}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
+              {Array.from(
+                { length: totalFilteredPages },
+                (_, index) => index + 1
+              ).map((page) => (
+                <button
+                  key={page}
+                  className={`px-3 py-2 leading-tight border ${
+                    page === currentPage
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  }`}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </button>
+              ))}
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
+                  handlePageChange(
+                    Math.min(totalFilteredPages, currentPage + 1)
+                  )
                 }
                 disabled={currentPage === totalFilteredPages}
               >
