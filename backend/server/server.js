@@ -180,6 +180,7 @@ app.post("/api/upload-csv-new-products", upload.single("file"), async (req, res)
                     return { name, inStock: inStock === "true" };
                   })
                 : [],
+              description: row.description || "",
               highlights: row.highlights ? row.highlights.split(" | ") : [],
               details: row.details || "",
               discount: row.discount ? parseInt(row.discount) : 0,
@@ -307,6 +308,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
                     return { name, inStock: inStock === "true" };
                   })
                 : [],
+              description: row.description || "",
               highlights: row.highlights ? row.highlights.split(" | ") : [],
               details: row.details || "",
               discount: row.discount ? parseInt(row.discount) : 0,
@@ -358,6 +360,17 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
   }
 });
 
+// Endpoint to get all new products
+app.get("/api/new-products", async (req, res) => {
+  try {
+    const newProducts = await NewProduct.find();
+    res.status(200).json(newProducts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching new products" });
+  }
+});
+
 //Endpoint to get all products
 app.get("/api/products", async (req, res) => {
   try {
@@ -375,6 +388,18 @@ app.get("/api/products/:id", async (req, res) => {
   try {
     const product = await Product.findById(id);
     res.json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+});
+
+// Endpoint to get a single new product by ID
+app.get("/api/new-products/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const newProduct = await NewProduct.findById(id);
+    res.json(newProduct);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");

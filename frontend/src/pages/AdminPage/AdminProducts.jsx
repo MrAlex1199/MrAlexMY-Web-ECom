@@ -55,6 +55,7 @@ export default function AdminManageProducts({ adminData }) {
   );
   const totalFilteredPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  // Upload Products CSV
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -95,6 +96,7 @@ export default function AdminManageProducts({ adminData }) {
     }
   };
 
+  // Upload New Products CSV
   const handleNewProductFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setNewProductFile(selectedFile);
@@ -135,8 +137,8 @@ export default function AdminManageProducts({ adminData }) {
   };
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [images, setImages] = useState([]);
 
+  const [images, setImages] = useState([]);
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map((file) => {
@@ -316,7 +318,7 @@ export default function AdminManageProducts({ adminData }) {
         <div className="flex flex-wrap gap-6 mb-6">
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Add Featured New Product CSV
+              Add Featured Product CSV
             </h2>
             <input
               type="file"
@@ -328,7 +330,7 @@ export default function AdminManageProducts({ adminData }) {
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
               onClick={handleUploadNewProduct}
             >
-              Upload New Product CSV
+              Upload
             </button>
           </div>
         </div>
@@ -395,7 +397,7 @@ export default function AdminManageProducts({ adminData }) {
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
               onClick={handleUpload}
             >
-              Upload Products CSV
+              Upload
             </button>
           </div>
         </div>

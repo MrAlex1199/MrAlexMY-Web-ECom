@@ -1,48 +1,54 @@
 import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
-import { useParams } from "react-router-dom";
-// import { products } from '../ProductsData/ProductsData';
+import { useParams, useLocation } from "react-router-dom";
 
-// Reviews data for displaying rating and total review count
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
-// Helper function to join class names dynamically
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ProductsDetails({ userId }) {
-  const { id } = useParams(); // Extract the _id from the URL
+  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const type = queryParams.get("type") || "product";
+
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-  
-  // console.log("id:", id);
-  // console.log("product:", product);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/products/${id}`
-        );
+        const endpoint =
+          type === "new-products"
+            ? `http://localhost:3001/api/new-products/${id}`
+            : `http://localhost:3001/api/products/${id}`;
+        const response = await fetch(endpoint);
         const data = await response.json();
-        setProduct(data);
-        setSelectedColor(data.colors[0]?.name || "");
-        setSelectedSize(data.sizes[2]?.name || "");
+        console.log("Fetched product data:", data); // Debug log
+        if (data) {
+          setProduct(data);
+          setSelectedColor(data.colors?.[0]?.name || "");
+          setSelectedSize(data.sizes?.[0]?.name || ""); // Use first size
+        } else {
+          console.error("Product not found or data is null");
+          setProduct(null);
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
+        setProduct(null);
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, type]);
 
   if (!product) {
     return <div>Loading...</div>;
   }
 
-  // Calculate the discounted price if a discount is available
   const hasDiscount = product.discount > 0;
   const originalPrice = product.price;
   const discountedPrice = hasDiscount
@@ -156,7 +162,7 @@ export default function ProductsDetails({ userId }) {
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-900">
-              { hasDiscount ? (
+              {hasDiscount ? (
                 <>
                   <span className="line-through text-gray-500 mr-2">
                     ${originalPrice.toFixed(2)}
@@ -170,8 +176,7 @@ export default function ProductsDetails({ userId }) {
                 </>
               ) : (
                 <span>${originalPrice.toFixed(2)}</span>
-              )
-              }
+              )}
             </p>
 
             {/* Reviews */}
