@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 import CheckoutPage from "./pages/CheckoutPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/AdminPage/AdminDashboard";
 import AdminRegister from "./pages/AdminPage/AdminRegister";
 import AdminLogin from "./pages/AdminPage/AdminLogin";
@@ -212,6 +213,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/setting" element={<Setting userData={userData} />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkoutPage" element={<CheckoutPage />} />
