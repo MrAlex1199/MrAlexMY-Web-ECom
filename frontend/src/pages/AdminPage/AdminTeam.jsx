@@ -6,7 +6,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminTeam( { adminData } ) {
+export default function AdminTeam({ adminData }) {
   // Sample data for team members
   const teamMembers = [
     {
@@ -102,11 +102,21 @@ export default function AdminTeam( { adminData } ) {
 
   // Filter logic
   const [filter, setFilter] = useState("All Members");
-  const FilterAdminTeam = filter === "All Members" ? teamMembers : filter === "Managers" ? teamMembers.filter(member => member.role === "Manager") : filter === "Developers" ? teamMembers.filter(member => member.role === "Developer") : teamMembers.filter(member => member.role === "Designer");
-  const CurrentAdminTeamFilter = FilterAdminTeam.slice(indexOfFirstItem, indexOfLastItem);
+  const FilterAdminTeam =
+    filter === "All Members"
+      ? teamMembers
+      : filter === "Managers"
+      ? teamMembers.filter((member) => member.role === "Manager")
+      : filter === "Developers"
+      ? teamMembers.filter((member) => member.role === "Developer")
+      : teamMembers.filter((member) => member.role === "Designer");
+  const CurrentAdminTeamFilter = FilterAdminTeam.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalFilteredPages = Math.ceil(FilterAdminTeam.length / itemsPerPage);
 
-  // 
+  //
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -126,13 +136,47 @@ export default function AdminTeam( { adminData } ) {
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 mb-6">
           {[
-            { title: "Total Members", value: teamMembers.length, color: "text-blue-600" },
-            { title: "Managers", value: teamMembers.filter(member => member.role === "Manager").length, color: "text-green-600" },
-            { title: "Developers", value: teamMembers.filter(member => member.role === "Developer").length, color: "text-purple-600" },
-            { title: "Designers", value: teamMembers.filter(member => member.role === "Designer").length, color: "text-red-600" },
-            { title: "Testers", value: teamMembers.filter(member => member.role === "Tester").length, color: "text-yellow-600" },
-            { title: "Support", value: teamMembers.filter(member => member.role === "Support").length, color: "text-indigo-600" },
-            { title: "HR", value: teamMembers.filter(member => member.role === "HR").length, color: "text-pink-600" },
+            {
+              title: "Total Members",
+              value: teamMembers.length,
+              color: "text-blue-600",
+            },
+            {
+              title: "Managers",
+              value: teamMembers.filter((member) => member.role === "Manager")
+                .length,
+              color: "text-green-600",
+            },
+            {
+              title: "Developers",
+              value: teamMembers.filter((member) => member.role === "Developer")
+                .length,
+              color: "text-purple-600",
+            },
+            {
+              title: "Designers",
+              value: teamMembers.filter((member) => member.role === "Designer")
+                .length,
+              color: "text-red-600",
+            },
+            {
+              title: "Testers",
+              value: teamMembers.filter((member) => member.role === "Tester")
+                .length,
+              color: "text-yellow-600",
+            },
+            {
+              title: "Support",
+              value: teamMembers.filter((member) => member.role === "Support")
+                .length,
+              color: "text-indigo-600",
+            },
+            {
+              title: "HR",
+              value: teamMembers.filter((member) => member.role === "HR")
+                .length,
+              color: "text-pink-600",
+            },
           ].map((card, index) => (
             <div
               key={index}
@@ -148,24 +192,115 @@ export default function AdminTeam( { adminData } ) {
 
         {/* Team Members List */}
         <div className="bg-white shadow rounded-lg p-6">
+          {/* Team Members Card */}
+          <div className="py-24 ">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="mb-12">
+                <h2 className="font-manrope text-5xl text-center font-bold text-gray-900 ">
+                  Our team{" "}
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 min-[500px]:grid-cols-2 md:grid-cols-6 lg:grid-cols-5 gap-8 max-w-xl mx-auto md:max-w-3xl lg:max-w-full">
+                <div className="block group md:col-span-2 lg:col-span-1 ">
+                  <div className="relative mb-6">
+                    <img
+                      src="https://pagedone.io/asset/uploads/1696238374.png"
+                      alt="Antonio"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                    />
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
+                    Antonio Roberto{" "}
+                  </h4>
+                  <span className="text-gray-500 text-center block transition-all duration-500 group-hover:text-gray-900">
+                    Founder
+                  </span>
+                </div>
+                <div className="block group md:col-span-2 lg:col-span-1 ">
+                  <div className="relative mb-6">
+                    <img
+                      src="https://pagedone.io/asset/uploads/1696238396.png"
+                      alt="Patricia"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                    />
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
+                    Patricia Angely{" "}
+                  </h4>
+                  <span className="text-gray-500 text-center block transition-all duration-500 group-hover:text-gray-900">
+                    Co-Founder
+                  </span>
+                </div>
+                <div className="group group md:col-span-2 lg:col-span-1">
+                  <div className="relative mb-6">
+                    <img
+                      src="	https://pagedone.io/asset/uploads/1696238411.png"
+                      alt="Jerom"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                    />
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
+                    Jerom Bell{" "}
+                  </h4>
+                  <span className="text-gray-500 text-center block transition-all duration-500 group-hover:text-gray-900">
+                    Chairman
+                  </span>
+                </div>
+                <div className="block group md:col-span-2 lg:col-span-1 md:col-start-2 lg:col-start-4">
+                  <div className="relative mb-6">
+                    <img
+                      src="	https://pagedone.io/asset/uploads/1696238425.png"
+                      alt="Yasmine"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                    />
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
+                    Yasmine Tano{" "}
+                  </h4>
+                  <span className="text-gray-500 text-center block transition-all duration-500 group-hover:text-gray-900">
+                    CEO
+                  </span>
+                </div>
+                <div className="block group min-[500px]:col-span-2 mx-auto md:col-span-2 lg:col-span-1 ">
+                  <div className="relative mb-6">
+                    <img
+                      src="https://pagedone.io/asset/uploads/1696238446.png"
+                      alt="Martin"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                    />
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
+                    Martin Darbys
+                  </h4>
+                  <span className="text-gray-500 text-center block transition-all duration-500 group-hover:text-gray-900">
+                    Product Manager
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Team Members Table */}
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Team Members
           </h2>
           {/* Tabs for different roles */}
           <div className="flex space-x-4 mb-4">
-            {["All Members", "Managers", "Developers", "Designers"].map((tab, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 rounded-lg ${
-                  index === 0
-                    ? "bg-purple-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                } hover:bg-purple-600 hover:text-white transition duration-300`}
-                onClick={() => setFilter(tab)}
-              >
-                {tab}
-              </button>
-            ))}
+            {["All Members", "Managers", "Developers", "Designers"].map(
+              (tab, index) => (
+                <button
+                  key={index}
+                  className={`px-4 py-2 rounded-lg ${
+                    index === 0
+                      ? "bg-purple-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  } hover:bg-purple-600 hover:text-white transition duration-300`}
+                  onClick={() => setFilter(tab)}
+                >
+                  {tab}
+                </button>
+              )
+            )}
             <button className="ml-auto px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300">
               Export as CSV
             </button>
@@ -186,12 +321,19 @@ export default function AdminTeam( { adminData } ) {
             </div>
           </div>
 
-          {/* Team Members Table */}
+          {/* Members Table */}
           <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
-                  {["ID", "Name", "Role", "Email", "Phone Number", "Joined Date"].map((header, index) => (
+                  {[
+                    "ID",
+                    "Name",
+                    "Role",
+                    "Email",
+                    "Phone Number",
+                    "Joined Date",
+                  ].map((header, index) => (
                     <th
                       key={index}
                       className="border border-gray-300 px-4 py-2 text-left"
@@ -240,25 +382,28 @@ export default function AdminTeam( { adminData } ) {
               >
                 <span>«</span>
               </button>
-              {Array.from({ length: totalFilteredPages }, (_, index) => index + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    className={`px-3 py-2 leading-tight border ${
-                      page === currentPage
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                    }`}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
+              {Array.from(
+                { length: totalFilteredPages },
+                (_, index) => index + 1
+              ).map((page) => (
+                <button
+                  key={page}
+                  className={`px-3 py-2 leading-tight border ${
+                    page === currentPage
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  }`}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </button>
+              ))}
               <button
                 className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700"
                 onClick={() =>
-                  handlePageChange(Math.min(totalFilteredPages, currentPage + 1))
+                  handlePageChange(
+                    Math.min(totalFilteredPages, currentPage + 1)
+                  )
                 }
                 disabled={currentPage === totalFilteredPages}
               >

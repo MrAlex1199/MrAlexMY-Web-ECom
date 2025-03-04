@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import "../Styles/loader.css";
 
 const productsPerPage = 8;
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Add currentPage state
+  const [products, setProducts] = useState([]); // Change products state to an empty array
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -14,8 +16,10 @@ export default function Home() {
         const data = await response.json();
         console.log("Home page products:", data); // Debug log
         setProducts(data);
+        setLoading(false); // Set loading to false after products are fetched
       } catch (error) {
         console.error("Error fetching products: ", error);
+        setLoading(false); // Set loading to false even if there's an error
       }
     };
     fetchProducts();
@@ -109,56 +113,66 @@ export default function Home() {
             <div className="text-center text-2xl font-bold">
               <p>FEATURED PRODUCTS</p>
             </div>
-            <div className="my-5 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-              {currentProducts.map((product) => {
-                const hasDiscount = product.discount > 0;
-                const originalPrice = product.price;
-                const discountedPrice = hasDiscount
-                  ? originalPrice * (1 - product.discount / 100)
-                  : originalPrice;
 
-                return (
-                  <Link
-                    key={product._id}
-                    to={`/product/${product._id}?type=new-products`}
-                    className="group"
-                  >
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                      <img
-                        src={product.imageSrc}
-                        alt={product.imageAlt}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75"
-                      />
-                    </div>
-                    <h3 className="mt-4 text-sm text-gray-700">
-                      {product.name}
-                    </h3>
-                    <div className="mt-1 text-lg font-medium text-gray-900">
-                      {hasDiscount ? (
-                        <>
-                          <span className="line-through text-gray-500 mr-2">
-                            ${originalPrice.toFixed(2)}
-                          </span>
-                          <span className="text-red-600">
-                            ${discountedPrice.toFixed(2)}
-                          </span>
-                          <span className="text-sm text-gray-500 ml-2">
-                            ({product.discount}% off)
-                          </span>
-                        </>
-                      ) : (
-                        <span>${originalPrice.toFixed(2)}</span>
-                      )}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            <nav className="mt-8 my-5" aria-label="Pagination">
-              <ul className="flex justify-center">
-                {renderPaginationButtons()}
-              </ul>
-            </nav>
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <>
+                <div className="my-5 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                  {currentProducts.map((product) => {
+                    const hasDiscount = product.discount > 0;
+                    const originalPrice = product.price;
+                    const discountedPrice = hasDiscount
+                      ? originalPrice * (1 - product.discount / 100)
+                      : originalPrice;
+
+                    return (
+                      <Link
+                        key={product._id}
+                        to={`/product/${product._id}?type=new-products`}
+                        className="group"
+                      >
+                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                          <img
+                            src={product.imageSrc}
+                            alt={product.imageAlt}
+                            className="h-full w-full object-cover object-center group-hover:opacity-75"
+                          />
+                        </div>
+                        <h3 className="mt-4 text-sm text-gray-700">
+                          {product.name}
+                        </h3>
+                        <div className="mt-1 text-lg font-medium text-gray-900">
+                          {hasDiscount ? (
+                            <>
+                              <span className="line-through text-gray-500 mr-2">
+                                ${originalPrice.toFixed(2)}
+                              </span>
+                              <span className="text-red-600">
+                                ${discountedPrice.toFixed(2)}
+                              </span>
+                              <span className="text-sm text-gray-500 ml-2">
+                                ({product.discount}% off)
+                              </span>
+                            </>
+                          ) : (
+                            <span>${originalPrice.toFixed(2)}</span>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                {/* Pagination */}
+                <nav className="my-8" aria-label="Pagination">
+                  <ul className="flex justify-center">
+                    {renderPaginationButtons()}
+                  </ul>
+                </nav>
+              </>
+            )}
           </div>
         </div>
       </div>
