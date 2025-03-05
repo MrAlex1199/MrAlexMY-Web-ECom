@@ -20,7 +20,7 @@ function footer() {
               </a>
             </li>
             <li>
-              <a href="#top" className="hover:underline me-4 md:me-6">
+              <a href="/privacy-policy" className="hover:underline me-4 md:me-6">
                 Privacy Policy
               </a>
             </li>

@@ -232,12 +232,14 @@ app.post("/api/upload-csv-new-products", upload.single("file"), async (req, res)
   }
 });
     
-// Endpoint to add Discount to a product
-app.put("/api/products/:id/add-discount", async (req, res) => {
+// Endpoint to add Discount to product by ID
+app.put("/api/products/:id/discount", async (req, res) => {
   const { id } = req.params;
   const { discount } = req.body;
+  // console.log("discount", discount, "ID", id);
   try {
-    const product = await Product.findById(id);
+    const objectId = new mongoose.Types.ObjectId(id); // Use 'new' keyword to instantiate ObjectId
+    const product = await Product.findById(objectId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }

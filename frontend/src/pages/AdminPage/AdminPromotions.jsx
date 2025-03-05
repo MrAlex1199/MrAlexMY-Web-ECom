@@ -7,7 +7,7 @@ import Header from "../../components/AdminComponents/header";
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function AdminPromotions( { adminData } ) {
+export default function AdminPromotions({ adminData }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Pagination logic
@@ -41,7 +41,6 @@ export default function AdminPromotions( { adminData } ) {
   // Filter products based on the selected tab
   // const [filter, setFilter] = useState("All Products Promotions");
 
-
   // Set current page when a pagination button is clicked
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -62,6 +61,17 @@ export default function AdminPromotions( { adminData } ) {
       </button>
     ));
 
+  // Add Discount to a product by ID
+  const applyDiscount = async (productId, discount) => {
+    console.log("Debug: ", productId, discount);
+    try {
+      const response = await axios.put(`http://localhost:3001/api/products/${productId}/discount`, { discount });
+      console.log("Discount applied: ", response.data);
+    } catch (error) {
+      console.error("Error applying discount: ", error);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -81,9 +91,21 @@ export default function AdminPromotions( { adminData } ) {
             { title: "SoldOut Products", value: 3, color: "text-red-600" },
             { title: "Active Discount", value: 18, color: "text-green-600" },
             { title: "Remove Discount", value: 2, color: "text-purple-600" },
-            { title: "Total Discount Value", value: "$30,000", color: "text-red-600"},
-            { title: "Total Sales", value: "$2,500,000", color: "text-red-100"},
-            { title: "Total Revenue", value: "$1,500,000", color: "text-indigo-700"}
+            {
+              title: "Total Discount Value",
+              value: "$30,000",
+              color: "text-red-600",
+            },
+            {
+              title: "Total Sales",
+              value: "$2,500,000",
+              color: "text-red-100",
+            },
+            {
+              title: "Total Revenue",
+              value: "$1,500,000",
+              color: "text-indigo-700",
+            },
           ].map((card, index) => (
             <div
               key={index}
@@ -99,16 +121,24 @@ export default function AdminPromotions( { adminData } ) {
 
         {/* Add Promotions */}
         <div className="flex flex-wrap gap-6 mb-6">
-          {/* Apply Promotions */}
+          {/* Apply Promotions by Product ID */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Apply Promotions
             </h2>
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const productId = e.target.productId.value;
+                const discount = e.target.discount.value;
+                applyDiscount(productId, discount);
+              }}
+            >
               <div className="mb-4">
                 <label className="block text-gray-700">Product ID</label>
                 <input
-                  type="number"
+                  type="text"
+                  name="productId"
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Enter product ID"
                 />
@@ -117,6 +147,7 @@ export default function AdminPromotions( { adminData } ) {
                 <label className="block text-gray-700">% Discount</label>
                 <input
                   type="number"
+                  name="discount"
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Enter discount percentage"
                 />
@@ -126,9 +157,11 @@ export default function AdminPromotions( { adminData } ) {
               </button>
             </form>
           </div>
-          {/* Apply Promotions Code */}
+          {/* Apply Promotions by Code */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Apply Promotions Code</h2>
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Apply Promotions Code
+            </h2>
             <form>
               <div className="mb-4">
                 <label className="block text-gray-700">Promotion Code</label>
@@ -142,23 +175,44 @@ export default function AdminPromotions( { adminData } ) {
                 Apply Promotion Code
               </button>
               <div className="mt-4">
-                <h3 className="text-md font-semibold text-gray-700 mb-2">Active Promotion Codes</h3>
+                <h3 className="text-md font-semibold text-gray-700 mb-2">
+                  Active Promotion Codes
+                </h3>
                 <div className="overflow-y-auto max-h-40">
                   <table className="table-auto w-full border-collapse border border-gray-300">
                     <thead>
                       <tr className="bg-gray-100">
-                        <th className="border border-gray-300 px-4 py-2 text-left">Code</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Discount</th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">
+                          Code
+                        </th>
+                        <th className="border border-gray-300 px-4 py-2 text-left">
+                          Discount
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                     {/*Hardcoded promotion codes  and discounts */}
-                      {["PROMO2024", "PROMO2023", "PROMO2022", "PROMO2021" ,"PROMO2020"].slice(0, 5).map((code, index) => (
-                        <tr key={index} className="hover:bg-gray-100 transition duration-300">
-                          <td className="border border-gray-300 px-4 py-2">{code}</td>
-                          <td className="border border-gray-300 px-4 py-2">{`${20 - index * 5}%`}</td>
-                        </tr>
-                      ))}
+                      {/*Hardcoded promotion codes  and discounts */}
+                      {[
+                        "PROMO2024",
+                        "PROMO2023",
+                        "PROMO2022",
+                        "PROMO2021",
+                        "PROMO2020",
+                      ]
+                        .slice(0, 5)
+                        .map((code, index) => (
+                          <tr
+                            key={index}
+                            className="hover:bg-gray-100 transition duration-300"
+                          >
+                            <td className="border border-gray-300 px-4 py-2">
+                              {code}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">{`${
+                              20 - index * 5
+                            }%`}</td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -255,6 +309,7 @@ export default function AdminPromotions( { adminData } ) {
                     "ID",
                     "Name",
                     "Price",
+                    "Discount",
                     "Breadcrumbs",
                     "Colors",
                     "Highlights",
@@ -288,6 +343,9 @@ export default function AdminPromotions( { adminData } ) {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       ${product.price}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {product.discount}%
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {product.breadcrumbs}
