@@ -55,34 +55,40 @@ export default function ProductsDetails({ userId }) {
     ? originalPrice * (1 - product.discount / 100)
     : originalPrice;
 
-  const handleAddToBag = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:3001/save-selected-products",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId,
-            productName: product.name,
-            productId: product._id,
-            price: product.price.toString(),
-            imageSrc: product.imageSrc,
-            selectedColor,
-            selectedSize,
-          }),
+    const handleAddToBag = async () => {
+      try {
+        const hasDiscount = product.discount > 0;
+        const originalPrice = product.price;
+        const finalPrice = hasDiscount
+          ? originalPrice * (1 - product.discount / 100)
+          : originalPrice;
+    
+        const response = await fetch(
+          "http://localhost:3001/save-selected-products",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId,
+              productName: product.name,
+              productId: product._id,
+              price: finalPrice.toString(),
+              imageSrc: product.imageSrc,
+              selectedColor,
+              selectedSize,
+            }),
+          }
+        );
+    
+        if (response.ok) {
+          console.log("Product added to bag successfully");
+        } else {
+          console.error("Failed to add product to bag");
         }
-      );
-
-      if (response.ok) {
-        console.log("Product added to bag successfully");
-      } else {
-        console.error("Failed to add product to bag");
+      } catch (error) {
+        console.error("Error adding product to bag:", error);
       }
-    } catch (error) {
-      console.error("Error adding product to bag:", error);
-    }
-  };
+    };
 
   return (
     <div className="bg-white">

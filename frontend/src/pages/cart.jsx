@@ -32,7 +32,7 @@ export default function cart({
         }
 
         const updatedProducts = selectedProducts.filter(
-          (product) => product.productId !== productId
+          (product) => product.id !== productId
         );
         setSelectedProducts(updatedProducts);
 
@@ -49,8 +49,7 @@ export default function cart({
       // Calculate new total price for the product (if quantity remains above 0)
       const newProductTotalPrice =
         newQuantity *
-        selectedProducts.find((product) => product.productId === productId)
-          .price;
+        selectedProducts.find((product) => product.id === productId).price;
 
       const response = await fetch(
         `http://localhost:3001/cart/update-quantity/${userId}/${productId}`,
@@ -72,7 +71,7 @@ export default function cart({
 
       // Optimistic UI update (assuming successful backend update)
       const updatedProducts = selectedProducts.map((product) => {
-        if (product.productId === productId) {
+        if (product.id === productId) {
           return {
             ...product,
             quantity: newQuantity,
@@ -97,243 +96,163 @@ export default function cart({
   };
 
   return (
-    <div>
-      {/* Products map */}
-      <div className="card rounded-lg shadow-md mt-5 mx-10 bg-white py-28">
-        <div className=" relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
-          <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto relative z-10">
-            <div className="grid grid-cols-12">
-              <div className="col-span-12 xl:col-span-8 lg:pr-8 pt-14 pb-8 lg:py-24 w-full max-xl:max-w-3xl max-xl:mx-auto">
-                <div className="flex items-center justify-between pb-8 border-b border-gray-300">
-                  <h2 className="font-manrope font-bold text-3xl leading-10 text-black">
-                    Shopping Cart
-                  </h2>
-                  <h2 className="font-manrope font-bold text-3xl leading-10 text-black">
-                    {selectedProducts.length} Items
-                  </h2>
+    <div className="min-h-screen bg-gray-100">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Cart Items */}
+          <div className="w-full lg:w-2/3">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Shopping Cart
+                </h2>
+                <span className="text-lg font-medium text-gray-600">
+                  {selectedProducts.length} Items
+                </span>
+              </div>
+
+              {/* Header for larger screens */}
+              <div className="hidden md:grid grid-cols-12 gap-4 pb-4 border-b border-gray-200">
+                <div className="col-span-5">
+                  <p className="text-sm text-gray-500">Product</p>
                 </div>
-                <div className="grid grid-cols-12 mt-8 max-md:hidden pb-6 border-b border-gray-200">
-                  <div className="col-span-12 md:col-span-7">
-                    <p className="font-normal text-lg leading-8 text-gray-400">
-                      Product Details
-                    </p>
-                  </div>
-                  <div className="col-span-12 md:col-span-5">
-                    <div className="grid grid-cols-5">
-                      <div className="col-span-3">
-                        <p className="font-normal text-lg leading-8 text-gray-400 text-center">
-                          Quantity
-                        </p>
-                      </div>
-                      <div className="col-span-2">
-                        <p className="font-normal text-lg leading-8 text-gray-400 text-center">
-                          Total
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="col-span-3 text-center">
+                  <p className="text-sm text-gray-500">Quantity</p>
                 </div>
-                {selectedProducts.map((products) => (
-                  <div
-                    key={products.id}
-                    className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6  border-b border-gray-200"
-                  >
-                    <div className="w-full md:max-w-[126px]">
-                      <img src={products.imageSrc} alt="" className="mx-auto" />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 w-full">
-                      <div className="md:col-span-2">
-                        <div className="flex flex-col max-[500px]:items-center gap-3">
-                          <h6 className="font-semibold text-base leading-7 text-black">
-                            {products.productName}
-                          </h6>
-                          <h6 className="font-normal text-base leading-7 text-gray-500">
-                            {products.productName}
-                          </h6>
-                          <h6 className="font-semibold text-base leading-7 text-indigo-600">
-                            {products.price.toFixed(2)}
-                          </h6>
-                        </div>
-                      </div>
-                      <div className="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
-                        <div className="flex items-center h-full">
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(
-                                products.productId,
-                                products.quantity - 1
-                              )
-                            }
-                            className="group rounded-l-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                          >
-                            <svg
-                              className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                              xmlns="https://www.w3.org/TR/SVG2/"
-                              width="22"
-                              height="22"
-                              viewBox="0 0 22 22"
-                              fill="none"
-                            >
-                              <path
-                                d="M16.5 11H5.5"
-                                stroke="currentColor"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                              <path
-                                d="M16.5 11H5.5"
-                                stroke=""
-                                strokeOpacity="0.2"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                              <path
-                                d="M16.5 11H5.5"
-                                stroke=""
-                                strokeOpacity="0.2"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                            </svg>
-                          </button>
-                          <input
-                            type="text"
-                            className="border-y border-gray-200 outline-none text-gray-900 font-semibold text-lg w-full max-w-[73px] min-w-[60px] placeholder:text-gray-900 py-[15px]  text-center bg-transparent"
-                            value={products.quantity}
-                            readOnly
-                          />
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(
-                                products.productId,
-                                products.quantity + 1
-                              )
-                            }
-                            className="group rounded-r-full px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm shadow-transparent transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus-within:outline-gray-300"
-                          >
-                            <svg
-                              className="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="22"
-                              height="22"
-                              viewBox="0 0 22 22"
-                              fill="none"
-                            >
-                              <path
-                                d="M11 5.5V16.5M16.5 11H5.5"
-                                stroke="currentColor"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                              <path
-                                d="M11 5.5V16.5M16.5 11H5.5"
-                                stroke=""
-                                strokeOpacity="0.2"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                              <path
-                                d="M11 5.5V16.5M16.5 11H5.5"
-                                stroke=""
-                                strokeOpacity="0.2"
-                                strokeWidth="1.6"
-                                strokeiinecap="round"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex items-center max-[500px]:justify-center md:justify-end max-md:mt-3 h-full">
-                        <p className="font-bold text-lg leading-8 text-indigo-600 text-center">
-                          {products.totalPrice.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="flex items-center justify-end mt-8">
-                  <button className="flex items-center px-5 py-3 rounded-full gap-2 border-none outline-0 font-semibold text-lg leading-8 text-indigo-600 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-indigo-300 hover:bg-indigo-50">
-                    Add Coupon Code
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                    >
-                      <path
-                        d="M12.7757 5.5L18.3319 11.0562M18.3319 11.0562L12.7757 16.6125M18.3319 11.0562L1.83203 11.0562"
-                        stroke="#4F46E5"
-                        strokeWidth="1.6"
-                        strokeiinecap="round"
-                      />
-                    </svg>
-                  </button>
+                <div className="col-span-4 text-right">
+                  <p className="text-sm text-gray-500">Total</p>
                 </div>
               </div>
-              <div className=" col-span-12 xl:col-span-4 bg-gray-50 w-full max-xl:px-6 max-w-3xl xl:max-w-lg mx-auto lg:pl-8 py-24">
-                <h2 className="font-manrope font-bold text-3xl leading-10 text-black pb-8 border-b border-gray-300">
-                  Order Summary
-                </h2>
-                <div className="mt-8">
-                  <div className="flex items-center justify-between pb-6">
-                    <p className="font-normal text-lg leading-8 text-black">
-                      {selectedProducts.length} Items
-                    </p>
-                    <p className="font-medium text-lg leading-8 text-black">
-                      Total: {totalPrice}$
-                    </p>
-                  </div>
-                  <form>
-                    <label className="flex  items-center mb-1.5 text-gray-600 text-sm font-medium">
-                      Shipping
-                    </label>
-                    <div className="flex pb-6">
-                      <div className="relative w-full">
-                        <div className=" absolute left-0 top-0 py-3 px-4">
-                          <span className="font-normal text-base text-gray-300">
-                            Delivery Price
-                          </span>
-                        </div>
+
+              {/* Cart Items */}
+              {selectedProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="py-4 border-b border-gray-200 last:border-b-0"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    {/* Product Info */}
+                    <div className="col-span-12 md:col-span-5 flex items-center gap-4">
+                      <img
+                        src={product.imageSrc}
+                        alt={product.productName}
+                        className="w-20 h-20 object-cover rounded-md"
+                      />
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {product.productName}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="col-span-6 md:col-span-3 mt-2 md:mt-0">
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(product.id, product.quantity - 1)
+                          }
+                          className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-l-md hover:bg-gray-50 transition-colors"
+                        >
+                          <svg
+                            className="w-5 h-5 text-gray-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              d="M20 12H4"
+                            />
+                          </svg>
+                        </button>
                         <input
                           type="text"
-                          className="block w-full h-11 pr-10 pl-36 min-[500px]:pl-52 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-gray-400"
-                          placeholder="$5.00"
+                          value={product.quantity}
                           readOnly
+                          className="w-16 h-10 text-center border-t border-b border-gray-200 focus:outline-none"
                         />
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(product.id, product.quantity + 1)
+                          }
+                          className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-r-md hover:bg-gray-50 transition-colors"
+                        >
+                          <svg
+                            className="w-5 h-5 text-gray-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </div>
-                    <label className="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
-                      Promo Code
-                    </label>
-                    <div className="flex pb-4 w-full">
-                      <div className="relative w-full ">
-                        <div className=" absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
-                        <input
-                          type="text"
-                          className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
-                          placeholder="xxxx xxxx xxxx"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center border-b border-gray-200">
-                      <button className="rounded-full w-full bg-indigo-600 py-3 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80">
-                        Apply
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between py-8">
-                      <p className="font-medium text-xl leading-8 text-black">
-                        {selectedProducts.length} Items
-                      </p>
-                      <p className="font-semibold text-xl leading-8 text-indigo-600">
-                        Total: {totalPrice}$
+
+                    {/* Total Price */}
+                    <div className="col-span-6 md:col-span-4 mt-2 md:mt-0">
+                      <p className="text-lg font-semibold text-indigo-600 text-right">
+                        ${product.totalPrice.toFixed(2)}
                       </p>
                     </div>
-                    <button className="w-full text-center bg-indigo-600 rounded-full py-4 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-indigo-700">
-                      Checkout
-                    </button>
-                  </form>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Order Summary */}
+          <div className="w-full lg:w-1/3">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                Order Summary
+              </h2>
+
+              <div className="space-y-4">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal ({selectedProducts.length} items)</span>
+                  <span>${totalPrice}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>$5.00</span>
+                </div>
+
+                {/* Promo Code */}
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Promo Code</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter code"
+                      className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-500"
+                    />
+                    <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                      Apply
+                    </button>
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="border-t pt-4">
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span className="text-indigo-600">${totalPrice}</span>
+                  </div>
+                </div>
+
+                <button className="w-full py-3 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 transition-colors">
+                  Proceed to Checkout
+                </button>
               </div>
             </div>
           </div>
