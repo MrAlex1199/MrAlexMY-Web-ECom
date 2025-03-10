@@ -9,6 +9,7 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import Services from "./pages/Services";
 import ProdutsDetails from "./pages/ProdutsDetails";
+import ProductsFilter from "./pages/ProductsFilter";
 import Cart from "./pages/cart";
 import Setting from "./pages/SettingUser";
 import Login from "./pages/Login";
@@ -220,6 +221,14 @@ export default function App() {
         <Route
           path="/product/:id"
           element={<ProdutsDetails userId={userData.userId} />}
+        />
+        <Route
+          path="/products/:category"
+          element={<ProductsFilter userId={userData.userId} />}
+        />
+        <Route
+          path="/products/:category/:subcategory"
+          element={<ProductsFilter userId={userData.userId} />}
         />
         <Route
           path="/cart"
