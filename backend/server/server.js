@@ -484,6 +484,12 @@ app.put("/cart/update-quantity/:userId/:productId", async (req, res) => {
     const { userId, productId } = req.params;
     const { quantity, totalPrice } = req.body;
 
+    console.log("quantity", quantity, "totalPrice", totalPrice);
+
+    if (isNaN(quantity) || isNaN(totalPrice)) {
+      return res.status(400).json({ success: false, message: "Invalid input" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -568,6 +574,7 @@ app.post("/save-selected-products", async (req, res) => {
       selectedColor,
       selectedSize,
       price,
+      originalPrice,
       imageSrc,
     } = req.body;
 
