@@ -84,11 +84,11 @@ export default function Products() {
                     to={`/product/${product._id}`}
                     className="group"
                   >
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500">
                       <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75"
+                        className="h-full w-full object-cover object-center"
                       />
                     </div>
                     <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>

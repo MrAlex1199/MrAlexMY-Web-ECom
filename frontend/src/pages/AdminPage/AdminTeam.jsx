@@ -206,7 +206,7 @@ export default function AdminTeam({ adminData }) {
                     <img
                       src="https://pagedone.io/asset/uploads/1696238374.png"
                       alt="Antonio"
-                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
@@ -221,7 +221,7 @@ export default function AdminTeam({ adminData }) {
                     <img
                       src="https://pagedone.io/asset/uploads/1696238396.png"
                       alt="Patricia"
-                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
@@ -236,7 +236,7 @@ export default function AdminTeam({ adminData }) {
                     <img
                       src="	https://pagedone.io/asset/uploads/1696238411.png"
                       alt="Jerom"
-                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
@@ -251,7 +251,7 @@ export default function AdminTeam({ adminData }) {
                     <img
                       src="	https://pagedone.io/asset/uploads/1696238425.png"
                       alt="Yasmine"
-                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">
@@ -266,7 +266,7 @@ export default function AdminTeam({ adminData }) {
                     <img
                       src="https://pagedone.io/asset/uploads/1696238446.png"
                       alt="Martin"
-                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600"
+                      className="w-40 h-40 rounded-full mx-auto transition-all duration-500 object-cover border border-solid border-transparent group-hover:border-indigo-600 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2 capitalize text-center transition-all duration-500 group-hover:text-indigo-600">

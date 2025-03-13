@@ -77,35 +77,35 @@ export default function Home() {
                     src="https://tailwindui.com/plus-assets/img/logos/158x48/transistor-logo-gray-900.svg"
                     width={158}
                     height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
+                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                   />
                   <img
                     alt="Reform"
                     src="https://tailwindui.com/plus-assets/img/logos/158x48/reform-logo-gray-900.svg"
                     width={158}
                     height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
+                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                   />
                   <img
                     alt="Tuple"
                     src="https://tailwindui.com/plus-assets/img/logos/158x48/tuple-logo-gray-900.svg"
                     width={158}
                     height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
+                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                   />
                   <img
                     alt="SavvyCal"
                     src="https://tailwindui.com/plus-assets/img/logos/158x48/savvycal-logo-gray-900.svg"
                     width={158}
                     height={48}
-                    className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1"
+                    className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                   />
                   <img
                     alt="Statamic"
                     src="https://tailwindui.com/plus-assets/img/logos/158x48/statamic-logo-gray-900.svg"
                     width={158}
                     height={48}
-                    className="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1"
+                    className="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
                   />
                 </div>
               </div>
@@ -134,11 +134,11 @@ export default function Home() {
                         to={`/product/${product._id}?type=new-products`}
                         className="group"
                       >
-                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500">
                           <img
                             src={product.imageSrc}
                             alt={product.imageAlt}
-                            className="h-full w-full object-cover object-center group-hover:opacity-75"
+                            className="h-full w-full object-cover object-center"
                           />
                         </div>
                         <h3 className="mt-4 text-sm text-gray-700">
