@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.474.0",
     "md5": "^2.3.0",
-    "mongoose": "^8.0.3",
+    "mongoose": "^8.12.1",
     "mongoose-encryption": "^2.1.2",
     "mongoose-findorcreate": "^4.0.0",
     "multer": "^1.4.5-lts.1",
