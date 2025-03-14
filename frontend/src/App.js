@@ -47,6 +47,8 @@ export default function App() {
     phoneNumber: "",
   });
 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   // Conditional rendering for Navbar based on route
   const shouldShowNavbar = ![
     "/login",
@@ -207,6 +209,8 @@ export default function App() {
           isLoggedIn={isLoggedIn}
           userData={userData}
           selectedProducts={selectedProducts}
+          dropdownOpen={dropdownOpen}
+          setDropdownOpen={setDropdownOpen}
         />
       )}
       <Routes>
