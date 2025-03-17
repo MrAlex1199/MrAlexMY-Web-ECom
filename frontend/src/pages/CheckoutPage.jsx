@@ -3,10 +3,10 @@ import React from "react";
 export default function CheckoutPage() {
   return (
     <div>
-      <div className="card rounded-lg shadow-md mt-5 mx-10 bg-white">
-        <div class="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
+      <div className="card rounded-lg min-h-screen shadow-md mt-5 mx-10 bg-white">
+        <div class="flex flex-co items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
           <a href="/" class="text-2xl font-bold text-gray-800">
-            sneekpeeks
+            SERGENTX
           </a>
           <div class="mt-4 py-2 text-xs sm:mt-0 sm:ml-auto sm:text-base">
             <div class="relative">
