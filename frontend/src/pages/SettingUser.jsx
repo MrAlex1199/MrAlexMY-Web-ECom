@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export default function Setting({ userData }) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -76,13 +77,23 @@ export default function Setting({ userData }) {
         <h1 className="border-b py-6 text-4xl font-semibold">Settings</h1>
         <div className="grid grid-cols-8 pt-3 sm:grid-cols-10">
           <div className="col-span-2 hidden sm:block">
-            <ul>
-              <li className="mt-5 cursor-pointer border-l-2 border-l-blue-700 px-2 py-2 font-semibold text-blue-700 transition hover:border-l-blue-700 hover:text-blue-700">
-                Accounts
-              </li>
+            <ul className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-2">
+                <NavLink
+                  to="/SettingUser"
+                  className="mt-5 cursor-pointer border-l-2 border-l-blue-700 px-2 py-2 font-semibold text-blue-700 transition hover:border-l-blue-700 hover:text-blue-700"
+                >
+                  Accounts
+                </NavLink>
+                <NavLink
+                  to="/ShippingLocations"
+                  className="mt-5 cursor-pointer border-l-2 border-l-blue-700 px-2 py-2 font-semibold"
+                >
+                  Shipping Address
+                </NavLink>
+              </div>
             </ul>
           </div>
-
           <div className="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow">
             <div className="pt-4">
               <h1 className="py-2 text-2xl font-semibold">Account settings</h1>

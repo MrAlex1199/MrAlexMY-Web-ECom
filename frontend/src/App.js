@@ -12,6 +12,7 @@ import ProdutsDetails from "./pages/ProdutsDetails";
 import ProductsFilter from "./pages/ProductsFilter";
 import Cart from "./pages/cart";
 import Setting from "./pages/SettingUser";
+import Shipping from "./pages/Shipinglocation";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
@@ -217,7 +218,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/setting" element={<Setting userData={userData} />} />
+        <Route path="/SettingUser" element={<Setting userData={userData} />} />
+        <Route path="/ShippingLocations" element={<Shipping userData={userData} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
