@@ -535,7 +535,7 @@ export default function Navbar({
                             {dropdownOpen && (
                               <div className="absolute right-0 mt-6 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
                                 <a
-                                  href="/setting"
+                                  href="/SettingUser"
                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                 >
                                   Settings

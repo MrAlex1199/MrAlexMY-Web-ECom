@@ -46,6 +46,17 @@ const userSchema = new mongoose.Schema({
       totalPrice: { type: Number, required: true },
     },
   ],
+  address: {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true },
+    address: { type: String, required: true },
+    phone: { type: String, required: true },
+    age: { type: Number, required: true },
+  },
+  // Add a new field for user role
 });
 
 // Hash password before saving
@@ -101,7 +112,6 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-
 // New Product Schema
 const NewProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -123,115 +133,122 @@ const NewProductSchema = new mongoose.Schema({
 const NewProduct = mongoose.model("NewProduct", NewProductSchema);
 
 // Endpoint to upload CSV file and add new product to MongoDB
-app.post("/api/upload-csv-new-products", upload.single("file"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
+app.post(
+  "/api/upload-csv-new-products",
+  upload.single("file"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
 
-  const filePath = req.file.path;
+    const filePath = req.file.path;
 
-  try {
-    const NewProducts = [];
+    try {
+      const NewProducts = [];
 
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(filePath)
-        .pipe(csv())
-        .on("data", (row) => {
-          // Basic validation for required fields
-          if (
-            !row.name ||
-            !row.price ||
-            !row.stock_remaining ||
-            !row.imageSrc
-          ) {
-            console.warn("Skipping row due to missing required fields:", row);
-            return;
-          }
-
-          try {
-            const NewProduct = {
-              name: row.name,
-              price: parseFloat(row.price.replace("$", "")),
-              stock_remaining: parseInt(row.stock_remaining),
-              href: row.href || "",
-              imageSrc: row.imageSrc,
-              imageAlt: row.imageAlt || "",
-              breadcrumbs: row.breadcrumbs || "",
-              images: row.images
-                ? row.images.split(" | ").map((image) => {
-                    const [src, alt] = image.split(" > ");
-                    if (!src || !alt) throw new Error("Invalid image format");
-                    return { src, alt };
-                  })
-                : [],
-              colors: row.colors
-                ? row.colors.split(" | ").map((color) => {
-                    const [name, classStr, selectedClass] = color.split(" > ");
-                    if (!name || !classStr || !selectedClass)
-                      throw new Error("Invalid color format");
-                    return { name, class: classStr, selectedClass };
-                  })
-                : [],
-              sizes: row.sizes
-                ? row.sizes.split(" | ").map((size) => {
-                    const [name, inStock] = size.split(" > ");
-                    if (!name || !inStock)
-                      throw new Error("Invalid size format");
-                    return { name, inStock: inStock === "true" };
-                  })
-                : [],
-              description: row.description || "",
-              highlights: row.highlights ? row.highlights.split(" | ") : [],
-              details: row.details || "",
-              discount: row.discount ? parseInt(row.discount) : 0,
-            };
-
-            // Validate numeric fields
+      await new Promise((resolve, reject) => {
+        fs.createReadStream(filePath)
+          .pipe(csv())
+          .on("data", (row) => {
+            // Basic validation for required fields
             if (
-              isNaN(NewProduct.price) ||
-              isNaN(NewProduct.stock_remaining) ||
-              isNaN(NewProduct.discount)
+              !row.name ||
+              !row.price ||
+              !row.stock_remaining ||
+              !row.imageSrc
             ) {
-              throw new Error("Invalid numeric value");
+              console.warn("Skipping row due to missing required fields:", row);
+              return;
             }
 
-            NewProducts.push(NewProduct);
-          } catch (error) {
-            console.warn(
-              `Skipping row due to parsing error: ${error.message}`,
-              row
-            );
-          }
-        })
-        .on("end", () => resolve())
-        .on("error", (error) => reject(error));
-    });
+            try {
+              const NewProduct = {
+                name: row.name,
+                price: parseFloat(row.price.replace("$", "")),
+                stock_remaining: parseInt(row.stock_remaining),
+                href: row.href || "",
+                imageSrc: row.imageSrc,
+                imageAlt: row.imageAlt || "",
+                breadcrumbs: row.breadcrumbs || "",
+                images: row.images
+                  ? row.images.split(" | ").map((image) => {
+                      const [src, alt] = image.split(" > ");
+                      if (!src || !alt) throw new Error("Invalid image format");
+                      return { src, alt };
+                    })
+                  : [],
+                colors: row.colors
+                  ? row.colors.split(" | ").map((color) => {
+                      const [name, classStr, selectedClass] =
+                        color.split(" > ");
+                      if (!name || !classStr || !selectedClass)
+                        throw new Error("Invalid color format");
+                      return { name, class: classStr, selectedClass };
+                    })
+                  : [],
+                sizes: row.sizes
+                  ? row.sizes.split(" | ").map((size) => {
+                      const [name, inStock] = size.split(" > ");
+                      if (!name || !inStock)
+                        throw new Error("Invalid size format");
+                      return { name, inStock: inStock === "true" };
+                    })
+                  : [],
+                description: row.description || "",
+                highlights: row.highlights ? row.highlights.split(" | ") : [],
+                details: row.details || "",
+                discount: row.discount ? parseInt(row.discount) : 0,
+              };
 
-    if (NewProducts.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "No valid products found in CSV" });
-    }
+              // Validate numeric fields
+              if (
+                isNaN(NewProduct.price) ||
+                isNaN(NewProduct.stock_remaining) ||
+                isNaN(NewProduct.discount)
+              ) {
+                throw new Error("Invalid numeric value");
+              }
 
-    await NewProduct.insertMany(NewProducts, { ordered: false }); // ordered: false to continue on duplicates
-    res
-      .status(200)
-      .json({ message: `${NewProducts.length} products added successfully!` });
-  } catch (error) {
-    console.error("Error processing CSV:", error);
-    res
-      .status(500)
-      .json({ message: "Error uploading products", error: error.message });
-  } finally {
-    // Clean up file regardless of success or failure
-    try {
-      fs.unlinkSync(filePath);
-    } catch (cleanupError) {
-      console.error("Error deleting file:", cleanupError);
+              NewProducts.push(NewProduct);
+            } catch (error) {
+              console.warn(
+                `Skipping row due to parsing error: ${error.message}`,
+                row
+              );
+            }
+          })
+          .on("end", () => resolve())
+          .on("error", (error) => reject(error));
+      });
+
+      if (NewProducts.length === 0) {
+        return res
+          .status(400)
+          .json({ message: "No valid products found in CSV" });
+      }
+
+      await NewProduct.insertMany(NewProducts, { ordered: false }); // ordered: false to continue on duplicates
+      res
+        .status(200)
+        .json({
+          message: `${NewProducts.length} products added successfully!`,
+        });
+    } catch (error) {
+      console.error("Error processing CSV:", error);
+      res
+        .status(500)
+        .json({ message: "Error uploading products", error: error.message });
+    } finally {
+      // Clean up file regardless of success or failure
+      try {
+        fs.unlinkSync(filePath);
+      } catch (cleanupError) {
+        console.error("Error deleting file:", cleanupError);
+      }
     }
   }
-});
-    
+);
+
 // Endpoint to add Discount to product by ID
 app.put("/api/products/:id/discount", async (req, res) => {
   const { id } = req.params;
@@ -574,7 +591,6 @@ app.post("/save-selected-products", async (req, res) => {
       selectedColor,
       selectedSize,
       price,
-      originalPrice,
       imageSrc,
     } = req.body;
 
@@ -628,6 +644,50 @@ app.post("/save-selected-products", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to save selected product" });
+  }
+});
+
+// Endpoint to save user address
+app.post("/save-address", async (req, res) => {
+  try {
+    const {
+      userId,
+      firstName,
+      lastName,
+      city,
+      postalCode,
+      country,
+      address,
+      phone,
+      age,
+    } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    user.address = {
+      firstName,
+      lastName,
+      city,
+      postalCode,
+      country,
+      address,
+      phone,
+      age,
+    };
+
+    await user.save();
+
+    res
+      .status(201)
+      .json({ success: true, message: "Address saved successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to save address" });
   }
 });
 
