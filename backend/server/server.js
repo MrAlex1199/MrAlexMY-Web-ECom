@@ -46,17 +46,18 @@ const userSchema = new mongoose.Schema({
       totalPrice: { type: Number, required: true },
     },
   ],
-  address: {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    city: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true },
-    address: { type: String, required: true },
-    phone: { type: String, required: true },
-    age: { type: Number, required: true },
-  },
-  // Add a new field for user role
+  address: [
+    {
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
+      address: { type: String, required: true },
+      phone: { type: String, required: true },
+      age: { type: Number, required: true },
+    },
+  ]
 });
 
 // Hash password before saving
@@ -669,7 +670,7 @@ app.post("/save-address", async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    user.address = {
+    user.address.push({
       firstName,
       lastName,
       city,
@@ -678,7 +679,7 @@ app.post("/save-address", async (req, res) => {
       address,
       phone,
       age,
-    };
+    });
 
     await user.save();
 

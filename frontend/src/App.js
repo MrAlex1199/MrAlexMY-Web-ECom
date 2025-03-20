@@ -219,7 +219,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/SettingUser" element={<Setting userData={userData} />} />
-        <Route path="/ShippingLocations" element={<Shipping userData={userData} />} />
+        <Route path="/ShippingLocations" element={<Shipping userData={userData} userId={userData.userId} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
