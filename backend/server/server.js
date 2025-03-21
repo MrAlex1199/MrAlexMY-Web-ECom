@@ -911,7 +911,7 @@ app.post("/admin-logout", async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Logout failed" });
   }
-});
+} );
 
 // logout endpoint
 app.post("/logout", async (req, res) => {

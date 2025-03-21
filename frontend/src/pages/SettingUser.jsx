@@ -14,7 +14,7 @@ export default function Setting({ userData }) {
       // Fetch token from localStorage or wherever it's stored
       const storedToken = localStorage.getItem("token");
       if (!storedToken) {
-        console.error("Token not found");
+        // console.error("Token not found");
         return;
       }
 
@@ -35,7 +35,7 @@ export default function Setting({ userData }) {
       }
       // Display success message or handle errors
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
     }
   };
 
@@ -43,7 +43,7 @@ export default function Setting({ userData }) {
     try {
       const storedToken = localStorage.getItem("token");
       if (!storedToken) {
-        console.error("Token not found");
+        // console.error("Token not found");
         return;
       }
 
@@ -65,7 +65,7 @@ export default function Setting({ userData }) {
         alert("Failed to delete account");
       }
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
     } finally {
       setShowConfirmPopup(false); // Close the popup after the request is completed
     }
