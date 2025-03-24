@@ -9,6 +9,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function AdminPromotions({ adminData }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [productId, setProductId] = useState(""); // Controlled input
+  const [message, setMessage] = useState(""); // Success or error message
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Pagination logic
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,11 +68,45 @@ export default function AdminPromotions({ adminData }) {
   const applyDiscount = async (productId, discount) => {
     console.log("Debug: ", productId, discount);
     try {
-      const response = await axios.put(`http://localhost:3001/api/products/${productId}/discount`, { discount });
+      const response = await axios.put(
+        `http://localhost:3001/api/products/${productId}/discount`,
+        { discount }
+      );
       console.log("Discount applied: ", response.data);
     } catch (error) {
       console.error("Error applying discount: ", error);
     }
+  };
+
+  // Remove Discount from a product by ID
+  const removeDiscount = async (id) => {
+    setLoading(true);
+    setMessage(""); // Clear previous message
+
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/api/products/${id}/remove-discount`
+      );
+      setMessage(response.data.message); // Display success message
+      console.log("Discount removed: ", response.data);
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || "Failed to remove discount";
+      setMessage(errorMsg); // Display error message
+      console.error("Error removing discount: ", errorMsg);
+    } finally {
+      setLoading(false); // Reset loading state
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!productId.trim()) {
+      setMessage("Please enter a valid product ID");
+      return;
+    }
+    removeDiscount(productId);
+    setProductId(""); // Clear input after submission
   };
 
   return (
@@ -223,34 +260,42 @@ export default function AdminPromotions({ adminData }) {
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Remove Promotions
             </h2>
-            {/* Remove Promotions Discouts */}
-            <form>
+            {/* Remove Promotions Discounts */}
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-gray-700">Product ID</label>
                 <input
-                  type="number"
+                  type="text"
+                  name="productId"
+                  value={productId} // Controlled input
+                  onChange={(e) => setProductId(e.target.value)} // Update state
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Enter product ID"
+                  disabled={loading} // Disable input while loading
                 />
               </div>
-              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors">
-                Remove Promotion
+              <button
+                className={`py-2 px-4 rounded transition-colors ${
+                  loading
+                    ? "bg-red-500 text-white opacity-50 cursor-not-allowed"
+                    : "bg-red-500 text-white hover:bg-red-800"
+                }`}
+                disabled={loading} // Disable button while loading
+              >
+                {loading ? "Removing..." : "Remove Promotion"}
               </button>
             </form>
-            {/* Remove Promotion Code */}
-            <form>
-              <div className="my-4">
-                <label className="block text-gray-700">Promotion Code</label>
-                <input
-                  type="number"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter Promotion Code"
-                />
-              </div>
-              <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-800 transition-colors">
-                Remove Promotion Code
-              </button>
-            </form>
+            {message && (
+              <p
+                className={`mt-4 text-sm ${
+                  message.includes("success")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {message}
+              </p>
+            )}
           </div>
         </div>
 

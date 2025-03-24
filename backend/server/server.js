@@ -582,6 +582,39 @@ app.put("/change-password", async (req, res) => {
   }
 });
 
+// Endpoint to Remove Discount from product by ID
+app.put("/api/products/:id/remove-discount", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Validate if the ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid product ID format" });
+    }
+
+    const objectId = new mongoose.Types.ObjectId(id);
+    const product = await Product.findById(objectId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    product.discount = 0;
+    await product.save();
+
+    res.status(200).json({ 
+      message: "Discount removed successfully", 
+      product: product 
+    });
+  } catch (error) {
+    console.error("Error removing discount:", error);
+    res.status(500).json({ 
+      message: "Server error while removing discount", 
+      error: error.message 
+    });
+  }
+});
+
 // Endpoint to save selected products
 app.post("/save-selected-products", async (req, res) => {
   try {
