@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-export default function ShippingLocations({ userData , userId }) {
+export default function ShippingLocations({ userData, userId }) {
   // State variables for User Address
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -48,6 +48,7 @@ export default function ShippingLocations({ userData , userId }) {
       if (response.ok) {
         // If address is saved successfully, update state
         window.alert("Address saved successfully");
+        window.location.reload();
       } else {
         // If save address fails, display error message
         const errorData = await response.json();
@@ -101,26 +102,29 @@ export default function ShippingLocations({ userData , userId }) {
             </p>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <div className="text-gray-600">
-                {userData.shippingLocations ? (
+                {userData.address ? (
                   <div>
                     <p>
                       <strong>
-                        {userData.shippingLocations.firstName}{" "}
-                        {userData.shippingLocations.lastName}
+                        {userData.address[0].firstName}{" "}
+                        {userData.address[0].lastName}
                       </strong>
                     </p>
                     <p>
-                      {userData.shippingLocations.city},{" "}
-                      {userData.shippingLocations.postalCode}
+                      {userData.address[0].city}{" "}
+                      {userData.address[0].postalCode}
                     </p>
-                    <p>{userData.shippingLocations.country}</p>
+                    <p>
+                      {userData.address[0].address} {userData.address[0].phone}
+                    </p>
+                    <p>{userData.address[0].country}</p>
                   </div>
                 ) : (
                   <p className="text-gray-600">No shipping address set</p>
                 )}
               </div>
               <button className="inline-flex text-sm font-semibold text-blue-600 underline mt-2 sm:mt-0">
-                Edit Address
+                Delete Address
               </button>
             </div>
 

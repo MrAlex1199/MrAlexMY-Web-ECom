@@ -161,6 +161,18 @@ export default function App() {
               email: data.email,
               fname: data.fname,
               lname: data.lname,
+              address: [
+                {
+                  firstName: data.address[0].firstName,
+                  lastName: data.address[0].lastName,
+                  city: data.address[0].city,
+                  postalCode: data.address[0].postalCode,
+                  country: data.address[0].country,
+                  address: data.address[0].address,
+                  phone: data.address[0].phone,
+                  age: data.address[0].age,
+                },
+              ]
             });
             setIsLoggedIn(true);
           } else {
