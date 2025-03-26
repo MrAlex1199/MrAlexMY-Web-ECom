@@ -439,16 +439,6 @@ app.get("/user", async (req, res) => {
       email: user.email,
       fname: user.fname,
       lname: user.lname,
-      address: [{
-        firstName: user.address[0].firstName,
-        lastName: user.address[0].lastName,
-        city: user.address[0].city,
-        postalCode: user.address[0].postalCode,
-        country: user.address[0].country,
-        address: user.address[0].address,
-        phone: user.address[0].phone,
-        age: user.address[0].age,
-      }]
     });
   } catch (error) {
     res
