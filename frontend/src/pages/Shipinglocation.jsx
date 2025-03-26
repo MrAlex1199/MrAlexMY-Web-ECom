@@ -14,21 +14,12 @@ export default function ShippingLocations({ userData, userId }) {
 
   // Function to handle save address
   const handleSaveAddress = async () => {
-    // Validate input fields
-    if (
-      !firstName ||
-      !lastName ||
-      !city ||
-      !postalCode ||
-      !country ||
-      !address
-    ) {
+    if (!firstName || !lastName || !city || !postalCode || !country || !address) {
       alert("All fields are required. Please fill out all fields.");
       return;
     }
 
     try {
-      // Send POST request to save address endpoint
       const response = await fetch("http://localhost:3001/save-address", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,20 +37,37 @@ export default function ShippingLocations({ userData, userId }) {
       });
 
       if (response.ok) {
-        // If address is saved successfully, update state
         window.alert("Address saved successfully");
         window.location.reload();
       } else {
-        // If save address fails, display error message
         const errorData = await response.json();
-        console.error(errorData.message);
-        if (errorData.saveAddressStatus === false) {
-          alert("Address save failed. Please check your details.");
-        }
+        alert("Address save failed: " + errorData.message);
       }
     } catch (error) {
-      // Log any errors
       console.error(error);
+      alert("Error saving address");
+    }
+  };
+
+  const handleDeleteAddress = async (addressId) => {
+    if (window.confirm("Are you sure you want to delete this address?")) {
+      try {
+        const response = await fetch(`http://localhost:3001/delete-address/${userId}/${addressId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+          window.alert("Address deleted successfully");
+          window.location.reload();
+        } else {
+          const errorData = await response.json();
+          alert("Failed to delete address: " + errorData.message);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error deleting address");
+      }
     }
   };
 
@@ -97,36 +105,36 @@ export default function ShippingLocations({ userData, userId }) {
             </div>
             <hr className="mt-4 mb-8" />
 
-            <p className="py-2 text-xl font-semibold">
-              Current Shipping Address
-            </p>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-              <div className="text-gray-600">
-                {userData.address ? (
-                  <div>
-                    <p>
-                      <strong>
-                        {userData.address[0].firstName}{" "}
-                        {userData.address[0].lastName}
-                      </strong>
-                    </p>
-                    <p>
-                      {userData.address[0].city}{" "}
-                      {userData.address[0].postalCode}
-                    </p>
-                    <p>
-                      {userData.address[0].address} {userData.address[0].phone}
-                    </p>
-                    <p>{userData.address[0].country}</p>
+            <p className="py-2 text-xl font-semibold">Current Shipping Addresses</p>
+            {userData.address && userData.address.length > 0 ? (
+              userData.address.map((addr, index) => (
+                <div key={addr._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 border-b pb-4">
+                  <div className="text-gray-600">
+                    <p><strong>{addr.firstName} {addr.lastName}</strong></p>
+                    <p>{addr.city} {addr.postalCode}</p>
+                    <p>{addr.address} {addr.phone}</p>
+                    <p>{addr.country}</p>
+                    {addr.age && <p>Age: {addr.age}</p>}
                   </div>
-                ) : (
-                  <p className="text-gray-600">No shipping address set</p>
-                )}
-              </div>
-              <button className="inline-flex text-sm font-semibold text-blue-600 underline mt-2 sm:mt-0">
-                Delete Address
-              </button>
-            </div>
+                  <div className="flex space-x-4 mt-2 sm:mt-0">
+                    <button 
+                      className="text-sm font-semibold text-blue-600 underline"
+                      // Add edit functionality here later
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      className="text-sm font-semibold text-red-600 underline"
+                      onClick={() => handleDeleteAddress(addr._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600 mb-6">No shipping addresses set</p>
+            )}
 
             <hr className="mt-4 mb-8" />
             <p className="py-2 text-xl font-semibold">

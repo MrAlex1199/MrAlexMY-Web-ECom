@@ -161,6 +161,7 @@ export default function App() {
               email: data.email,
               fname: data.fname,
               lname: data.lname,
+              address: data.address,
             });
             setIsLoggedIn(true);
           } else {

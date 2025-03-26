@@ -429,9 +429,13 @@ app.get("/api/new-products/:id", async (req, res) => {
 // Endpoint to get user data and send it to Frontend
 app.get("/user", async (req, res) => {
   try {
-    const token = req.headers.authorization.split(" ")[1]; // Extract the token from the Authorization header
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Decode the token to get the user's ID or email
-    const user = await User.findById(decodedToken.id); // Assuming user ID is stored in the token
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decodedToken.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
     res.status(200).json({
       success: true,
@@ -439,11 +443,10 @@ app.get("/user", async (req, res) => {
       email: user.email,
       fname: user.fname,
       lname: user.lname,
+      address: user.address, // This already contains all addresses
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch user details" });
+    res.status(500).json({ success: false, message: "Failed to fetch user details" });
   }
 });
 
@@ -612,6 +615,31 @@ app.put("/api/products/:id/remove-discount", async (req, res) => {
       message: "Server error while removing discount", 
       error: error.message 
     });
+  }
+});
+
+// Endpoint to update address by ID
+app.put("/update-address/:userId/:addressId", async (req, res) => {
+  try {
+    const { userId, addressId } = req.params;
+    const updatedAddress = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
+    if (addressIndex === -1) {
+      return res.status(404).json({ success: false, message: "Address not found" });
+    }
+
+    user.address[addressIndex] = { ...user.address[addressIndex], ...updatedAddress };
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Address updated successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to update address" });
   }
 });
 
@@ -956,7 +984,25 @@ app.post("/logout", async (req, res) => {
   }
 });
 
+// Endpoint to Delete address by ID
+app.delete("/delete-address/:userId/:addressId", async (req, res) => {
+  try {
+    const { userId, addressId } = req.params;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
+    user.address = user.address.filter(addr => addr._id.toString() !== addressId);
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Address deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to delete address" });
+  }
+});
 
 //Endpoint to Delete product from Cart
 app.delete("/cart/delete-product/:userId/:productId", async (req, res) => {
