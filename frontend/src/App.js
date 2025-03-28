@@ -242,6 +242,7 @@ export default function App() {
           element={
             <Cart
               userId={userData.userId}
+              userData={userData}
               selectedProducts={selectedProducts}
               totalPrice={totalPrice}
               setSelectedProducts={setSelectedProducts}

@@ -2,11 +2,16 @@ import React, { useState } from "react";
 
 export default function Cart({
   userId,
+  userData,
   selectedProducts,
   totalPrice,
   setSelectedProducts,
   setTotalPrice,
 }) {
+
+  // Debugging: userData
+  console.log("userData:", userData);
+
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
       if (!userId) {
@@ -251,12 +256,25 @@ export default function Cart({
                     <option value="us">United States ($5.00)</option>
                     <option value="eu">Europe ($10.00)</option>
                     <option value="asia">Asia ($15.00)</option>
+                    {/* Display location from userData if available */}
+                    {userData.address &&
+                      userData.address.length > 0 &&
+                      userData.address.map((addr, index) => (
+                        <option
+                          key={index}
+                          value="us"
+                        >
+                          {`${addr.firstName} ${addr.lastName}, ${addr.address}, ${addr.city}, ${addr.postalCode}, ${addr.phone}, ${addr.country}`}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
                 {/* Payment Method */}
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-600">Payment Method</label>
+                  <label className="text-sm text-gray-600">
+                    Payment Method
+                  </label>
                   <div className="space-y-2">
                     <label className="flex items-center gap-2">
                       <input
@@ -287,6 +305,16 @@ export default function Cart({
                         className="text-indigo-600 focus:ring-indigo-500"
                       />
                       Cryptocurrency
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        value="cash"
+                        checked={paymentMethod === "cash"}
+                        onChange={handlePaymentChange}
+                        className="text-indigo-600 focus:ring-indigo-500"
+                      />
+                      Cash on Delivery
                     </label>
                   </div>
                 </div>

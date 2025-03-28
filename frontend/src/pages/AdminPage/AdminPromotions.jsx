@@ -296,6 +296,37 @@ export default function AdminPromotions({ adminData }) {
                 {message}
               </p>
             )}
+
+            {/* ต้องเพิ่มโลจิกการลบโปรโมชั่น พรุ่งนี้ */}
+            {/* Remove Promotions Code  */}
+            <h2 className="text-lg my-5 font-semibold text-gray-700 mb-4">
+              Remove Promotion Code
+            </h2>
+            {/* Remove Promotions Discounts */}
+            <form>
+              <div className="mb-4">
+                <label className="block text-gray-700">Promotion Code</label>
+                <input
+                  type="text"
+                  name="productId"
+                  value={productId} // Controlled input
+                  // onChange={(e) => setPromotions(e.target.value)} // Update state
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter Promotion Code"
+                  // disabled={loading} // Disable input while loading
+                />
+              </div>
+              <button
+                className={`py-2 px-4 rounded transition-colors ${
+                  loading
+                    ? "bg-red-500 text-white opacity-50 cursor-not-allowed"
+                    : "bg-red-500 text-white hover:bg-red-800"
+                }`}
+                disabled={loading} // Disable button while loading
+              >
+                {loading ? "Removing..." : "Remove Promotion Code"}
+              </button>
+            </form>
           </div>
         </div>
 
