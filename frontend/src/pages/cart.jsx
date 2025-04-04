@@ -262,7 +262,7 @@ export default function Cart({
                       userData.address.map((addr, index) => (
                         <option
                           key={index}
-                          value="us"
+                          value={addr.country}
                         >
                           {`${addr.firstName} ${addr.lastName}, ${addr.address}, ${addr.city}, ${addr.postalCode}, ${addr.phone}, ${addr.country}`}
                         </option>
@@ -336,6 +336,8 @@ export default function Cart({
                         ? "10.00"
                         : shippingLocation === "asia"
                         ? "15.00"
+                        : shippingLocation === "United States"
+                        ? "5.00"
                         : "0.00"}
                     </span>
                   </div>
@@ -369,6 +371,8 @@ export default function Cart({
                             ? 10
                             : shippingLocation === "asia"
                             ? 15
+                            : shippingLocation === "United States"
+                            ? 5
                             : 0)
                         ).toFixed(2)}
                       </span>

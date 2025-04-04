@@ -55,7 +55,7 @@ export default function Products() {
 
   return (
     <div>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center card rounded-lg shadow-md my-5 mx-10 bg-white ">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center card rounded-lg shadow-md my-5 mx-10 bg-white">
         <div className="container mx-auto ">
           {/* Header */}
           <div className="text-center text-2xl p-10 font-bold">

@@ -13,6 +13,7 @@ import ProductsFilter from "./pages/ProductsFilter";
 import Cart from "./pages/cart";
 import Setting from "./pages/SettingUser";
 import Shipping from "./pages/Shipinglocation";
+import Orderstatus from "./pages/Orderstatus";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
@@ -221,6 +222,7 @@ export default function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/SettingUser" element={<Setting userData={userData} />} />
         <Route path="/ShippingLocations" element={<Shipping userData={userData} userId={userData.userId} />} />
+        <Route path="/Orderstatus" element={<Orderstatus />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
