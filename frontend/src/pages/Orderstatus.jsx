@@ -184,6 +184,7 @@ export default function Orderstatus() {
               <h2 className="text-xl font-semibold text-gray-900">
                 Order #{order.orderId}
               </h2>
+              <span className="text-sm text-gray-500">Order Date {order.orderDate} | Estimated Delivery {order.estimatedDelivery}</span>
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
                   order.status === "Shipped"
@@ -191,28 +192,12 @@ export default function Orderstatus() {
                     : "bg-yellow-100 text-yellow-800"
                 }`}
               >
-                {order.status}
+                {order.shippingCurrentLocation} | {order.status}
               </span>
             </div>
 
             {/* Order Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-              <div>
-                <p className="text-sm text-gray-500">Order Date</p>
-                <p className="text-gray-900">{order.orderDate}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Estimated Delivery</p>
-                <p className="text-gray-900">{order.estimatedDelivery}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Shipping Method</p>
-                <p className="text-gray-900">{order.shippingMethod}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Current Location</p>
-                <p className="text-gray-900">{order.shippingCurrentLocation}</p>
-              </div>
               <div>
                 <p className="text-sm text-gray-500">Shipping Address</p>
                 <p className="text-gray-900">{order.shippingAddress}</p>
