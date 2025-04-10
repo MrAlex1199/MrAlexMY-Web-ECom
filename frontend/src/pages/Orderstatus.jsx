@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 const Orderstatusinfo = [
   {
     id: 1,
+    from: "Amazon Shop",
+    to: "John Smith",
     orderId: "123456789",
     orderDate: "2023-10-01",
     estimatedDelivery: "2023-10-05",
@@ -23,6 +25,8 @@ const Orderstatusinfo = [
   },
   {
     id: 2,
+    from: "Best Buy",
+    to: "John Doe",
     orderId: "987654321",
     orderDate: "2023-09-28",
     estimatedDelivery: "2023-10-02",
@@ -42,6 +46,8 @@ const Orderstatusinfo = [
   },
   {
     id: 3,
+    from: "Newegg",
+    to: "Jane Doe",
     orderId: "456789123",
     orderDate: "2023-09-25",
     estimatedDelivery: "2023-09-30",
@@ -63,6 +69,8 @@ const Orderstatusinfo = [
   },
   {
     id: 4,
+    from: "Walmart",
+    to: "Emily Johnson",
     orderId: "321654987",
     orderDate: "2023-09-20",
     estimatedDelivery: "2023-09-25",
@@ -83,6 +91,8 @@ const Orderstatusinfo = [
   },
   {
     id: 5,
+    from: "Target",
+    to: "Michael Brown",
     orderId: "654321789",
     orderDate: "2023-09-15",
     estimatedDelivery: "2023-09-20",
@@ -102,7 +112,7 @@ const Orderstatusinfo = [
   },
 ];
 
-export default function Orderstatus() {
+export default function Orderstatus(userId, userData) {
   const [filter, setFilter] = useState("In Transit");
 
   const filteredOrders = Orderstatusinfo.filter((order) => {
@@ -214,7 +224,7 @@ export default function Orderstatus() {
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {/* Shipping & Payment */}
-              <div className="space-y-4">
+              <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-4">
                 <div>
                   <p className="text-sm text-gray-500 font-medium">
                     Shipping To
@@ -227,10 +237,18 @@ export default function Orderstatus() {
                   <p className="text-sm text-gray-500 font-medium">Payment</p>
                   <p className="text-gray-800 text-sm">{order.paymentMethod}</p>
                 </div>
+                <div>
+                  <p className="text-sm text-gray-500 font-medium">Form</p>
+                  <p className="text-gray-800 text-sm">{order.from}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 font-medium">To</p>
+                  <p className="text-gray-800 text-sm">{order.to}</p>
+                </div>
               </div>
 
               {/* Items */}
-              <div className="md:col-span-2">
+              <div className="bg-gray-50 rounded-lg p-4 mb-6 md:col-span-2">
                 <p className="text-sm text-gray-500 font-medium mb-2">Items</p>
                 <div className="space-y-3 max-h-40 overflow-y-auto pr-2">
                   {order.itemsOrdered.map((item, index) => (
