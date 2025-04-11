@@ -13,384 +13,96 @@ export default function AdminManageOrders({ adminData }) {
   // Sample data for orders list
   const orders = [
     {
-      id: 1,
+      orderid: 1,
       customer: "John Doe",
-      product: "Smartphone - Galaxy S21",
-      date: "2025-01-01",
-      total: "$799.99",
-      payment: "Paid",
-      stock: "20/100",
-      status: "Completed",
+      productselected: [
+        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+      ],
+      ordered: "2025-01-01",
+      estDelivery: "2025-01-05",
+      from: "Best Buy",
+      to: "Alex dakota",
+      totalprice: "$2999.96",
+      payment: "payPal",
+      fromaddress: "456 Elm St, Townsville, CA 12345",
+      toaddress: "789 Oak St, Villagetown, CA 12345",
+      shippingaddress: "123 Main St, Cityville, CA 12345",
+      trackingcode: "ABC123456",
+      lastlocation: "Los Angeles, CA",
+      carrier: "FedEx",
+      status: "Shipped",
     },
     {
-      id: 2,
+      orderid: 2,
       customer: "Jane Smith",
-      product: "Laptop - MacBook Pro",
-      date: "2025-01-02",
-      total: "$1299.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      productselected: [
+        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+      ],
+      ordered: "2025-01-02",
+      estDelivery: "2025-01-06",
+      from: "Best Buy",
+      to: "John Doe",
+      totalprice: "$2999.96",
+      payment: "creditCard",
+      fromaddress: "456 Elm St, Townsville, CA 12345",
+      toaddress: "789 Oak St, Villagetown, CA 12345",
+      shippingaddress: "123 Main St, Cityville, CA 12345",
+      trackingcode: "DEF654321",
+      lastlocation: "New York, NY",
+      carrier: "UPS",
+      status: "in Transit",
     },
     {
-      id: 3,
-      customer: "Bob Johnson",
-      product: "Headphones - Sony WH-1000XM4",
-      date: "2025-01-03",
-      total: "$348.00",
-      payment: "Pending",
-      stock: "5/50",
-      status: "Processing",
+      orderid: 3,
+      customer: "Mary Johnson",
+      productselected: [
+        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+      ],
+      ordered: "2025-01-02",
+      estDelivery: "2025-01-06",
+      from: "Best Buy",
+      to: "John Doe",
+      totalprice: "$2999.96",
+      payment: "creditCard",
+      fromaddress: "456 Elm St, Townsville, CA 12345",
+      toaddress: "789 Oak St, Villagetown, CA 12345",
+      shippingaddress: "123 Main St, Cityville, CA 12345",
+      trackingcode: "DEF654321",
+      lastlocation: "New York, NY",
+      carrier: "UPS",
+      status: "canceled",
     },
     {
-      id: 4,
-      customer: "Alice Brown",
-      product: "Watch - Apple Watch Series 6",
-      date: "2025-01-04",
-      total: "$399.00",
-      payment: "Paid",
-      stock: "10/30",
-      status: "Completed",
-    },
-    {
-      id: 5,
-      customer: "Mike Lee",
-      product: "Tablet - iPad Pro",
-      date: "2025-01-05",
-      total: "$799.00",
-      payment: "Unpaid",
-      stock: "8/40",
-      status: "Pending",
-    },
-    {
-      id: 6,
-      customer: "Emma Watson",
-      product: "Camera - Canon EOS R",
-      date: "2025-01-06",
-      total: "$1899.00",
-      payment: "Paid",
-      stock: "3/20",
-      status: "Shipping",
-    },
-    {
-      id: 7,
-      customer: "David Beckham",
-      product: "Gaming Console - PlayStation 5",
-      date: "2025-01-07",
-      total: "$499.99",
-      payment: "Paid",
-      stock: "12/60",
-      status: "Completed",
-    },
-    {
-      id: 8,
-      customer: "Sarah Connor",
-      product: 'Smart TV - LG OLED 55"',
-      date: "2025-01-08",
-      total: "$1499.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 9,
-      customer: "Tom Cruise",
-      product: "Fitness Tracker - Fitbit Charge 4",
-      date: "2025-01-09",
-      total: "$149.95",
-      payment: "Pending",
-      stock: "25/100",
-      status: "Processing",
-    },
-    {
-      id: 10,
-      customer: "Angelina Jolie",
-      product: "Coffee Maker - Nespresso Vertuo",
-      date: "2025-01-10",
-      total: "$199.00",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 11,
-      customer: "Chris Evans",
-      product: "Smartphone - iPhone 13",
-      date: "2025-01-11",
-      total: "$999.99",
-      payment: "Paid",
-      stock: "15/50",
-      status: "Completed",
-    },
-    {
-      id: 12,
-      customer: "Scarlett Johansson",
-      product: "Laptop - Dell XPS 13",
-      date: "2025-01-12",
-      total: "$1199.00",
-      payment: "Pending",
-      stock: "10/30",
-      status: "Processing",
-    },
-    {
-      id: 13,
-      customer: "Robert Downey Jr.",
-      product: "Headphones - Bose QC35",
-      date: "2025-01-13",
-      total: "$299.00",
-      payment: "Paid",
-      stock: "20/50",
-      status: "Completed",
-    },
-    {
-      id: 14,
-      customer: "Chris Hemsworth",
-      product: "Watch - Garmin Fenix 6",
-      date: "2025-01-14",
-      total: "$599.00",
-      payment: "Unpaid",
-      stock: "5/20",
-      status: "Pending",
-    },
-    {
-      id: 15,
-      customer: "Mark Ruffalo",
-      product: "Tablet - Samsung Galaxy Tab S7",
-      date: "2025-01-15",
-      total: "$649.00",
-      payment: "Paid",
-      stock: "8/40",
-      status: "Shipping",
-    },
-    {
-      id: 16,
-      customer: "Jeremy Renner",
-      product: "Camera - Nikon Z6",
-      date: "2025-01-16",
-      total: "$1799.00",
-      payment: "Paid",
-      stock: "3/15",
-      status: "Completed",
-    },
-    {
-      id: 17,
-      customer: "Tom Hiddleston",
-      product: "Gaming Console - Xbox Series X",
-      date: "2025-01-17",
-      total: "$499.99",
-      payment: "Pending",
-      stock: "12/60",
-      status: "Processing",
-    },
-    {
-      id: 18,
-      customer: "Brie Larson",
-      product: 'Smart TV - Samsung QLED 65"',
-      date: "2025-01-18",
-      total: "$1599.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 19,
-      customer: "Paul Rudd",
-      product: "Fitness Tracker - Garmin Vivosmart 4",
-      date: "2025-01-19",
-      total: "$129.95",
-      payment: "Pending",
-      stock: "25/100",
-      status: "Processing",
-    },
-    {
-      id: 20,
-      customer: "Evangeline Lilly",
-      product: "Coffee Maker - Keurig K-Elite",
-      date: "2025-01-20",
-      total: "$169.00",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 21,
-      customer: "Benedict Cumberbatch",
-      product: "Smartphone - Google Pixel 6",
-      date: "2025-01-21",
-      total: "$699.99",
-      payment: "Paid",
-      stock: "15/50",
-      status: "Completed",
-    },
-    {
-      id: 22,
-      customer: "Chadwick Boseman",
-      product: "Laptop - HP Spectre x360",
-      date: "2025-01-22",
-      total: "$1399.00",
-      payment: "Pending",
-      stock: "10/30",
-      status: "Processing",
-    },
-    {
-      id: 23,
-      customer: "Zoe Saldana",
-      product: "Headphones - Sennheiser HD 450BT",
-      date: "2025-01-23",
-      total: "$199.00",
-      payment: "Paid",
-      stock: "20/50",
-      status: "Completed",
-    },
-    {
-      id: 24,
-      customer: "Dave Bautista",
-      product: "Watch - Suunto 9",
-      date: "2025-01-24",
-      total: "$499.00",
-      payment: "Unpaid",
-      stock: "5/20",
-      status: "Pending",
-    },
-    {
-      id: 25,
-      customer: "Vin Diesel",
-      product: "Tablet - Microsoft Surface Pro 7",
-      date: "2025-01-25",
-      total: "$899.00",
-      payment: "Paid",
-      stock: "8/40",
-      status: "Shipping",
-    },
-    {
-      id: 26,
-      customer: "Michelle Rodriguez",
-      product: "Camera - Sony Alpha a7 III",
-      date: "2025-01-26",
-      total: "$1999.00",
-      payment: "Paid",
-      stock: "3/15",
-      status: "Completed",
-    },
-    {
-      id: 27,
-      customer: "Jordana Brewster",
-      product: "Gaming Console - Nintendo Switch",
-      date: "2025-01-27",
-      total: "$299.99",
-      payment: "Pending",
-      stock: "12/60",
-      status: "Processing",
-    },
-    {
-      id: 28,
-      customer: "Tyrese Gibson",
-      product: 'Smart TV - Sony Bravia 55"',
-      date: "2025-01-28",
-      total: "$1299.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 29,
-      customer: "Ludacris",
-      product: "Fitness Tracker - Apple Watch SE",
-      date: "2025-01-29",
-      total: "$279.95",
-      payment: "Pending",
-      stock: "25/100",
-      status: "Processing",
-    },
-    {
-      id: 30,
-      customer: "Gal Gadot",
-      product: "Coffee Maker - Breville Barista Express",
-      date: "2025-01-30",
-      total: "$699.00",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
-    },
-    {
-      id: 31,
-      customer: "Jason Momoa",
-      product: "Smartphone - OnePlus 9",
-      date: "2025-01-31",
-      total: "$599.99",
-      payment: "Unpaid",
-      stock: "15/50",
-      status: "Canceled",
-    },
-    {
-      id: 32,
-      customer: "Amber Heard",
-      product: "Laptop - Lenovo ThinkPad X1 Carbon",
-      date: "2025-02-01",
-      total: "$1499.00",
-      payment: "Unpaid",
-      stock: "10/30",
-      status: "Canceled",
-    },
-    {
-      id: 33,
-      customer: "Willem Dafoe",
-      product: "Headphones - JBL Tune 750BTNC",
-      date: "2025-02-02",
-      total: "$149.00",
-      payment: "Paid",
-      stock: "20/50",
-      status: "Completed",
-    },
-    {
-      id: 34,
-      customer: "Patrick Wilson",
-      product: "Watch - Fossil Gen 5",
-      date: "2025-02-03",
-      total: "$299.00",
-      payment: "Unpaid",
-      stock: "5/20",
-      status: "Pending",
-    },
-    {
-      id: 35,
-      customer: "Nicole Kidman",
-      product: "Tablet - Amazon Fire HD 10",
-      date: "2025-02-04",
-      total: "$199.00",
-      payment: "Unpaid",
-      stock: "8/40",
-      status: "Canceled",
-    },
-    {
-      id: 36,
-      customer: "Dolph Lundgren",
-      product: "Camera - Panasonic Lumix GH5",
-      date: "2025-02-05",
-      total: "$899.00",
-      payment: "Paid",
-      stock: "3/15",
-      status: "Completed",
-    },
-    {
-      id: 37,
-      customer: "Dolph Lundgren",
-      product: "Gaming Console - Atari VCS",
-      date: "2025-02-06",
-      total: "$299.99",
-      payment: "Pending",
-      stock: "12/60",
-      status: "Processing",
-    },
-    {
-      id: 38,
-      customer: "Sylvester Stallone",
-      product: 'Smart TV - TCL 55"',
-      date: "2025-02-07",
-      total: "$499.99",
-      payment: "Paid",
-      stock: "18/50",
-      status: "Completed",
+      orderid: 4,
+      customer: "william Brown",
+      productselected: [
+        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+      ],
+      ordered: "2025-01-02",
+      estDelivery: "2025-01-06",
+      from: "Best Buy",
+      to: "John Doe",
+      totalprice: "$2999.96",
+      payment: "creditCard",
+      fromaddress: "456 Elm St, Townsville, CA 12345",
+      toaddress: "789 Oak St, Villagetown, CA 12345",
+      shippingaddress: "123 Main St, Cityville, CA 12345",
+      trackingcode: "DEF654321",
+      lastlocation: "New York, NY",
+      carrier: "UPS",
+      status: "returned",
     },
   ];
 
@@ -403,15 +115,14 @@ export default function AdminManageOrders({ adminData }) {
   const filterOrders =
     filter === "All Orders"
       ? orders
-      : filter === "Pending"
-      ? orders.filter((order) => order.status === "Pending")
-      : filter === "Shipping"
-      ? orders.filter((order) => order.status === "Shipping")
-      : filter === "Paid"
-      ? orders.filter((order) => order.payment === "Paid")
-      : filter === "Completed"
-      ? orders.filter((order) => order.status === "Completed")
-      : orders.filter((order) => order.status === "Canceled");
+      : filter === "In Transit"
+      ? orders.filter((order) => order.status.toLowerCase() === "in transit")
+      : filter === "Shipped"
+      ? orders.filter((order) => order.status.toLowerCase() === "shipped")
+      : filter === "Returned"
+      ? orders.filter((order) => order.status.toLowerCase() === "returned")
+      : orders.filter((order) => order.status.toLowerCase() === "canceled");
+      
   const currentOrdersfilter = filterOrders.slice(
     indexOfFirstOrder,
     indexOfLastOrder
@@ -423,6 +134,27 @@ export default function AdminManageOrders({ adminData }) {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const textpage = "Orders";
+  
+  // State for expanded product rows
+  const [expandedOrder, setExpandedOrder] = useState(null);
+
+  // Helper function to extract product names and create a concise display
+  const formatProductList = (products) => {
+    return products.map(product => {
+      // Extract just the model name without the "Smartphone - " prefix
+      const modelName = product.name.replace("Smartphone - ", "");
+      return modelName;
+    }).join(", ");
+  };
+
+  // Toggle expanded product view
+  const toggleProductView = (orderId) => {
+    if (expandedOrder === orderId) {
+      setExpandedOrder(null);
+    } else {
+      setExpandedOrder(orderId);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -445,16 +177,15 @@ export default function AdminManageOrders({ adminData }) {
           <div className="flex space-x-4 mb-4">
             {[
               "All Orders",
-              "Pending",
-              "Shipping",
-              "Paid",
-              "Completed",
-              "Canceled",
+              "In Transit",
+              "Shipped",
+              "Returned",
+              "Cancelled",
             ].map((tab, index) => (
               <button
                 key={index}
                 className={`px-4 py-2 rounded-lg ${
-                  index === 0
+                  tab === filter
                     ? "bg-purple-500 text-white"
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-purple-600 hover:text-white transition duration-300`}
@@ -490,13 +221,15 @@ export default function AdminManageOrders({ adminData }) {
                 <tr className="bg-gray-100">
                   {[
                     "ID",
-                    "Order",
                     "Customer",
-                    "Date",
+                    "Products",
+                    "Order Date",
+                    "Est. Delivery",
                     "Payment",
-                    "Price",
-                    "Stock",
-                    "Order Status",
+                    "Total Price",
+                    "Carrier",
+                    "Status",
+                    "Actions"
                   ].map((header, index) => (
                     <th
                       key={index}
@@ -509,73 +242,128 @@ export default function AdminManageOrders({ adminData }) {
               </thead>
               <tbody>
                 {currentOrdersfilter.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="hover:bg-gray-100 transition duration-300"
-                  >
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.id}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.product}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.customer}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.date}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.payment === "Paid" && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          Paid
-                        </span>
-                      )}
-                      {order.payment === "Pending" && (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          Pending
-                        </span>
-                      )}
-                      {order.payment === "Unpaid" && (
-                        <span className="bg-red-500 text-red-800 px-2 py-1 rounded-full">
-                          Unpaid
-                        </span>
-                      )}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.total}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.stock}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {order.status === "Completed" && (
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                          Deliver
-                        </span>
-                      )}
-                      {order.status === "Shipping" && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          Shipping
-                        </span>
-                      )}
-                      {order.status === "Processing" && (
-                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          Processing
-                        </span>
-                      )}
-                      {order.status === "Pending" && (
-                        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                          Pending
-                        </span>
-                      )}
-                      {order.status === "Canceled" && (
-                        <span className="bg-red-500 text-red-800 px-2 py-1 rounded-full">
-                          Canceled
-                        </span>
-                      )}
-                    </td>
-                  </tr>
+                  <React.Fragment key={order.orderid}>
+                    <tr className="hover:bg-gray-100 transition duration-300">
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.orderid}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.customer}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <div className="flex items-center">
+                          <span className="mr-2">{formatProductList(order.productselected)}</span>
+                          <button 
+                            onClick={() => toggleProductView(order.orderid)}
+                            className="text-blue-500 hover:text-blue-700"
+                          >
+                            {expandedOrder === order.orderid ? 
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                              </svg>
+                              : 
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            }
+                          </button>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.ordered}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.estDelivery}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.payment === "payPal" && (
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            PayPal
+                          </span>
+                        )}
+                        {order.payment === "creditCard" && (
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                            Credit Card
+                          </span>
+                        )}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.totalprice}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.carrier}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {order.status.toLowerCase() === "shipped" && (
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            Shipped
+                          </span>
+                        )}
+                        {order.status.toLowerCase() === "in transit" && (
+                          <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                            In Transit
+                          </span>
+                        )}
+                        {order.status.toLowerCase() === "canceled" && (
+                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                            Canceled
+                          </span>
+                        )}
+                        {order.status.toLowerCase() === "returned" && (
+                          <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                            Returned
+                          </span>
+                        )}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <div className="flex space-x-2">
+                          <button className="bg-blue-500 text-white p-1 rounded hover:bg-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          </button>
+                          <button className="bg-red-500 text-white p-1 rounded hover:bg-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedOrder === order.orderid && (
+                      <tr>
+                        <td colSpan="10" className="border border-gray-300 bg-gray-50 px-4 py-2">
+                          <div className="p-2">
+                            <h4 className="font-medium text-gray-800 mb-2">Product Details:</h4>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="bg-gray-200">
+                                  <th className="py-1 px-2 text-left">Product</th>
+                                  <th className="py-1 px-2 text-left">Quantity</th>
+                                  <th className="py-1 px-2 text-left">Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {order.productselected.map((product, index) => (
+                                  <tr key={index} className="border-b border-gray-200">
+                                    <td className="py-1 px-2">{product.name}</td>
+                                    <td className="py-1 px-2">{product.qty}</td>
+                                    <td className="py-1 px-2">${product.price.toFixed(2)}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <div className="mt-2">
+                              <p><span className="font-medium">Shipping From:</span> {order.fromaddress}</p>
+                              <p><span className="font-medium">Shipping To:</span> {order.toaddress}</p>
+                              <p><span className="font-medium">Tracking Code:</span> {order.trackingcode}</p>
+                              <p><span className="font-medium">Last Location:</span> {order.lastlocation}</p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
@@ -619,20 +407,20 @@ export default function AdminManageOrders({ adminData }) {
             </nav>
           </div>
         </div>
-        {/* Product Delete */}
+        {/* Delete Order Section */}
         <div className="flex flex-wrap gap-6 my-6">
-          {/* Delete Product */}
+          {/* Delete Order */}
           <div className="flex-1 min-w-[300px] bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Delete Order
             </h2>
             <form>
               <div className="mb-4">
-                <label className="block text-gray-700">Product ID</label>
+                <label className="block text-gray-700">Order ID</label>
                 <input
                   type="number"
                   className="w-full p-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter product ID"
+                  placeholder="Enter order ID"
                 />
               </div>
               <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition-colors">
