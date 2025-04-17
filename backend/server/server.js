@@ -133,6 +133,104 @@ const NewProductSchema = new mongoose.Schema({
 
 const NewProduct = mongoose.model("NewProduct", NewProductSchema);
 
+// Confirm order schema
+const confirmOrderSchema = new mongoose.Schema({
+  orderid: { type: Number, required: true, unique: true },
+  userId: { type: String, required: true },
+  customer: { type: String, required: true },
+  productselected: [
+    {
+      name: { type: String, required: true },
+      qty: { type: Number, required: true },
+      price: { type: Number, required: true },
+    },
+  ],
+  ordered: { type: Date, required: true },
+  estDelivery: { type: Date, required: true },
+  from: { type: String, required: true },
+  to: { type: String, required: true },
+  totalprice: { type: String, required: true },
+  payment: { type: String, required: true },
+  fromaddress: { type: String, required: true },
+  toaddress: { type: String, required: true },
+  shippingaddress: { type: String, required: true },
+  trackingcode: { type: String, required: true },
+  lastlocation: { type: String, required: true },
+  carrier: { type: String, required: true },
+  status: { type: String, required: true },
+});
+
+const ConfirmOrder = mongoose.model("ConfirmOrder", confirmOrderSchema);
+
+// Endpoint to get all orders to admindashboard
+app.get("/admin/orders", async (req, res) => {
+  try {
+    const orders = await ConfirmOrder.find();
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching orders" });
+  }
+});
+
+// Endpoint to save order details
+app.post("/orders/save", async (req, res) => {
+  try {
+    const {
+      orderid,
+      userId,
+      customer,
+      productselected,
+      ordered,
+      estDelivery,
+      from,
+      to,
+      totalprice,
+      payment,
+      fromaddress,
+      toaddress,
+      shippingaddress,
+      trackingcode,
+      lastlocation,
+      carrier,
+      status,
+    } = req.body;
+
+    // Validate required fields
+    if (!userId || !shippingaddress || !payment) {
+      return res.status(400).json({ message: "Missing required order details" });
+    }
+
+    const order = new ConfirmOrder({
+      orderid,
+      userId,
+      customer,
+      productselected,
+      ordered,
+      estDelivery,
+      from,
+      to,
+      totalprice,
+      payment,
+      fromaddress,
+      toaddress,
+      shippingaddress,
+      trackingcode,
+      lastlocation,
+      carrier,
+      status,
+    });
+
+    await order.save();
+    res.status(201).json({ message: "Order saved successfully" });
+  } catch (error) {
+    console.error("Error saving order details:", error);
+    res.status(500).json({ message: "Error saving order" });
+  }
+});
+
+// Tomorrow's we will test save order details endpoint
+
 // Endpoint to upload CSV file and add new product to MongoDB
 app.post(
   "/api/upload-csv-new-products",

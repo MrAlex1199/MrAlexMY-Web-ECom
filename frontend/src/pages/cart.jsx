@@ -8,10 +8,6 @@ export default function Cart({
   setSelectedProducts,
   setTotalPrice,
 }) {
-
-  // Debugging: userData
-  console.log("userData:", userData);
-
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
       if (!userId) {
@@ -111,6 +107,68 @@ export default function Cart({
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
+  };
+
+  // save order details to database
+  const saveOrderDetails = async () => {
+    try {
+      if (!userId || !shippingLocation || !paymentMethod) {
+        throw new Error("Missing required order details");
+      }
+
+      const orderDetails = {
+        orderid: Math.floor(Math.random() * 1000000), // Generate a random order ID
+        userId: userId,
+        customer: `${userData.firstName} ${userData.lastName}`,
+        productselected: selectedProducts.map((product) => ({
+          name: product.productName,
+          qty: product.quantity,
+          price: product.price,
+        })),
+        ordered: new Date(),
+        estDelivery: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // Estimated delivery in 3 days
+        from: "Warehouse A", // Example warehouse location
+        to: shippingLocation,
+        totalprice: (
+          Number(totalPrice) +
+          (shippingLocation === "us"
+            ? 5
+            : shippingLocation === "eu"
+            ? 10
+            : shippingLocation === "asia"
+            ? 15
+            : 0)
+        ).toFixed(2),
+        payment: paymentMethod,
+        fromaddress: "123 Warehouse St, City, Country", // Example address
+        toaddress: `${userData.address[0]?.address || "N/A"}, ${
+          userData.address[0]?.city || "N/A"
+        }, ${userData.address[0]?.country || "N/A"}`,
+        shippingaddress: shippingLocation,
+        trackingcode: `TRK${Math.floor(Math.random() * 1000000)}`,
+        lastlocation: "Warehouse A", // Example last location before useing delivery Company API Data
+        carrier: "Carrier X", // Example Data before useing delivery Company API Data
+        status: "Processing", // Example Data before useing delivery Company API Data
+      };
+
+      const response = await fetch("http://localhost:3001/orders/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderDetails),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save order details");
+      }
+
+      console.log("Order details saved successfully");
+      window.location.href = "/Orderstatus";
+    } catch (error) {
+      console.error("Error saving order details:", error);
+      // Handle error (e.g., display error message to user)
+    }
   };
 
   return (
@@ -260,10 +318,7 @@ export default function Cart({
                     {userData.address &&
                       userData.address.length > 0 &&
                       userData.address.map((addr, index) => (
-                        <option
-                          key={index}
-                          value={addr.country}
-                        >
+                        <option key={index} value={addr.country}>
                           {`${addr.firstName} ${addr.lastName}, ${addr.address}, ${addr.city}, ${addr.postalCode}, ${addr.phone}, ${addr.country}`}
                         </option>
                       ))}
@@ -380,6 +435,7 @@ export default function Cart({
                   </div>
 
                   <button
+                    onClick={saveOrderDetails}
                     disabled={!shippingLocation || !paymentMethod}
                     className={`w-full py-3 rounded-md font-semibold text-white transition-colors ${
                       !shippingLocation || !paymentMethod

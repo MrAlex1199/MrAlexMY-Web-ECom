@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 const Orderstatusinfo = [
   {
     id: 1,
+    userId: 1,
     from: "Amazon Shop",
     to: "John Smith",
     orderId: "123456789",
@@ -25,6 +26,7 @@ const Orderstatusinfo = [
   },
   {
     id: 2,
+    userId: 2,
     from: "Best Buy",
     to: "John Doe",
     orderId: "987654321",
@@ -46,6 +48,7 @@ const Orderstatusinfo = [
   },
   {
     id: 3,
+    userId: 3,
     from: "Newegg",
     to: "Jane Doe",
     orderId: "456789123",
@@ -69,6 +72,7 @@ const Orderstatusinfo = [
   },
   {
     id: 4,
+    userId: 4,
     from: "Walmart",
     to: "Emily Johnson",
     orderId: "321654987",
@@ -91,6 +95,7 @@ const Orderstatusinfo = [
   },
   {
     id: 5,
+    userId: 5,
     from: "Target",
     to: "Michael Brown",
     orderId: "654321789",
