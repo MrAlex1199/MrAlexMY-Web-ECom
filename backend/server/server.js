@@ -1141,6 +1141,35 @@ app.delete("/cart/delete-product/:userId/:productId", async (req, res) => {
   }
 });
 
+// Endpoint to delete a all products in cart by userId
+app.delete("/cart/clear/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Clear the selectedProducts array
+    user.selectedProducts = [];
+
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "All products cleared from cart successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to clear cart products" });
+  }
+}
+);
+
 // Endpoint to delete Account by userID
 app.delete("/deleteAccount/:userId", async (req, res) => {
   try {

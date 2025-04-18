@@ -146,9 +146,9 @@ export default function Cart({
         }, ${userData.address[0]?.country || "N/A"}`,
         shippingaddress: shippingLocation,
         trackingcode: `TRK${Math.floor(Math.random() * 1000000)}`,
-        lastlocation: "Warehouse A", // Example last location before useing delivery Company API Data
-        carrier: "Carrier X", // Example Data before useing delivery Company API Data
-        status: "Processing", // Example Data before useing delivery Company API Data
+        lastlocation: "Warehouse A", // Example last location before using delivery Company API Data
+        carrier: "Carrier X", // Example Data before using delivery Company API Data
+        status: "Processing", // Example Data before using delivery Company API Data
       };
 
       const response = await fetch("http://localhost:3001/orders/save", {
@@ -164,6 +164,23 @@ export default function Cart({
       }
 
       console.log("Order details saved successfully");
+
+      // Clear the cart in the database after successful order save
+      const clearCartResponse = await fetch(`http://localhost:3001/cart/clear/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!clearCartResponse.ok) {
+        throw new Error("Failed to clear the cart in the database");
+      }
+
+      // Clear the cart in the UI
+      setSelectedProducts([]);
+      setTotalPrice("0.00");
+
       window.location.href = "/Orderstatus";
     } catch (error) {
       console.error("Error saving order details:", error);
