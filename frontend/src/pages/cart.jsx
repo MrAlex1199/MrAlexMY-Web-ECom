@@ -148,7 +148,7 @@ export default function Cart({
         trackingcode: `TRK${Math.floor(Math.random() * 1000000)}`,
         lastlocation: "Warehouse A", // Example last location before using delivery Company API Data
         carrier: "Carrier X", // Example Data before using delivery Company API Data
-        status: "Processing", // Example Data before using delivery Company API Data
+        status: "In Transit", // Example Data before using delivery Company API Data
       };
 
       const response = await fetch("http://localhost:3001/orders/save", {

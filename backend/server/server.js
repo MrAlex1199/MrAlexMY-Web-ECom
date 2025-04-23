@@ -134,7 +134,7 @@ const NewProductSchema = new mongoose.Schema({
 const NewProduct = mongoose.model("NewProduct", NewProductSchema);
 
 // Confirm order schema
-const confirmOrderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
   orderid: { type: Number, required: true, unique: true },
   userId: { type: String, required: true },
   customer: { type: String, required: true },
@@ -160,12 +160,27 @@ const confirmOrderSchema = new mongoose.Schema({
   status: { type: String, required: true },
 });
 
-const ConfirmOrder = mongoose.model("ConfirmOrder", confirmOrderSchema);
+const Order = mongoose.model("Order", OrderSchema);
 
 // Endpoint to get all orders to admindashboard
 app.get("/admin/orders", async (req, res) => {
   try {
-    const orders = await ConfirmOrder.find();
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching orders" });
+  }
+});
+
+// Endpoint to get all orders for a specific user
+app.get("/orders/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const orders = await Order.find({ userId });
+    if (!orders) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
     res.status(200).json(orders);
   } catch (error) {
     console.error(error);
@@ -201,7 +216,7 @@ app.post("/orders/save", async (req, res) => {
       return res.status(400).json({ message: "Missing required order details" });
     }
 
-    const order = new ConfirmOrder({
+    const order = new Order({
       orderid,
       userId,
       customer,
@@ -228,8 +243,6 @@ app.post("/orders/save", async (req, res) => {
     res.status(500).json({ message: "Error saving order" });
   }
 });
-
-// Tomorrow's we will test save order details endpoint
 
 // Endpoint to upload CSV file and add new product to MongoDB
 app.post(
