@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Header from "../../components/AdminComponents/header";
 import Sidebar from "../../components/AdminComponents/Sidebar";
@@ -8,103 +8,130 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function AdminManageOrders({ adminData }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [orders, setOrders] = useState([]);
+  // const [loading, setLoading] = useState(true);
   const ordersPerPage = 10;
 
+  console.log("Orders:", orders);
+
   // Sample data for orders list
-  const orders = [
-    {
-      orderid: 1,
-      customer: "John Doe",
-      productselected: [
-        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
-        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
-        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
-        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
-      ],
-      ordered: "2025-01-01",
-      estDelivery: "2025-01-05",
-      from: "Best Buy",
-      to: "Alex dakota",
-      totalprice: "$2999.96",
-      payment: "payPal",
-      fromaddress: "456 Elm St, Townsville, CA 12345",
-      toaddress: "789 Oak St, Villagetown, CA 12345",
-      shippingaddress: "123 Main St, Cityville, CA 12345",
-      trackingcode: "ABC123456",
-      lastlocation: "Los Angeles, CA",
-      carrier: "FedEx",
-      status: "Shipped",
-    },
-    {
-      orderid: 2,
-      customer: "Jane Smith",
-      productselected: [
-        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
-        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
-        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
-        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
-      ],
-      ordered: "2025-01-02",
-      estDelivery: "2025-01-06",
-      from: "Best Buy",
-      to: "John Doe",
-      totalprice: "$2999.96",
-      payment: "creditCard",
-      fromaddress: "456 Elm St, Townsville, CA 12345",
-      toaddress: "789 Oak St, Villagetown, CA 12345",
-      shippingaddress: "123 Main St, Cityville, CA 12345",
-      trackingcode: "DEF654321",
-      lastlocation: "New York, NY",
-      carrier: "UPS",
-      status: "in Transit",
-    },
-    {
-      orderid: 3,
-      customer: "Mary Johnson",
-      productselected: [
-        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
-        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
-        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
-        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
-      ],
-      ordered: "2025-01-02",
-      estDelivery: "2025-01-06",
-      from: "Best Buy",
-      to: "John Doe",
-      totalprice: "$2999.96",
-      payment: "creditCard",
-      fromaddress: "456 Elm St, Townsville, CA 12345",
-      toaddress: "789 Oak St, Villagetown, CA 12345",
-      shippingaddress: "123 Main St, Cityville, CA 12345",
-      trackingcode: "DEF654321",
-      lastlocation: "New York, NY",
-      carrier: "UPS",
-      status: "canceled",
-    },
-    {
-      orderid: 4,
-      customer: "william Brown",
-      productselected: [
-        { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
-        { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
-        { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
-        { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
-      ],
-      ordered: "2025-01-02",
-      estDelivery: "2025-01-06",
-      from: "Best Buy",
-      to: "John Doe",
-      totalprice: "$2999.96",
-      payment: "creditCard",
-      fromaddress: "456 Elm St, Townsville, CA 12345",
-      toaddress: "789 Oak St, Villagetown, CA 12345",
-      shippingaddress: "123 Main St, Cityville, CA 12345",
-      trackingcode: "DEF654321",
-      lastlocation: "New York, NY",
-      carrier: "UPS",
-      status: "returned",
-    },
-  ];
+  // const orders = [
+  //   {
+  //     orderid: 1,
+  //     customer: "John Doe",
+  //     productselected: [
+  //       { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+  //       { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+  //       { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+  //       { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+  //     ],
+  //     ordered: "2025-01-01",
+  //     estDelivery: "2025-01-05",
+  //     from: "Best Buy",
+  //     to: "Alex dakota",
+  //     totalprice: "$2999.96",
+  //     payment: "payPal",
+  //     fromaddress: "456 Elm St, Townsville, CA 12345",
+  //     toaddress: "789 Oak St, Villagetown, CA 12345",
+  //     shippingaddress: "123 Main St, Cityville, CA 12345",
+  //     trackingcode: "ABC123456",
+  //     lastlocation: "Los Angeles, CA",
+  //     carrier: "FedEx",
+  //     status: "Shipped",
+  //   },
+  //   {
+  //     orderid: 2,
+  //     customer: "Jane Smith",
+  //     productselected: [
+  //       { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+  //       { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+  //       { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+  //       { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+  //     ],
+  //     ordered: "2025-01-02",
+  //     estDelivery: "2025-01-06",
+  //     from: "Best Buy",
+  //     to: "John Doe",
+  //     totalprice: "$2999.96",
+  //     payment: "creditCard",
+  //     fromaddress: "456 Elm St, Townsville, CA 12345",
+  //     toaddress: "789 Oak St, Villagetown, CA 12345",
+  //     shippingaddress: "123 Main St, Cityville, CA 12345",
+  //     trackingcode: "DEF654321",
+  //     lastlocation: "New York, NY",
+  //     carrier: "UPS",
+  //     status: "in Transit",
+  //   },
+  //   {
+  //     orderid: 3,
+  //     customer: "Mary Johnson",
+  //     productselected: [
+  //       { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+  //       { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+  //       { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+  //       { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+  //     ],
+  //     ordered: "2025-01-02",
+  //     estDelivery: "2025-01-06",
+  //     from: "Best Buy",
+  //     to: "John Doe",
+  //     totalprice: "$2999.96",
+  //     payment: "creditCard",
+  //     fromaddress: "456 Elm St, Townsville, CA 12345",
+  //     toaddress: "789 Oak St, Villagetown, CA 12345",
+  //     shippingaddress: "123 Main St, Cityville, CA 12345",
+  //     trackingcode: "DEF654321",
+  //     lastlocation: "New York, NY",
+  //     carrier: "UPS",
+  //     status: "canceled",
+  //   },
+  //   {
+  //     orderid: 4,
+  //     customer: "william Brown",
+  //     productselected: [
+  //       { name: "Smartphone - Samsung Galaxy S21", qty: 1, price: 799.99 },
+  //       { name: "Smartphone - iPhone 13", qty: 1, price: 999.99 },
+  //       { name: "Smartphone - Google Pixel 6", qty: 1, price: 699.99 },
+  //       { name: "Smartphone - OnePlus 9", qty: 1, price: 599.99 },
+  //     ],
+  //     ordered: "2025-01-02",
+  //     estDelivery: "2025-01-06",
+  //     from: "Best Buy",
+  //     to: "John Doe",
+  //     totalprice: "$2999.96",
+  //     payment: "creditCard",
+  //     fromaddress: "456 Elm St, Townsville, CA 12345",
+  //     toaddress: "789 Oak St, Villagetown, CA 12345",
+  //     shippingaddress: "123 Main St, Cityville, CA 12345",
+  //     trackingcode: "DEF654321",
+  //     lastlocation: "New York, NY",
+  //     carrier: "UPS",
+  //     status: "returned",
+  //   },
+  // ];
+
+  // Get Orders from backend database
+  useEffect(() => {
+    // setLoading(true);
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/admin/orders", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setOrders(data || []);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setOrders([]);
+      } finally {
+        // setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Calculate the indexes for the current page's orders
   const indexOfLastOrder = currentPage * ordersPerPage;
@@ -155,6 +182,21 @@ export default function AdminManageOrders({ adminData }) {
       setExpandedOrder(orderId);
     }
   };
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen bg-gray-100">
+  //       <div className="loader"></div>
+  //     </div>
+  //   );
+  // }
+  // if (orders.length === 0) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen bg-gray-100">
+  //       <p className="text-gray-500">No orders found.</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -281,14 +323,14 @@ export default function AdminManageOrders({ adminData }) {
                             PayPal
                           </span>
                         )}
-                        {order.payment === "creditCard" && (
+                        {order.payment === "credit" && (
                           <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
                             Credit Card
                           </span>
                         )}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {order.totalprice}
+                        {order.totalprice}$
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {order.carrier}

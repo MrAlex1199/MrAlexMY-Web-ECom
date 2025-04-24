@@ -201,7 +201,7 @@ export default function Orderstatus({ userId }) {
                 <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
                   <span className="text-sm text-gray-600">Total</span>
                   <span className="text-sm text-gray-600">
-                    Delivery Fee: ${order.deliveryfee}
+                    Delivery Fee: ${order.deliveryprice}
                   </span>
                   <span className="text-lg font-semibold text-gray-900">
                     ${order.totalprice}

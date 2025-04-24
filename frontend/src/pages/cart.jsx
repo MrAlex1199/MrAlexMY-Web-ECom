@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 
-export default function Cart({
-  userId,
-  userData,
-  selectedProducts,
-  totalPrice,
-  setSelectedProducts,
-  setTotalPrice,
-}) {
+export default function Cart({userId, userData, selectedProducts, totalPrice, setSelectedProducts, setTotalPrice,}) {
+  
+  // debugging userData
+  // console.log("User Data:", userData);
+  
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
       if (!userId) {
@@ -119,7 +116,7 @@ export default function Cart({
       const orderDetails = {
         orderid: Math.floor(Math.random() * 1000000), // Generate a random order ID
         userId: userId,
-        customer: `${userData.firstName} ${userData.lastName}`,
+        customer: `${userData.fname} ${userData.lname}`,
         productselected: selectedProducts.map((product) => ({
           name: product.productName,
           qty: product.quantity,
@@ -129,6 +126,14 @@ export default function Cart({
         estDelivery: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // Estimated delivery in 3 days
         from: "Warehouse A", // Example warehouse location
         to: shippingLocation,
+        deliveryprice:
+          shippingLocation === "us"
+            ? 5
+            : shippingLocation === "eu"
+            ? 10
+            : shippingLocation === "asia"
+            ? 15
+            : 0,
         totalprice: (
           Number(totalPrice) +
           (shippingLocation === "us"
@@ -147,7 +152,7 @@ export default function Cart({
         shippingaddress: shippingLocation,
         trackingcode: `TRK${Math.floor(Math.random() * 1000000)}`,
         lastlocation: "Warehouse A", // Example last location before using delivery Company API Data
-        carrier: "Carrier X", // Example Data before using delivery Company API Data
+        carrier: "FedEx", // Example carrier before using delivery Company API Data
         status: "In Transit", // Example Data before using delivery Company API Data
       };
 
