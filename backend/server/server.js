@@ -613,6 +613,39 @@ app.get("/cart/:userId", async (req, res) => {
   }
 });
 
+// Endpoint to edit Admin orders by ID
+app.put("/admin/orders/:orderid", async (req, res) => {
+  try {
+    const { orderid } = req.params;
+    const updatedOrder = req.body;
+    
+    // Ensure required fields are present
+    const requiredFields = ['customer', 'productselected', 'status', 'from', 'to', 'deliveryprice', 'totalprice'];
+    for (const field of requiredFields) {
+      if (!updatedOrder[field]) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Missing required field: ${field}` 
+        });
+      }
+    }
+
+    const order = await Order.findOneAndUpdate({ orderid }, updatedOrder, {
+      new: true,
+      runValidators: true // This will run schema validation
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Order updated successfully", order });
+  } catch (error) {
+    console.error("Error updating order:", error);
+    res.status(500).json({ success: false, message: `Failed to update order: ${error.message}` });
+  }
+});
+
 // Endpoint to update the quantity and  Newtotal price of a product
 app.put("/cart/update-quantity/:userId/:productId", async (req, res) => {
   try {
@@ -1095,6 +1128,30 @@ app.post("/logout", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Logout failed" });
+  }
+});
+
+// Endpoint to delete a product by ID
+app.delete("/admin/orders/:orderid", async (req, res) => {
+  try {
+    const { orderid } = req.params;
+    // Convert the orderid to number since it's stored as Number in the schema
+    const numericOrderId = parseInt(orderid, 10);
+    
+    if (isNaN(numericOrderId)) {
+      return res.status(400).json({ success: false, message: "Invalid order ID format" });
+    }
+    
+    const order = await Order.findOneAndDelete({ orderid: numericOrderId });
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+    
+    res.status(200).json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).json({ success: false, message: "Failed to delete order" });
   }
 });
 

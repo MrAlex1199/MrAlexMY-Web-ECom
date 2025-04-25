@@ -151,7 +151,8 @@ export default function Navbar({
   dropdownOpen,
 }) {
   const [open, setOpen] = useState(false);
-  const profileImage = "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg";
+  const profileImage =
+    "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -518,7 +519,7 @@ export default function Navbar({
                     <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                       {userData && (
                         <div className="flex items-center space-x-6">
-                        <img
+                          <img
                             src={profileImage}
                             alt="Profile Avatar"
                             className="w-10 h-10 rounded-full cursor-pointer"
@@ -534,6 +535,12 @@ export default function Navbar({
                             </button>
                             {dropdownOpen && (
                               <div className="absolute right-0 mt-6 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                                <a
+                                  href="/Orderstatus"
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  Order Status
+                                </a>
                                 <a
                                   href="/SettingUser"
                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -95,9 +95,9 @@ export default function Orderstatus({ userId }) {
           Cancelled
         </button>
         <button
-          onClick={() => setFilter("ReturnedOrder")}
+          onClick={() => setFilter("returned")}
           className={`px-5 py-2.5 rounded-lg transition duration-200 ${
-            filter === "ReturnedOrder"
+            filter === "returned"
               ? "bg-indigo-600 text-white"
               : "bg-gray-100 text-gray-900 hover:bg-gray-200"
           }`}
@@ -137,7 +137,7 @@ export default function Orderstatus({ userId }) {
                       ? "bg-yellow-100 text-yellow-700"
                       : order.status === "CancelledOrder"
                       ? "bg-red-200 text-red-700"
-                      : order.status === "ReturnedOrder"
+                      : order.status === "returned"
                       ? "bg-red-200 text-red-700"
                       : "bg-gray-100 text-gray-700"
                   }`}
@@ -236,7 +236,7 @@ export default function Orderstatus({ userId }) {
             <div className="flex flex-col sm:flex-row gap-3">
               {order.status === "Shipped" ||
               order.status === "CancelledOrder" ||
-              order.status === "ReturnedOrder" ? (
+              order.status === "returned" ? (
                 <NavLink
                   to="/buyagain"
                   className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 text-center text-sm font-medium"
