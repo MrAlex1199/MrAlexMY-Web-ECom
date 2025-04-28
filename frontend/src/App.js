@@ -27,6 +27,7 @@ import AdminManageOrders from "./pages/AdminPage/AdminOrders";
 import AdminManageCustomrs from "./pages/AdminPage/AdminCustomers";
 import AdminPromotions from "./pages/AdminPage/AdminPromotions";
 import AdminTeam from "./pages/AdminPage/AdminTeam";
+import AdminFinance from "./pages/AdminPage/AdminFinance";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -70,6 +71,7 @@ export default function App() {
     "/adminmanagecustomrs",
     "/AdminPromotions",
     "/AdminTeam",
+    "/AdminFinance"
   ].includes(window.location.pathname);
 
   const shouldShowFooter = ![
@@ -87,6 +89,7 @@ export default function App() {
     "/adminmanagecustomrs",
     "/AdminPromotions",
     "/AdminTeam",
+    "/AdminFinance",
   ].includes(window.location.pathname);
 
   useEffect(() => {
@@ -311,6 +314,14 @@ export default function App() {
           element={
             <ProtectedRoute isAdmin={isAdmin}>
               <AdminTeam adminData={adminData} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/AdminFinance"
+          element={
+            <ProtectedRoute isAdmin={isAdmin}>
+              <AdminFinance adminData={adminData} />
             </ProtectedRoute>
           }
         />
