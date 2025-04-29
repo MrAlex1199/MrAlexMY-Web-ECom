@@ -8,18 +8,17 @@ export default function Orderstatus({ userId }) {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      setLoading(true);
       try {
         const response = await fetch(`http://localhost:3001/orders/${userId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
         const data = await response.json();
+        setLoading(false);
         setOrders(data || []);
       } catch (error) {
         console.error("Error fetching orders:", error);
         setOrders([]);
-      } finally {
         setLoading(false);
       }
     };
@@ -33,22 +32,6 @@ export default function Orderstatus({ userId }) {
     if (filter === "All") return true;
     return order.status === filter;
   });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading orders...</p>
-      </div>
-    );
-  }
-
-  if (!orderStatusInfo.length) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>No orders found.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 card rounded-lg shadow-md my-5 mx-10 bg-white">
@@ -116,7 +99,14 @@ export default function Orderstatus({ userId }) {
         </button>
       </div>
 
-      {/* Order Cards */}
+      {/*Loading Animation */}
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="loader"></div>
+        </div>
+      ) : (
+        <>
+          {/* Orders Table */}
       <div className="max-w-4xl mx-auto space-y-6">
         {filteredOrders.map((order) => (
           <div
@@ -261,6 +251,8 @@ export default function Orderstatus({ userId }) {
           </div>
         ))}
       </div>
+          </>
+        )}
     </div>
   );
 }

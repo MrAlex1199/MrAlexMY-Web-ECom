@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useParams, useLocation } from "react-router-dom";
+import { X } from 'lucide-react';
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
@@ -18,6 +19,21 @@ export default function ProductsDetails({ userId }) {
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
+
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openModal = (imageIndex) => {
+    setSelectedImage(imageIndex);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
+  const navigateImage = (direction) => {
+    const newIndex = (selectedImage + direction + product.images.length) % product.images.length;
+    setSelectedImage(newIndex);
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -122,39 +138,102 @@ export default function ProductsDetails({ userId }) {
           </ol>
         </nav>
 
-        {/* Image gallery */}
-        <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
-          <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
+        <div className="relative">
+      {/* Image gallery */}
+      <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
+        <div 
+          className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block cursor-pointer"
+          onClick={() => openModal(0)}
+        >
+          <img
+            src={product.images[0].src}
+            alt={product.images[0].alt}
+            className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+          />
+        </div>
+        <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
+          <div 
+            className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
+            onClick={() => openModal(1)}
+          >
             <img
-              src={product.images[0].src}
-              alt={product.images[0].alt}
-              className="h-full w-full object-cover object-center"
+              src={product.images[1].src}
+              alt={product.images[1].alt}
+              className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
             />
           </div>
-          <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-            <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
-              <img
-                src={product.images[1].src}
-                alt={product.images[1].alt}
-                className="h-full w-full object-cover object-center"
-              />
-            </div>
-            <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
-              <img
-                src={product.images[2].src}
-                alt={product.images[2].alt}
-                className="h-full w-full object-cover object-center"
-              />
-            </div>
-          </div>
-          <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
+          <div 
+            className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
+            onClick={() => openModal(2)}
+          >
             <img
-              src={product.images[3].src}
-              alt={product.images[3].alt}
-              className="h-full w-full object-cover object-center"
+              src={product.images[2].src}
+              alt={product.images[2].alt}
+              className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
             />
           </div>
         </div>
+        <div 
+          className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg cursor-pointer"
+          onClick={() => openModal(3)}
+        >
+          <img
+            src={product.images[3].src}
+            alt={product.images[3].alt}
+            className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+          />
+        </div>
+      </div>
+
+      {/* Modal */}
+      {selectedImage !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+          <div className="relative max-w-4xl w-full">
+            {/* Close button */}
+            <button 
+              onClick={closeModal}
+              className="absolute right-2 top-2 z-10 p-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Navigation buttons */}
+            <div className="flex justify-between absolute inset-x-0 top-1/2 transform -translate-y-1/2">
+              <button 
+                onClick={() => navigateImage(-1)}
+                className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button 
+                onClick={() => navigateImage(1)}
+                className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal content */}
+            <div className="bg-white p-2 rounded-lg shadow-xl">
+              <img
+                src={product.images[selectedImage].src}
+                alt={product.images[selectedImage].alt}
+                className="max-h-screen object-contain mx-auto"
+              />
+            </div>
+
+            {/* Image counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
+              {selectedImage + 1} / {product.images.length}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
 
         {/* Product info */}
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
