@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
       phone: { type: String, required: true },
       age: { type: Number, required: true },
     },
-  ]
+  ],
 });
 
 // Hash password before saving
@@ -108,7 +108,12 @@ const productSchema = new mongoose.Schema({
   sizes: [{ name: String, inStock: Boolean }],
   highlights: [String],
   details: String,
-  discount: { type: Number, default: 0 }, // Added discount field
+  discount: { type: Number, default: 0 },
+  reviews: {
+    average: { type: Number, default: 0 },
+    totalCount: { type: Number, default: 0 },
+    href: { type: String, default: "#" },
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);
@@ -149,7 +154,7 @@ const OrderSchema = new mongoose.Schema({
   estDelivery: { type: Date, required: true },
   from: { type: String, required: true },
   to: { type: String, required: true },
-  deliveryprice : { type: Number, required: true },
+  deliveryprice: { type: Number, required: true },
   totalprice: { type: String, required: true },
   payment: { type: String, required: true },
   fromaddress: { type: String, required: true },
@@ -215,7 +220,9 @@ app.post("/orders/save", async (req, res) => {
 
     // Validate required fields
     if (!userId || !shippingaddress || !payment) {
-      return res.status(400).json({ message: "Missing required order details" });
+      return res
+        .status(400)
+        .json({ message: "Missing required order details" });
     }
 
     const order = new Order({
@@ -313,6 +320,15 @@ app.post(
                 highlights: row.highlights ? row.highlights.split(" | ") : [],
                 details: row.details || "",
                 discount: row.discount ? parseInt(row.discount) : 0,
+                reviews: {
+                  average: row.reviews.average
+                    ? parseFloat(row.reviews.average)
+                    : 0,
+                  totalCount: row.reviews.totalCount
+                    ? parseInt(row.reviews.totalCount)
+                    : 0,
+                  href: row.reviews.href || "#",
+                },
               };
 
               // Validate numeric fields
@@ -343,11 +359,9 @@ app.post(
       }
 
       await NewProduct.insertMany(NewProducts, { ordered: false }); // ordered: false to continue on duplicates
-      res
-        .status(200)
-        .json({
-          message: `${NewProducts.length} products added successfully!`,
-        });
+      res.status(200).json({
+        message: `${NewProducts.length} products added successfully!`,
+      });
     } catch (error) {
       console.error("Error processing CSV:", error);
       res
@@ -411,6 +425,16 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
           }
 
           try {
+            // Parse reviews from JSON string
+            let reviewsObj = { average: 0, totalCount: 0, href: "#" };
+            if (row.reviews) {
+              try {
+                reviewsObj = JSON.parse(row.reviews);
+              } catch (jsonError) {
+                console.warn("Error parsing reviews JSON:", jsonError);
+              }
+            }
+
             const product = {
               name: row.name,
               price: parseFloat(row.price.replace("$", "")),
@@ -446,6 +470,12 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
               highlights: row.highlights ? row.highlights.split(" | ") : [],
               details: row.details || "",
               discount: row.discount ? parseInt(row.discount) : 0,
+              // reviews now have a problem Data in CSV file can't not save in DB FIX FIX
+              reviews: {
+                average: reviewsObj.average ? parseFloat(reviewsObj.average) : 0,
+                totalCount: reviewsObj.totalCount ? parseInt(reviewsObj.totalCount) : 0,
+                href: reviewsObj.href || "#",
+              },
             };
 
             // Validate numeric fields
@@ -548,7 +578,9 @@ app.get("/user", async (req, res) => {
     const user = await User.findById(decodedToken.id);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     res.status(200).json({
@@ -560,7 +592,9 @@ app.get("/user", async (req, res) => {
       address: user.address, // This already contains all addresses
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to fetch user details" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch user details" });
   }
 });
 
@@ -618,31 +652,48 @@ app.put("/admin/orders/:orderid", async (req, res) => {
   try {
     const { orderid } = req.params;
     const updatedOrder = req.body;
-    
+
     // Ensure required fields are present
-    const requiredFields = ['customer', 'productselected', 'status', 'from', 'to', 'deliveryprice', 'totalprice'];
+    const requiredFields = [
+      "customer",
+      "productselected",
+      "status",
+      "from",
+      "to",
+      "deliveryprice",
+      "totalprice",
+    ];
     for (const field of requiredFields) {
       if (!updatedOrder[field]) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Missing required field: ${field}` 
+        return res.status(400).json({
+          success: false,
+          message: `Missing required field: ${field}`,
         });
       }
     }
 
     const order = await Order.findOneAndUpdate({ orderid }, updatedOrder, {
       new: true,
-      runValidators: true // This will run schema validation
+      runValidators: true, // This will run schema validation
     });
 
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
-    res.status(200).json({ success: true, message: "Order updated successfully", order });
+    res
+      .status(200)
+      .json({ success: true, message: "Order updated successfully", order });
   } catch (error) {
     console.error("Error updating order:", error);
-    res.status(500).json({ success: false, message: `Failed to update order: ${error.message}` });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: `Failed to update order: ${error.message}`,
+      });
   }
 });
 
@@ -752,15 +803,15 @@ app.put("/api/products/:id/remove-discount", async (req, res) => {
     product.discount = 0;
     await product.save();
 
-    res.status(200).json({ 
-      message: "Discount removed successfully", 
-      product: product 
+    res.status(200).json({
+      message: "Discount removed successfully",
+      product: product,
     });
   } catch (error) {
     console.error("Error removing discount:", error);
-    res.status(500).json({ 
-      message: "Server error while removing discount", 
-      error: error.message 
+    res.status(500).json({
+      message: "Server error while removing discount",
+      error: error.message,
     });
   }
 });
@@ -773,20 +824,33 @@ app.put("/update-address/:userId/:addressId", async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    const addressIndex = user.address.findIndex(addr => addr._id.toString() === addressId);
+    const addressIndex = user.address.findIndex(
+      (addr) => addr._id.toString() === addressId
+    );
     if (addressIndex === -1) {
-      return res.status(404).json({ success: false, message: "Address not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Address not found" });
     }
 
-    user.address[addressIndex] = { ...user.address[addressIndex], ...updatedAddress };
+    user.address[addressIndex] = {
+      ...user.address[addressIndex],
+      ...updatedAddress,
+    };
     await user.save();
 
-    res.status(200).json({ success: true, message: "Address updated successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Address updated successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to update address" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update address" });
   }
 });
 
@@ -1119,7 +1183,7 @@ app.post("/admin-logout", async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Logout failed" });
   }
-} );
+});
 
 // logout endpoint
 app.post("/logout", async (req, res) => {
@@ -1137,18 +1201,24 @@ app.delete("/admin/orders/:orderid", async (req, res) => {
     const { orderid } = req.params;
     // Convert the orderid to number since it's stored as Number in the schema
     const numericOrderId = parseInt(orderid, 10);
-    
+
     if (isNaN(numericOrderId)) {
-      return res.status(400).json({ success: false, message: "Invalid order ID format" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid order ID format" });
     }
-    
+
     const order = await Order.findOneAndDelete({ orderid: numericOrderId });
-    
+
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
-    
-    res.status(200).json({ success: true, message: "Order deleted successfully" });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Order deleted successfully" });
   } catch (error) {
     console.error("Error deleting order:", error);
     res.status(500).json({ success: false, message: "Failed to delete order" });
@@ -1159,19 +1229,27 @@ app.delete("/admin/orders/:orderid", async (req, res) => {
 app.delete("/delete-address/:userId/:addressId", async (req, res) => {
   try {
     const { userId, addressId } = req.params;
-    
+
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    user.address = user.address.filter(addr => addr._id.toString() !== addressId);
+    user.address = user.address.filter(
+      (addr) => addr._id.toString() !== addressId
+    );
     await user.save();
 
-    res.status(200).json({ success: true, message: "Address deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Address deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Failed to delete address" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete address" });
   }
 });
 
@@ -1240,8 +1318,7 @@ app.delete("/cart/clear/:userId", async (req, res) => {
       .status(500)
       .json({ success: false, message: "Failed to clear cart products" });
   }
-}
-);
+});
 
 // Endpoint to delete Account by userID
 app.delete("/deleteAccount/:userId", async (req, res) => {
