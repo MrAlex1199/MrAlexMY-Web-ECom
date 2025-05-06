@@ -297,7 +297,7 @@ export default function ProductsDetails({ userId }) {
                     <StarIcon
                       key={rating}
                       className={classNames(
-                        product.reviews.average > rating
+                        product.reviewsAvg > rating
                           ? "text-gray-900"
                           : "text-gray-200",
                         "h-5 w-5 flex-shrink-0"
@@ -306,12 +306,12 @@ export default function ProductsDetails({ userId }) {
                     />
                   ))}
                 </div>
-                <p className="sr-only">{product.reviews.average} out of 5 stars</p>
+                <p className="sr-only">{product.reviewsAvg} out of 5 stars</p>
                 <a
-                  href={product.reviews.href}
+                  href={product.reviewsHref}
                   className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
                 >
-                  {product.reviews.totalCount} reviews
+                  {product.reviewsCount} reviews
                 </a>
               </div>
             </div>

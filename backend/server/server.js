@@ -109,11 +109,9 @@ const productSchema = new mongoose.Schema({
   highlights: [String],
   details: String,
   discount: { type: Number, default: 0 },
-  reviews: {
-    average: { type: Number, default: 0 },
-    totalCount: { type: Number, default: 0 },
-    href: { type: String, default: "#" },
-  },
+  reviewsAvg: { type: Number, default: 0 },
+  reviewsCount: { type: Number, default: 0 },
+  reviewsHref: { type: String, default: "#" },
 });
 
 const Product = mongoose.model("Product", productSchema);
@@ -134,6 +132,9 @@ const NewProductSchema = new mongoose.Schema({
   highlights: [String],
   details: String,
   discount: { type: Number, default: 0 },
+  reviewsAvg: { type: Number, default: 0 },
+  reviewsCount: { type: Number, default: 0 },
+  reviewsHref: { type: String, default: "#" },
 });
 
 const NewProduct = mongoose.model("NewProduct", NewProductSchema);
@@ -320,15 +321,9 @@ app.post(
                 highlights: row.highlights ? row.highlights.split(" | ") : [],
                 details: row.details || "",
                 discount: row.discount ? parseInt(row.discount) : 0,
-                reviews: {
-                  average: row.reviews.average
-                    ? parseFloat(row.reviews.average)
-                    : 0,
-                  totalCount: row.reviews.totalCount
-                    ? parseInt(row.reviews.totalCount)
-                    : 0,
-                  href: row.reviews.href || "#",
-                },
+                reviewsAvg: row.reviewsAverage || 0,
+                reviewsCount: row.reviewsTotal || 0,
+                reviewsHref: row.reviewLink || "#",
               };
 
               // Validate numeric fields
@@ -425,16 +420,6 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
           }
 
           try {
-            // Parse reviews from JSON string
-            let reviewsObj = { average: 0, totalCount: 0, href: "#" };
-            if (row.reviews) {
-              try {
-                reviewsObj = JSON.parse(row.reviews);
-              } catch (jsonError) {
-                console.warn("Error parsing reviews JSON:", jsonError);
-              }
-            }
-
             const product = {
               name: row.name,
               price: parseFloat(row.price.replace("$", "")),
@@ -470,12 +455,9 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
               highlights: row.highlights ? row.highlights.split(" | ") : [],
               details: row.details || "",
               discount: row.discount ? parseInt(row.discount) : 0,
-              // reviews now have a problem Data in CSV file can't not save in DB FIX FIX
-              reviews: {
-                average: reviewsObj.average ? parseFloat(reviewsObj.average) : 0,
-                totalCount: reviewsObj.totalCount ? parseInt(reviewsObj.totalCount) : 0,
-                href: reviewsObj.href || "#",
-              },
+              reviewsAvg: row.reviewsAverage || 0,
+              reviewsCount: row.reviewsTotal || 0,
+              reviewsHref: row.reviewLink || "#",
             };
 
             // Validate numeric fields
