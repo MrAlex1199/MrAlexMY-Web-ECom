@@ -1,82 +1,368 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useParams, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 
-// const reviews = { href: "#", average: 4, totalCount: 117 };
+// Move static data outside component to prevent recreation on each render
+const commentsData = [
+  {
+    id: 1,
+    name: "John Doe",
+    comment: "Great product! Highly recommend.",
+    reviewImg: [
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+    ],
+    date: "14:30UTC+7 - 2023-10-01",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    comment: "Not what I expected, but still okay.",
+    reviewImg: [
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
+    ],
+    date: "15:00UTC+7 - 2023-10-02",
+  },
+];
 
+// Extract utility function outside component
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Create reusable components for better organization and performance
+const ImageGallery = ({ images, openModal }) => (
+  <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
+    <div
+      className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block cursor-pointer"
+      onClick={() => openModal(0)}
+    >
+      <img
+        src={images[0].src}
+        alt={images[0].alt}
+        className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+        loading="lazy"
+      />
+    </div>
+    <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
+      <div
+        className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
+        onClick={() => openModal(1)}
+      >
+        <img
+          src={images[1].src}
+          alt={images[1].alt}
+          className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+          loading="lazy"
+        />
+      </div>
+      <div
+        className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
+        onClick={() => openModal(2)}
+      >
+        <img
+          src={images[2].src}
+          alt={images[2].alt}
+          className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+          loading="lazy"
+        />
+      </div>
+    </div>
+    <div
+      className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg cursor-pointer"
+      onClick={() => openModal(3)}
+    >
+      <img
+        src={images[3].src}
+        alt={images[3].alt}
+        className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
+        loading="lazy"
+      />
+    </div>
+  </div>
+);
+
+const ImageModal = ({ selectedImage, closeModal, navigateImage, images }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+    <div className="relative max-w-4xl w-full">
+      <button
+        onClick={closeModal}
+        className="absolute right-2 top-2 z-10 p-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+      >
+        <X size={24} />
+      </button>
+
+      <div className="flex justify-between absolute inset-x-0 top-1/2 transform -translate-y-1/2">
+        <button
+          onClick={() => navigateImage(-1)}
+          className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+          aria-label="Previous image"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <button
+          onClick={() => navigateImage(1)}
+          className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
+          aria-label="Next image"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div className="bg-white p-2 rounded-lg shadow-xl">
+        <img
+          src={images[selectedImage].src}
+          alt={images[selectedImage].alt}
+          className="max-h-screen object-contain mx-auto"
+        />
+      </div>
+
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
+        {selectedImage + 1} / {images.length}
+      </div>
+    </div>
+  </div>
+);
+
+const ProductInfo = ({ product, hasDiscount, originalPrice, discountedPrice }) => (
+  <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+    <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+      {product.name}
+    </h1>
+  </div>
+);
+
+const PriceDisplay = ({ hasDiscount, originalPrice, discountedPrice, discount }) => (
+  <p className="text-3xl tracking-tight text-gray-900">
+    {hasDiscount ? (
+      <>
+        <span className="line-through text-gray-500 mr-2">
+          ${originalPrice.toFixed(2)}
+        </span>
+        <span className="text-red-600">
+          ${discountedPrice.toFixed(2)}
+        </span>
+        <span className="text-sm text-gray-500 ml-2">
+          ({discount}% off)
+        </span>
+      </>
+    ) : (
+      <span>${originalPrice.toFixed(2)}</span>
+    )}
+  </p>
+);
+
+const Reviews = ({ reviewsAvg, reviewsCount, reviewsHref }) => (
+  <div className="mt-6">
+    <h3 className="sr-only">Reviews</h3>
+    <div className="flex items-center">
+      <div className="flex items-center">
+        {[0, 1, 2, 3, 4].map((rating) => (
+          <StarIcon
+            key={rating}
+            className={classNames(
+              reviewsAvg > rating
+                ? "text-gray-900"
+                : "text-gray-200",
+              "h-5 w-5 flex-shrink-0"
+            )}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+      <p className="sr-only">{reviewsAvg} out of 5 stars</p>
+      <a
+        href={reviewsHref}
+        className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+      >
+        {reviewsCount} reviews
+      </a>
+    </div>
+  </div>
+);
+
+const CommentsSection = ({ comments }) => (
+  <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
+    <h3 className="text-lg font-medium text-gray-900">Comments</h3>
+    <div className="mt-4 space-y-6">
+      {comments.map((comment) => (
+        <div
+          key={comment.id}
+          className="border-b border-gray-200 pb-4"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="flex-shrink-0">
+              <img
+                className="h-10 w-10 rounded-full"
+                src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+                alt={comment.name}
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-900">
+                {comment.name}
+              </p>
+              <p className="text-xs text-gray-500">{comment.date}</p>
+            </div>
+          </div>
+          <p className="mt-2 text-sm text-gray-600">
+            {comment.comment}
+          </p>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {comment.reviewImg.map((imgSrc, index) => (
+              <img
+                key={index}
+                src={imgSrc}
+                alt={`Review ${index + 1}`}
+                className="h-20 w-20 object-cover rounded-lg border"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="mt-4">
+      <textarea
+        rows={3}
+        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        placeholder="Add a comment..."
+      ></textarea>
+      <button
+        type="button"
+        className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+);
+
 export default function ProductsDetails({ userId }) {
   const { id } = useParams();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const type = queryParams.get("type") || "product";
+  
+  // Move this to useMemo to prevent recalculation on each render
+  const type = useMemo(() => {
+    const queryParams = new URLSearchParams(location.search);
+    return queryParams.get("type") || "product";
+  }, [location.search]);
 
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const openModal = (imageIndex) => {
+  // Memoize calculated values to prevent recalculation on each render
+  const { hasDiscount, originalPrice, discountedPrice } = useMemo(() => {
+    if (!product) return { hasDiscount: false, originalPrice: 0, discountedPrice: 0 };
+    
+    const hasDiscount = product.discount > 0;
+    const originalPrice = product.price;
+    const discountedPrice = hasDiscount
+      ? originalPrice * (1 - product.discount / 100)
+      : originalPrice;
+      
+    return { hasDiscount, originalPrice, discountedPrice };
+  }, [product]);
+
+  // Use useCallback for event handlers to prevent recreation on each render
+  const openModal = useCallback((imageIndex) => {
     setSelectedImage(imageIndex);
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setSelectedImage(null);
-  };
+  }, []);
 
-  const navigateImage = (direction) => {
-    const newIndex =
-      (selectedImage + direction + product.images.length) %
-      product.images.length;
-    setSelectedImage(newIndex);
-  };
+  const navigateImage = useCallback((direction) => {
+    if (!product) return;
+    
+    setSelectedImage(prevImage => {
+      return (prevImage + direction + product.images.length) % product.images.length;
+    });
+  }, [product]);
+
+  // Memoize the API endpoint to prevent recalculation
+  const apiEndpoint = useMemo(() => {
+    return type === "new-products"
+      ? `http://localhost:3001/api/new-products/${id}`
+      : `http://localhost:3001/api/products/${id}`;
+  }, [id, type]);
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setIsLoading(true);
+      setError(null);
+      
       try {
-        const endpoint =
-          type === "new-products"
-            ? `http://localhost:3001/api/new-products/${id}`
-            : `http://localhost:3001/api/products/${id}`;
-        const response = await fetch(endpoint);
+        const response = await fetch(apiEndpoint);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
         const data = await response.json();
-        // console.log("Fetched product data:", data); // Debug log
+        
         if (data) {
           setProduct(data);
           setSelectedColor(data.colors?.[0]?.name || "");
-          setSelectedSize(data.sizes?.[0]?.name || ""); // Use first size
+          setSelectedSize(data.sizes?.[0]?.name || "");
         } else {
-          console.error("Product not found or data is null");
-          setProduct(null);
+          throw new Error("Product not found or data is null");
         }
       } catch (error) {
         console.error("Error fetching product:", error);
+        setError(error.message);
         setProduct(null);
+      } finally {
+        setIsLoading(false);
       }
     };
+    
     fetchProduct();
-  }, [id, type]);
+  }, [apiEndpoint]);
 
-  if (!product) {
-    return <div>Loading...</div>;
-  }
-
-  const hasDiscount = product.discount > 0;
-  const originalPrice = product.price;
-  const discountedPrice = hasDiscount
-    ? originalPrice * (1 - product.discount / 100)
-    : originalPrice;
-
-  const handleAddToBag = async () => {
+  const handleAddToBag = useCallback(async (event) => {
+    event.preventDefault(); // Prevent form submission
+    
+    if (!product) return;
+    
     try {
-      const hasDiscount = product.discount > 0;
-      const originalPrice = product.price;
       const finalPrice = hasDiscount
         ? originalPrice * (1 - product.discount / 100)
         : originalPrice;
@@ -98,22 +384,47 @@ export default function ProductsDetails({ userId }) {
         }
       );
 
-      if (response.ok) {
-        console.log("Product added to bag successfully");
-      } else {
-        console.error("Failed to add product to bag");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      
+      alert("Product added to bag successfully");
     } catch (error) {
       console.error("Error adding product to bag:", error);
+      alert("Failed to add product to bag");
     }
-  };
+  }, [product, userId, hasDiscount, originalPrice, selectedColor, selectedSize]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-red-500">Error loading product: {error}</div>
+      </div>
+    );
+  }
+
+  // If no product is found
+  if (!product) {
+    return <div className="text-center p-8">Product not found</div>;
+  }
 
   return (
     <div className="bg-white">
       <div className="pt-6">
+        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb">
           <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-            {product.breadcrumbs.split(" > ").map((breadcrumb, index) => (
+            {product.breadcrumbs.split(" > ").map((breadcrumb, index, array) => (
               <li key={index}>
                 <div className="flex items-center">
                   <button
@@ -122,7 +433,7 @@ export default function ProductsDetails({ userId }) {
                   >
                     {breadcrumb}
                   </button>
-                  {index < product.breadcrumbs.split(" > ").length - 1 && (
+                  {index < array.length - 1 && (
                     <svg
                       width={16}
                       height={20}
@@ -142,181 +453,47 @@ export default function ProductsDetails({ userId }) {
 
         <div className="relative">
           {/* Image gallery */}
-          <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
-            <div
-              className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block cursor-pointer"
-              onClick={() => openModal(0)}
-            >
-              <img
-                src={product.images[0].src}
-                alt={product.images[0].alt}
-                className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
-              />
-            </div>
-            <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-              <div
-                className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
-                onClick={() => openModal(1)}
-              >
-                <img
-                  src={product.images[1].src}
-                  alt={product.images[1].alt}
-                  className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
-                />
-              </div>
-              <div
-                className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg cursor-pointer"
-                onClick={() => openModal(2)}
-              >
-                <img
-                  src={product.images[2].src}
-                  alt={product.images[2].alt}
-                  className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
-                />
-              </div>
-            </div>
-            <div
-              className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg cursor-pointer"
-              onClick={() => openModal(3)}
-            >
-              <img
-                src={product.images[3].src}
-                alt={product.images[3].alt}
-                className="h-full w-full object-cover object-center hover:opacity-75 transition-opacity"
-              />
-            </div>
-          </div>
+          <ImageGallery images={product.images} openModal={openModal} />
 
           {/* Modal */}
           {selectedImage !== null && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
-              <div className="relative max-w-4xl w-full">
-                {/* Close button */}
-                <button
-                  onClick={closeModal}
-                  className="absolute right-2 top-2 z-10 p-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
-                >
-                  <X size={24} />
-                </button>
-
-                {/* Navigation buttons */}
-                <div className="flex justify-between absolute inset-x-0 top-1/2 transform -translate-y-1/2">
-                  <button
-                    onClick={() => navigateImage(-1)}
-                    className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 19l-7-7 7-7"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => navigateImage(1)}
-                    className="p-2 m-2 bg-white bg-opacity-25 rounded-full hover:bg-opacity-50 transition-all"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Modal content */}
-                <div className="bg-white p-2 rounded-lg shadow-xl">
-                  <img
-                    src={product.images[selectedImage].src}
-                    alt={product.images[selectedImage].alt}
-                    className="max-h-screen object-contain mx-auto"
-                  />
-                </div>
-
-                {/* Image counter */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full">
-                  {selectedImage + 1} / {product.images.length}
-                </div>
-              </div>
-            </div>
+            <ImageModal 
+              selectedImage={selectedImage}
+              closeModal={closeModal}
+              navigateImage={navigateImage}
+              images={product.images}
+            />
           )}
         </div>
 
         {/* Product info */}
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              {product.name}
-            </h1>
-          </div>
+          <ProductInfo 
+            product={product} 
+            hasDiscount={hasDiscount} 
+            originalPrice={originalPrice} 
+            discountedPrice={discountedPrice} 
+          />
 
           {/* Options */}
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
-            <p className="text-3xl tracking-tight text-gray-900">
-              {hasDiscount ? (
-                <>
-                  <span className="line-through text-gray-500 mr-2">
-                    ${originalPrice.toFixed(2)}
-                  </span>
-                  <span className="text-red-600">
-                    ${discountedPrice.toFixed(2)}
-                  </span>
-                  <span className="text-sm text-gray-500 ml-2">
-                    ({product.discount}% off)
-                  </span>
-                </>
-              ) : (
-                <span>${originalPrice.toFixed(2)}</span>
-              )}
-            </p>
+            
+            <PriceDisplay 
+              hasDiscount={hasDiscount}
+              originalPrice={originalPrice}
+              discountedPrice={discountedPrice}
+              discount={product.discount}
+            />
 
             {/* Reviews */}
-            <div className="mt-6">
-              <h3 className="sr-only">Reviews</h3>
-              <div className="flex items-center">
-                <div className="flex items-center">
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        product.reviewsAvg > rating
-                          ? "text-gray-900"
-                          : "text-gray-200",
-                        "h-5 w-5 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-                <p className="sr-only">{product.reviewsAvg} out of 5 stars</p>
-                <a
-                  href={product.reviewsHref}
-                  className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  {product.reviewsCount} reviews
-                </a>
-              </div>
-            </div>
+            <Reviews 
+              reviewsAvg={product.reviewsAvg}
+              reviewsCount={product.reviewsCount}
+              reviewsHref={product.reviewsHref}
+            />
 
-            <form className="mt-10">
+            <form className="mt-10" onSubmit={handleAddToBag}>
               {/* Colors */}
               <div>
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
@@ -441,28 +618,24 @@ export default function ProductsDetails({ userId }) {
               </div>
 
               <button
-                onClick={handleAddToBag}
                 type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-white font-medium hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300"
               >
                 Add to bag
               </button>
             </form>
           </div>
 
+          {/* Description and details */}
           <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
-            {/* Description and details */}
             <div>
               <h3 className="sr-only">Description</h3>
-
               <div className="space-y-6">
                 <p className="text-base text-gray-900">{product.description}</p>
               </div>
             </div>
-
             <div className="mt-10">
               <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
-
               <div className="mt-4">
                 <ul className="list-disc space-y-2 pl-4 text-sm">
                   {product.highlights.map((highlight) => (
@@ -473,15 +646,37 @@ export default function ProductsDetails({ userId }) {
                 </ul>
               </div>
             </div>
-
             <div className="mt-10">
               <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
               <div className="mt-4 space-y-6">
                 <p className="text-sm text-gray-600">{product.details}</p>
               </div>
             </div>
           </div>
+
+          {/* Comments section */}
+          {commentsData && commentsData.length > 0 ? (
+            <CommentsSection comments={commentsData} />
+          ) : (
+            <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
+              <h3 className="text-sm font-medium text-gray-900">
+                No comments yet
+              </h3>
+              <div className="mt-4">
+                <textarea
+                  rows={3}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Add a comment..."
+                ></textarea>
+                <button
+                  type="button"
+                  className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
