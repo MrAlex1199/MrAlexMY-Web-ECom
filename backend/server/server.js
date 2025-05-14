@@ -112,6 +112,15 @@ const productSchema = new mongoose.Schema({
   reviewsAvg: { type: Number, default: 0 },
   reviewsCount: { type: Number, default: 0 },
   reviewsHref: { type: String, default: "#" },
+  comments: [
+    {
+      id: { type: Number, required: true },
+      name: { type: String, required: true },
+      comment: { type: String, required: true },
+      reviewImg: [{ type: String }],
+      date: { type: String, required: true },
+    },
+  ],
 });
 
 const Product = mongoose.model("Product", productSchema);

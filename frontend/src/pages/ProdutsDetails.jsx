@@ -4,8 +4,6 @@ import { RadioGroup } from "@headlessui/react";
 import { useParams, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 
-// const reviews = { href: "#", average: 4, totalCount: 117 };
-
 const commentsData = [
   {
     id: 1,
@@ -35,6 +33,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+// ต้องทำระบบเพิ่มคอมเมนต์และรูปภาพรีวิวดและเก็บข้อมูลลงในฐานข้อมูลโดย UserId
 const CommentsSection = ({ comments }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -56,7 +55,7 @@ const CommentsSection = ({ comments }) => {
   };
 
   return (
-    <d7iv className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
+    <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
       <h3 className="text-lg font-medium text-gray-900">Comments</h3>
       <div className="mt-4 space-y-6">
         {comments.map((comment) => (
@@ -71,12 +70,14 @@ const CommentsSection = ({ comments }) => {
                 />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">{comment.name}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {comment.name}
+                </p>
                 <p className="text-xs text-gray-500">{comment.date}</p>
               </div>
             </div>
             <p className="mt-2 text-sm text-gray-600">{comment.comment}</p>
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-4 flex flex-wrap gap-2">
               {comment.reviewImg.map((imgSrc, index) => (
                 <img
                   key={index}
@@ -86,7 +87,10 @@ const CommentsSection = ({ comments }) => {
                   loading="lazy"
                   onClick={() =>
                     openModal(
-                      comment.reviewImg.map((src) => ({ src, alt: `Review Image` })),
+                      comment.reviewImg.map((src) => ({
+                        src,
+                        alt: `Review Image`,
+                      })),
                       index
                     )
                   }
@@ -104,7 +108,7 @@ const CommentsSection = ({ comments }) => {
         ></textarea>
         <button
           type="button"
-          className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
           Submit
         </button>
@@ -378,7 +382,7 @@ export default function ProductsDetails({ userId }) {
 
           {/* Modal */}
           {selectedImage !== null && (
-            <ImageModal 
+            <ImageModal
               selectedImage={selectedImage}
               closeModal={closeModal}
               navigateImage={navigateImage}
@@ -611,27 +615,27 @@ export default function ProductsDetails({ userId }) {
             </div>
 
             {/* Comments section */}
-            { commentsData && commentsData.length > 0 ? (
+            {commentsData && commentsData.length > 0 ? (
               <CommentsSection comments={commentsData} />
             ) : (
               <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
-              <h3 className="text-sm font-medium text-gray-900">
-                No comments yet
-              </h3>
-              <div className="mt-4">
-                <textarea
-                  rows={3}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Add a comment..."
-                ></textarea>
-                <button
-                  type="button"
-                  className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Submit
-                </button>
+                <h3 className="text-sm font-medium text-gray-900">
+                  No comments yet
+                </h3>
+                <div className="mt-4">
+                  <textarea
+                    rows={3}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="Add a comment..."
+                  ></textarea>
+                  <button
+                    type="button"
+                    className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
-            </div>
             )}
           </div>
         </div>

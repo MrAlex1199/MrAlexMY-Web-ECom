@@ -345,8 +345,8 @@ export default function Navbar({
                 <div className="border-t border-gray-200 px-4 py-6">
                   <a href="/" className="-m-2 flex items-center p-2">
                     <img
-                      src="https://www.worldatlas.com/r/w960-q80/img/flag/us-flag.jpg"
-                      alt=""
+                      src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                      alt="US Flag"
                       className="block h-auto w-5 flex-shrink-0"
                     />
                     <span className="ml-3 block text-base font-medium text-gray-900">
@@ -590,8 +590,8 @@ export default function Navbar({
                     className="flex items-center text-gray-700 hover:text-gray-800"
                   >
                     <img
-                      src="https://www.worldatlas.com/r/w960-q80/img/flag/us-flag.jpg"
-                      alt=""
+                      src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                      alt="US Flag"
                       className="block h-auto w-5 flex-shrink-0"
                     />
                     <span className="ml-3 block text-sm font-medium">USD</span>
