@@ -138,6 +138,8 @@ export default function AdminManageProducts({ adminData }) {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // ในใช้งานจริงต้องใช้งานร่วม API ภายนอกสำหรับการเก็บรูปภาพสินค้า และ ส่งเป็น URL ไปยังฐานข้อมูล
+  // ในที่นี้จะใช้ FileReader เพื่อแสดงตัวอย่างรูปภาพที่อัพโหลด
   const [images, setImages] = useState([]);
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);

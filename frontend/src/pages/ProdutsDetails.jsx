@@ -4,6 +4,8 @@ import { RadioGroup } from "@headlessui/react";
 import { useParams, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 
+// Sample data for comments
+// In a real application, this data would be fetched from a server
 const commentsData = [
   {
     id: 1,
@@ -33,10 +35,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-// ต้องทำระบบเพิ่มคอมเมนต์และรูปภาพรีวิวดและเก็บข้อมูลลงในฐานข้อมูลโดย UserId
 const CommentsSection = ({ comments }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
+  const [isAddingComment, setIsAddingComment] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
   const openModal = (images, imageIndex) => {
     setCurrentImages(images);
@@ -52,6 +55,20 @@ const CommentsSection = ({ comments }) => {
     const newIndex =
       (selectedImage + direction + currentImages.length) % currentImages.length;
     setSelectedImage(newIndex);
+  };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setCurrentImages(imageUrls);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    // Reset form after submission
+    setCommentText("");
+    setIsAddingComment(false);
   };
 
   return (
@@ -100,28 +117,105 @@ const CommentsSection = ({ comments }) => {
           </div>
         ))}
       </div>
-      <div className="mt-4">
-        <textarea
-          rows={3}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Add a comment..."
-        ></textarea>
-        <button
-          type="button"
-          className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-        >
-          Submit
-        </button>
+
+      {/* Add a comment section */}
+      <div className="mt-8">
+        {!isAddingComment ? (
+          <div
+            className="p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
+            onClick={() => setIsAddingComment(true)}
+          >
+            <p className="text-gray-500">Click here to add a comment...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="comment"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Add a comment
+              </label>
+              <textarea
+                id="comment"
+                name="comment"
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Write your comment here..."
+                required
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              ></textarea>
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="images"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Upload images
+              </label>
+              <input
+                type="file"
+                id="images"
+                name="images"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+              />
+            </div>
+
+            <div className="mt-4 flex space-x-3">
+              <button
+                type="submit"
+                className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAddingComment(false)}
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
-      {/* Modal */}
+      {/* Image Modal */}
       {selectedImage !== null && (
-        <ImageModal
-          selectedImage={selectedImage}
-          closeModal={closeModal}
-          navigateImage={navigateImage}
-          images={currentImages}
-        />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+          <div className="relative max-w-4xl w-full">
+            <button
+              onClick={closeModal}
+              className="absolute -top-10 right-0 text-white text-2xl"
+            >
+              &times;
+            </button>
+            <img
+              src={currentImages[selectedImage].src}
+              alt={currentImages[selectedImage].alt}
+              className="w-full h-auto"
+            />
+            <div className="absolute inset-x-0 top-1/2 flex justify-between px-4">
+              <button
+                onClick={() => navigateImage(-1)}
+                className="bg-white rounded-full p-2 text-gray-800"
+              >
+                &larr;
+              </button>
+              <button
+                onClick={() => navigateImage(1)}
+                className="bg-white rounded-full p-2 text-gray-800"
+              >
+                &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -255,8 +349,9 @@ export default function ProductsDetails({ userId }) {
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-
   const [selectedImage, setSelectedImage] = useState(null);
+  const [commentText, setCommentText] = useState("");
+  const [currentImages, setCurrentImages] = useState([]);
 
   const openModal = (imageIndex) => {
     setSelectedImage(imageIndex);
@@ -299,16 +394,6 @@ export default function ProductsDetails({ userId }) {
     fetchProduct();
   }, [id, type]);
 
-  if (!product) {
-    return <div>Loading...</div>;
-  }
-
-  const hasDiscount = product.discount > 0;
-  const originalPrice = product.price;
-  const discountedPrice = hasDiscount
-    ? originalPrice * (1 - product.discount / 100)
-    : originalPrice;
-
   const handleAddToBag = async () => {
     try {
       const hasDiscount = product.discount > 0;
@@ -343,6 +428,49 @@ export default function ProductsDetails({ userId }) {
       console.error("Error adding product to bag:", error);
     }
   };
+
+  // ต้องทำ Endpoint สำหรับการเพิ่มคอมเมนต์ ใน server.js
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3001/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          productId: product._id,
+          comment: commentText,
+          images: currentImages,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Comment added successfully");
+        setCommentText("");
+        setCurrentImages([]);
+      } else {
+        console.error("Failed to add comment");
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+    setCurrentImages(imageUrls);
+  };
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
+
+  const hasDiscount = product.discount > 0;
+  const originalPrice = product.price;
+  const discountedPrice = hasDiscount
+    ? originalPrice * (1 - product.discount / 100)
+    : originalPrice;
 
   return (
     <div className="bg-white">
@@ -608,35 +736,17 @@ export default function ProductsDetails({ userId }) {
 
             <div className="mt-10">
               <h2 className="text-sm font-medium text-gray-900">Details</h2>
-
               <div className="mt-4 space-y-6">
                 <p className="text-sm text-gray-600">{product.details}</p>
               </div>
             </div>
 
             {/* Comments section */}
-            {commentsData && commentsData.length > 0 ? (
-              <CommentsSection comments={commentsData} />
-            ) : (
-              <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
-                <h3 className="text-sm font-medium text-gray-900">
-                  No comments yet
-                </h3>
-                <div className="mt-4">
-                  <textarea
-                    rows={3}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Add a comment..."
-                  ></textarea>
-                  <button
-                    type="button"
-                    className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            )}
+            <CommentsSection
+              comments={commentsData}
+              handleSubmit={handleSubmit}
+              handleImageUpload={handleImageUpload}
+            />
           </div>
         </div>
       </div>
