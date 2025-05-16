@@ -204,6 +204,32 @@ app.get("/orders/:userId", async (req, res) => {
   }
 });
 
+// Endpoint to save comments for a product
+app.post("/api/products/:id/comments", async (req, res) => {
+  const { id } = req.params;
+  const { userId, name, comment, reviewImg, date } = req.body;
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    const newComment = {
+      id: Date.now(),
+      userId,
+      name,
+      comment,
+      reviewImg,
+      date,
+    };
+    product.comments.push(newComment);
+    await product.save();
+    res.status(201).json({ message: "Comment added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding comment" });
+  }
+});
+
 // Endpoint to save order details
 app.post("/orders/save", async (req, res) => {
   try {

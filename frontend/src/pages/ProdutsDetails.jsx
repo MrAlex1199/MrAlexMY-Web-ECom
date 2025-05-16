@@ -4,42 +4,16 @@ import { RadioGroup } from "@headlessui/react";
 import { useParams, useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 
-// Sample data for comments
-// In a real application, this data would be fetched from a server
-const commentsData = [
-  {
-    id: 1,
-    name: "John Doe",
-    comment: "Great product! Highly recommend.",
-    reviewImg: [
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-    ],
-    date: "14:30UTC+7 - 2023-10-01",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    comment: "Not what I expected, but still okay.",
-    reviewImg: [
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-      "https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg",
-    ],
-    date: "15:00UTC+7 - 2023-10-02",
-  },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const CommentsSection = ({ comments }) => {
+const CommentsSection = ({ comments, onAddComment, userData }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [uploadedImages, setUploadedImages] = useState([]);
 
   const openModal = (images, imageIndex) => {
     setCurrentImages(images);
@@ -60,14 +34,15 @@ const CommentsSection = ({ comments }) => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setCurrentImages(imageUrls);
+    setUploadedImages(imageUrls);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
+    onAddComment(commentText, uploadedImages);
     // Reset form after submission
     setCommentText("");
+    setUploadedImages([]);
     setIsAddingComment(false);
   };
 
@@ -75,47 +50,53 @@ const CommentsSection = ({ comments }) => {
     <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
       <h3 className="text-lg font-medium text-gray-900">Comments</h3>
       <div className="mt-4 space-y-6">
-        {comments.map((comment) => (
-          <div key={comment.id} className="border-b border-gray-200 pb-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex-shrink-0">
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
-                  alt={comment.name}
-                  loading="lazy"
-                />
+        {comments && comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment.id} className="border-b border-gray-200 pb-4">
+              <div className="flex items-center space-x-4">
+                <div className="flex-shrink-0">
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+                    alt={comment.name}
+                    loading="lazy"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {comment.name}
+                  </p>
+                  <p className="text-xs text-gray-500">{comment.date}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {comment.name}
-                </p>
-                <p className="text-xs text-gray-500">{comment.date}</p>
-              </div>
+              <p className="mt-2 text-sm text-gray-600">{comment.comment}</p>
+              {comment.reviewImg && comment.reviewImg.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {comment.reviewImg.map((imgSrc, index) => (
+                    <img
+                      key={index}
+                      src={imgSrc}
+                      alt={`Review ${index + 1}`}
+                      className="h-20 w-20 object-cover rounded-lg border cursor-pointer"
+                      loading="lazy"
+                      onClick={() =>
+                        openModal(
+                          comment.reviewImg.map((src) => ({
+                            src,
+                            alt: `Review Image`,
+                          })),
+                          index
+                        )
+                      }
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-            <p className="mt-2 text-sm text-gray-600">{comment.comment}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {comment.reviewImg.map((imgSrc, index) => (
-                <img
-                  key={index}
-                  src={imgSrc}
-                  alt={`Review ${index + 1}`}
-                  className="h-20 w-20 object-cover rounded-lg border cursor-pointer"
-                  loading="lazy"
-                  onClick={() =>
-                    openModal(
-                      comment.reviewImg.map((src) => ({
-                        src,
-                        alt: `Review Image`,
-                      })),
-                      index
-                    )
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+        )}
       </div>
 
       {/* Add a comment section */}
@@ -169,7 +150,7 @@ const CommentsSection = ({ comments }) => {
             <div className="mt-4 flex space-x-3">
               <button
                 type="submit"
-                className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="mt-2 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-5 py-2 text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Submit
               </button>
@@ -340,7 +321,7 @@ const ImageModal = ({ selectedImage, closeModal, navigateImage, images }) => (
   </div>
 );
 
-export default function ProductsDetails({ userId }) {
+export default function ProductsDetails({ userId, userData }) {
   const { id } = useParams();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -350,8 +331,8 @@ export default function ProductsDetails({ userId }) {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [commentText, setCommentText] = useState("");
-  const [currentImages, setCurrentImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const openModal = (imageIndex) => {
     setSelectedImage(imageIndex);
@@ -362,36 +343,52 @@ export default function ProductsDetails({ userId }) {
   };
 
   const navigateImage = (direction) => {
+    if (!product || !product.images) return;
+    
     const newIndex =
       (selectedImage + direction + product.images.length) %
       product.images.length;
     setSelectedImage(newIndex);
   };
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const endpoint =
-          type === "new-products"
-            ? `http://localhost:3001/api/new-products/${id}`
-            : `http://localhost:3001/api/products/${id}`;
-        const response = await fetch(endpoint);
-        const data = await response.json();
-        // console.log("Fetched product data:", data); // Debug log
-        if (data) {
-          setProduct(data);
-          setSelectedColor(data.colors?.[0]?.name || "");
-          setSelectedSize(data.sizes?.[0]?.name || ""); // Use first size
-        } else {
-          console.error("Product not found or data is null");
-          setProduct(null);
-        }
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setProduct(null);
+  // Fetch product data including comments
+  const fetchProduct = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const endpoint =
+        type === "new-products"
+          ? `http://localhost:3001/api/new-products/${id}`
+          : `http://localhost:3001/api/products/${id}`;
+      const response = await fetch(endpoint);
+      
+      if (!response.ok) {
+        throw new Error(`Error fetching product: ${response.status}`);
       }
+      
+      const data = await response.json();
+      
+      if (data) {
+        setProduct(data);
+        setSelectedColor(data.colors?.[0]?.name || "");
+        setSelectedSize(data.sizes?.[0]?.name || "");
+      } else {
+        throw new Error("Product not found or data is null");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchProduct();
     };
-    fetchProduct();
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, type]);
 
   const handleAddToBag = async () => {
@@ -421,6 +418,7 @@ export default function ProductsDetails({ userId }) {
 
       if (response.ok) {
         console.log("Product added to bag successfully");
+        // You might want to add some UI feedback here
       } else {
         console.error("Failed to add product to bag");
       }
@@ -429,41 +427,54 @@ export default function ProductsDetails({ userId }) {
     }
   };
 
-  // ต้องทำ Endpoint สำหรับการเพิ่มคอมเมนต์ ใน server.js
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Function to add a new comment
+  const handleAddComment = async (commentText, reviewImages) => {
     try {
-      const response = await fetch("http://localhost:3001/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          productId: product._id,
-          comment: commentText,
-          images: currentImages,
-        }),
-      });
+      const now = new Date();
+      const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
+        now.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
+      
+      const response = await fetch(
+        `http://localhost:3001/api/products/${id}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            name: userData?.fname || "Anonymous",
+            comment: commentText,
+            reviewImg: reviewImages,
+            date,
+          }),
+        }
+      );
 
-      if (response.ok) {
-        console.log("Comment added successfully");
-        setCommentText("");
-        setCurrentImages([]);
-      } else {
-        console.error("Failed to add comment");
+      if (!response.ok) {
+        throw new Error(`Failed to add comment: ${response.status}`);
       }
+
+      // Refresh product data to get updated comments
+      fetchProduct();
+      
     } catch (error) {
       console.error("Error adding comment:", error);
+      // You might want to add some UI feedback here
     }
   };
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setCurrentImages(imageUrls);
-  };
+  if (loading) {
+    return <div className="flex justify-center items-center h-64">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <div>Product not found</div>;
   }
 
   const hasDiscount = product.discount > 0;
@@ -742,11 +753,11 @@ export default function ProductsDetails({ userId }) {
             </div>
 
             {/* Comments section */}
-            <CommentsSection
-              comments={commentsData}
-              handleSubmit={handleSubmit}
-              handleImageUpload={handleImageUpload}
-            />
+          <CommentsSection
+            comments={product.comments || []}
+            onAddComment={handleAddComment}
+            userData={userData}
+          />
           </div>
         </div>
       </div>

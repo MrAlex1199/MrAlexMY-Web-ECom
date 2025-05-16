@@ -232,7 +232,7 @@ export default function App() {
         <Route path="/checkoutPage" element={<CheckoutPage />} />
         <Route
           path="/product/:id"
-          element={<ProdutsDetails userId={userData.userId} />}
+          element={<ProdutsDetails userId={userData.userId} userData={userData} />}
         />
         <Route
           path="/products/:category"
