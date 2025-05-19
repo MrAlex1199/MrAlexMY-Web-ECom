@@ -8,7 +8,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const CommentsSection = ({ comments, onAddComment, userData }) => {
+const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isAddingComment, setIsAddingComment] = useState(false);
@@ -48,6 +48,7 @@ const CommentsSection = ({ comments, onAddComment, userData }) => {
 
   return (
     <div className="mt-10 lg:col-span-2 lg:col-start-1 lg:border-t lg:border-gray-200 lg:pt-6">
+      {/* Comments Display Section */}
       <h3 className="text-lg font-medium text-gray-900">Comments</h3>
       <div className="mt-4 space-y-6">
         {comments && comments.length > 0 ? (
@@ -68,6 +69,21 @@ const CommentsSection = ({ comments, onAddComment, userData }) => {
                   </p>
                   <p className="text-xs text-gray-500">{comment.date}</p>
                 </div>
+                {/* Delete button, only show if user is the comment owner */}
+                {userData && userData.userId === comment.userId && (
+                  <button
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to delete this comment?")) {
+                        // You may want to pass comment id to the delete handler
+                        // If your backend supports deleting by comment id, update the handler accordingly
+                        if (onDeleteComment) onDeleteComment(comment.id);
+                      }
+                    }}
+                    className="ml-auto text-red-500 hover:text-red-700 text-xs border border-red-200 rounded px-2 py-1"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
               <p className="mt-2 text-sm text-gray-600">{comment.comment}</p>
               {comment.reviewImg && comment.reviewImg.length > 0 && (
@@ -428,39 +444,91 @@ export default function ProductsDetails({ userId, userData }) {
   };
 
   // Function to add a new comment
-  const handleAddComment = async (commentText, reviewImages) => {
+const handleAddComment = async (commentText, reviewImages) => {
+  try {
+    // console.log("Starting to add comment...");
+    // console.log("userId:", userId);
+    // console.log("userData:", userData);
+    
+    const now = new Date();
+    const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
+      now.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
+
+    // Check if either userId or userData._id is available
+    const commentUserId = userId || userData?._id;
+    // console.log("Determined commentUserId:", commentUserId);
+    
+    if (!commentUserId) {
+      alert("You must be logged in to comment.");
+      return;
+    }
+
+    // Ensure reviewImages is properly formatted - only strings will be sent
+    const reviewImgArray = Array.isArray(reviewImages) ? 
+      reviewImages.filter(img => typeof img === "string") : [];
+    
+    // console.log("Prepared reviewImgArray:", reviewImgArray);
+    // console.log("Sending request to:", `http://localhost:3001/products/${id}/comments`);
+    
+    // Try the original endpoint first - no /api prefix
+    const response = await fetch(
+      `http://localhost:3001/products/${id}/comments`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: commentUserId,
+          name: userData?.fname || "Anonymous",
+          comment: commentText,
+          reviewImg: reviewImgArray,
+          date,
+        }),
+      }
+    );
+
+    // console.log("Response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+
+    // Refresh product data to get updated comments
+    await fetchProduct();
+    
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    
+    // Provide more detailed error messaging
+    if (error.message.includes("Failed to fetch")) {
+      alert("Connection error: Cannot reach the server. Please check if the server is running and try again.");
+    } else {
+      alert(`Failed to add comment: ${error.message}`);
+    }
+  }
+};
+
+  // function to handle Delete Comment by comment id
+  const handleDeleteComment = async (commentId) => {
     try {
-      const now = new Date();
-      const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
-        now.getMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
-      
       const response = await fetch(
-        `http://localhost:3001/api/products/${id}/comments`,
+        `http://localhost:3001/api/products/${id}/comments/${commentId}`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId,
-            name: userData?.fname || "Anonymous",
-            comment: commentText,
-            reviewImg: reviewImages,
-            date,
-          }),
         }
       );
-
       if (!response.ok) {
-        throw new Error(`Failed to add comment: ${response.status}`);
+        throw new Error(`Failed to delete comment: ${response.status}`);
       }
-
       // Refresh product data to get updated comments
       fetchProduct();
-      
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error("Error deleting comment:", error);
       // You might want to add some UI feedback here
     }
   };
@@ -756,6 +824,7 @@ export default function ProductsDetails({ userId, userData }) {
           <CommentsSection
             comments={product.comments || []}
             onAddComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
             userData={userData}
           />
           </div>

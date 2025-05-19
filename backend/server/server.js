@@ -115,6 +115,7 @@ const productSchema = new mongoose.Schema({
   comments: [
     {
       id: { type: Number, required: true },
+      userId: { type: String },
       name: { type: String, required: true },
       comment: { type: String, required: true },
       reviewImg: [{ type: String }],
@@ -205,28 +206,52 @@ app.get("/orders/:userId", async (req, res) => {
 });
 
 // Endpoint to save comments for a product
-app.post("/api/products/:id/comments", async (req, res) => {
+app.post(["/products/:id/comments"], async (req, res) => {
+  console.log("Received comment request for product ID:", req.params.id);
+  console.log("Request body:", req.body);
+  
   const { id } = req.params;
   const { userId, name, comment, reviewImg, date } = req.body;
+  
+  // Validate required fields
+  if (!userId) {
+    console.log("Missing userId");
+    return res.status(400).json({ message: "UserId is required" });
+  }
+  
+  if (!comment) {
+    console.log("Missing comment text");
+    return res.status(400).json({ message: "Comment text is required" });
+  }
+  
   try {
     const product = await Product.findById(id);
     if (!product) {
+      console.log("Product not found with ID:", id);
       return res.status(404).json({ message: "Product not found" });
     }
+    
     const newComment = {
       id: Date.now(),
       userId,
-      name,
+      name: name || "Anonymous",
       comment,
-      reviewImg,
+      reviewImg: Array.isArray(reviewImg) ? reviewImg : [],
       date,
     };
+    
+    console.log("Adding new comment:", newComment);
     product.comments.push(newComment);
     await product.save();
-    res.status(201).json({ message: "Comment added successfully" });
+    
+    console.log("Comment saved successfully");
+    res.status(201).json({ 
+      message: "Comment added successfully",
+      comment: newComment
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error adding comment" });
+    console.error("Error adding comment:", error);
+    res.status(500).json({ message: "Error adding comment", error: error.message });
   }
 });
 
@@ -1357,6 +1382,39 @@ app.delete("/deleteAccount/:userId", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to delete user account" });
+  }
+});
+
+// Endpoint to delete a comment
+app.delete("/api/products/:id/comments/:commentId", async (req, res) => {
+  const { id, commentId } = req.params;
+  
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    
+    // Convert commentId to number since it's stored as number in schema
+    const commentIdNum = parseInt(commentId);
+    
+    // Find the comment index
+    const commentIndex = product.comments.findIndex(
+      comment => comment.id === commentIdNum
+    );
+    
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+    
+    // Remove the comment
+    product.comments.splice(commentIndex, 1);
+    await product.save();
+    
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ message: "Error deleting comment", error: error.message });
   }
 });
 
