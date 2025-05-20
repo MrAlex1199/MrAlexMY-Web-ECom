@@ -145,6 +145,16 @@ const NewProductSchema = new mongoose.Schema({
   reviewsAvg: { type: Number, default: 0 },
   reviewsCount: { type: Number, default: 0 },
   reviewsHref: { type: String, default: "#" },
+    comments: [
+    {
+      id: { type: Number, required: true },
+      userId: { type: String },
+      name: { type: String, required: true },
+      comment: { type: String, required: true },
+      reviewImg: [{ type: String }],
+      date: { type: String, required: true },
+    },
+  ],
 });
 
 const NewProduct = mongoose.model("NewProduct", NewProductSchema);
@@ -205,32 +215,32 @@ app.get("/orders/:userId", async (req, res) => {
   }
 });
 
-// Endpoint to save comments for a product
+// Endpoint to save comments for a product or new product by ID
 app.post(["/products/:id/comments"], async (req, res) => {
-  console.log("Received comment request for product ID:", req.params.id);
-  console.log("Request body:", req.body);
-  
   const { id } = req.params;
   const { userId, name, comment, reviewImg, date } = req.body;
-  
+
   // Validate required fields
   if (!userId) {
-    console.log("Missing userId");
     return res.status(400).json({ message: "UserId is required" });
   }
-  
   if (!comment) {
-    console.log("Missing comment text");
     return res.status(400).json({ message: "Comment text is required" });
   }
-  
+
   try {
-    const product = await Product.findById(id);
+    let product = await Product.findById(id);
+    let isNewProduct = false;
+
     if (!product) {
-      console.log("Product not found with ID:", id);
+      product = await NewProduct.findById(id);
+      isNewProduct = true;
+    }
+
+    if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    
+
     const newComment = {
       id: Date.now(),
       userId,
@@ -239,18 +249,16 @@ app.post(["/products/:id/comments"], async (req, res) => {
       reviewImg: Array.isArray(reviewImg) ? reviewImg : [],
       date,
     };
-    
-    console.log("Adding new comment:", newComment);
+
     product.comments.push(newComment);
     await product.save();
-    
-    console.log("Comment saved successfully");
-    res.status(201).json({ 
+
+    res.status(201).json({
       message: "Comment added successfully",
-      comment: newComment
+      comment: newComment,
+      productType: isNewProduct ? "newProduct" : "product",
     });
   } catch (error) {
-    console.error("Error adding comment:", error);
     res.status(500).json({ message: "Error adding comment", error: error.message });
   }
 });

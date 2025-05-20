@@ -446,10 +446,6 @@ export default function ProductsDetails({ userId, userData }) {
   // Function to add a new comment
 const handleAddComment = async (commentText, reviewImages) => {
   try {
-    // console.log("Starting to add comment...");
-    // console.log("userId:", userId);
-    // console.log("userData:", userData);
-    
     const now = new Date();
     const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
       now.getMonth() + 1
@@ -459,21 +455,15 @@ const handleAddComment = async (commentText, reviewImages) => {
 
     // Check if either userId or userData._id is available
     const commentUserId = userId || userData?._id;
-    // console.log("Determined commentUserId:", commentUserId);
     
     if (!commentUserId) {
       alert("You must be logged in to comment.");
       return;
     }
 
-    // Ensure reviewImages is properly formatted - only strings will be sent
     const reviewImgArray = Array.isArray(reviewImages) ? 
       reviewImages.filter(img => typeof img === "string") : [];
     
-    // console.log("Prepared reviewImgArray:", reviewImgArray);
-    // console.log("Sending request to:", `http://localhost:3001/products/${id}/comments`);
-    
-    // Try the original endpoint first - no /api prefix
     const response = await fetch(
       `http://localhost:3001/products/${id}/comments`,
       {
@@ -489,8 +479,6 @@ const handleAddComment = async (commentText, reviewImages) => {
       }
     );
 
-    // console.log("Response status:", response.status);
-    
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Error response:", errorText);
