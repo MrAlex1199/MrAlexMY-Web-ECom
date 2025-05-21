@@ -1,25 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/loader.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import bg1 from "../components/bg/bg1.jpg"; // Adjust path if needed
+import bg2 from "../components/bg/bg2.jpg"; // Adjust path if needed
+import bg3 from "../components/bg/bg3.jpg"; // Adjust path if needed
 
 const productsPerPage = 8;
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState(1); // Add currentPage state
-  const [products, setProducts] = useState([]); // Change products state to an empty array
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Carousel images and content
+  const carouselItems = [
+    {
+      image: bg1,
+      alt: "Built for the Mission",
+      title: "Built for the Mission",
+      description: "Premium tactical gear for professionals",
+      buttonText: "Shop Now",
+    },
+    {
+      image: bg2,
+      alt: "Ready for Anything",
+      title: "Ready for Anything",
+      description: "Equipment for every scenario",
+      buttonText: "Explore",
+    },
+    {
+      image: bg3,
+      alt: "Gear Up Now",
+      title: "Gear Up Now",
+      description: "Limited time deals on select items",
+      buttonText: "View Offers",
+    },
+  ];
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/new-products");
         const data = await response.json();
-        console.log("Home page products:", data); // Debug log
         setProducts(data);
-        setLoading(false); // Set loading to false after products are fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching products: ", error);
-        setLoading(false); // Set loading to false even if there's an error
+        setLoading(false);
       }
     };
     fetchProducts();
@@ -34,84 +63,105 @@ export default function Home() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleThumbnailClick = (index) => {
+    setCurrentSlide(index);
+  };
+
   const totalPages = Math.ceil(products.length / productsPerPage);
-  const renderPaginationButtons = () =>
-    Array.from({ length: totalPages }, (_, i) => (
-      <li key={i}>
-        <button
-          onClick={() => paginate(i + 1)}
-          className={`${
-            i + 1 === currentPage ? "text-gray-900" : "text-gray-500"
-          } inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium`}
-        >
-          {i + 1}
-        </button>
-      </li>
-    ));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [carouselItems.length]);
 
   return (
     <div>
-      <div className="bg-center bg-[url('../components/bg/bg2.jpg')] bg-gray-700 bg-blend-multiply">
-        <div className="px-4 mx-auto max-w-screen-2xl text-center py-24 lg:py-56">
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-            Built for the Mission. Ready for Anything.
-          </h1>
-          <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-            With a focus on durability, functionality, and performance, our
-            military clothing and equipment is designed to meet the demanding
-            needs of today's warfighter.
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-col -mt-10 ">
-        <div className="card rounded-lg shadow-md mx-10 bg-white ">
-          <div className="container mx-auto ">
-            <div className="bg-white py-24 sm:py-32">
-              <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <h2 className="text-center text-lg/8 font-semibold text-gray-900">
-                  Trusted by the world’s most innovative teams
-                </h2>
-                <div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
-                  <img
-                    alt="Transistor"
-                    src="https://tailwindui.com/plus-assets/img/logos/158x48/transistor-logo-gray-900.svg"
-                    width={158}
-                    height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
-                  />
-                  <img
-                    alt="Reform"
-                    src="https://tailwindui.com/plus-assets/img/logos/158x48/reform-logo-gray-900.svg"
-                    width={158}
-                    height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
-                  />
-                  <img
-                    alt="Tuple"
-                    src="https://tailwindui.com/plus-assets/img/logos/158x48/tuple-logo-gray-900.svg"
-                    width={158}
-                    height={48}
-                    className="col-span-2 max-h-12 w-full object-contain lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
-                  />
-                  <img
-                    alt="SavvyCal"
-                    src="https://tailwindui.com/plus-assets/img/logos/158x48/savvycal-logo-gray-900.svg"
-                    width={158}
-                    height={48}
-                    className="col-span-2 max-h-12 w-full object-contain sm:col-start-2 lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
-                  />
-                  <img
-                    alt="Statamic"
-                    src="https://tailwindui.com/plus-assets/img/logos/158x48/statamic-logo-gray-900.svg"
-                    width={158}
-                    height={48}
-                    className="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500"
-                  />
+      {/* eBay-style Carousel */}
+      <div className="ebay-style-carousel bg-gray-100 pb-8">
+        <div className="container mx-auto">
+          {/* Main carousel image */}
+          <div
+            className="relative overflow-hidden rounded-lg shadow-lg"
+            style={{ height: "500px" }}
+          >
+            {carouselItems.map((item, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                }`}
+              >
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  className="w-full h-full object-cover object-center"
+                />
+
+                {/* Text overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
+                  <h2 className="text-3xl font-bold mb-2">{item.title}</h2>
+                  <p className="text-xl mb-4">{item.description}</p>
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+                    {item.buttonText}
+                  </button>
                 </div>
               </div>
-            </div>
-            <div className="text-center text-2xl font-bold">
-              <p>FEATURED PRODUCTS</p>
+            ))}
+          </div>
+
+          {/* Thumbnails navigation */}
+          {/* <div className="flex justify-center mt-4 space-x-2">
+            {carouselItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => handleThumbnailClick(index)}
+                className={`w-20 h-16 overflow-hidden rounded border-2 transition-all ${
+                  index === currentSlide
+                    ? "border-blue-600 scale-110"
+                    : "border-transparent opacity-70"
+                }`}
+              >
+                <img
+                  src={item.image}
+                  alt={`Thumbnail ${index + 1}`}
+                  className="w-full h-full object-cover object-center"
+                />
+              </button>
+            ))}
+          </div> */}
+
+          {/* Navigation dots */}
+          <div className="flex justify-center mt-4 space-x-2">
+            {carouselItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleThumbnailClick(index)}
+                className={`w-3 h-3 rounded-full ${
+                  index === currentSlide ? "bg-blue-600" : "bg-gray-400"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Products Section */}
+      <div className="card rounded-lg shadow-md mx-10 bg-white p-6 mt-8">
+        <div className="flex flex-col mt-8 ">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                FEATURED PRODUCTS
+              </h2>
+              <Link
+                to="/products"
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                View all
+              </Link>
             </div>
 
             {loading ? (
@@ -120,8 +170,7 @@ export default function Home() {
               </div>
             ) : (
               <>
-                
-                <div className="my-5 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {currentProducts.map((product) => {
                     const hasDiscount = product.discount > 0;
                     const originalPrice = product.price;
@@ -135,43 +184,93 @@ export default function Home() {
                         to={`/product/${product._id}?type=new-products`}
                         className="group"
                       >
-                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500">
-                          <img
-                            src={product.imageSrc}
-                            alt={product.imageAlt}
-                            className="h-full w-full object-cover object-center"
-                          />
+                        <div className="relative">
+                          <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-90">
+                            <img
+                              src={product.imageSrc}
+                              alt={product.imageAlt}
+                              className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                            />
+                          </div>
+                          {hasDiscount && (
+                            <div className="absolute top-2 right-2 bg-red-600 text-white font-bold py-1 px-2 rounded-full text-xs">
+                              {product.discount}% OFF
+                            </div>
+                          )}
                         </div>
-                        <h3 className="mt-4 text-sm text-gray-700">
+                        <h3 className="mt-4 text-sm font-medium text-gray-700">
                           {product.name}
                         </h3>
-                        <div className="mt-1 text-lg font-medium text-gray-900">
+                        <div className="mt-1 flex items-center">
                           {hasDiscount ? (
                             <>
-                              <span className="line-through text-gray-500 mr-2">
-                                ${originalPrice.toFixed(2)}
-                              </span>
-                              <span className="text-red-600">
+                              <span className="text-lg font-semibold text-red-600 mr-2">
                                 ${discountedPrice.toFixed(2)}
                               </span>
-                              <span className="text-sm text-gray-500 ml-2">
-                                ({product.discount}% off)
+                              <span className="text-sm text-gray-500 line-through">
+                                ${originalPrice.toFixed(2)}
                               </span>
                             </>
                           ) : (
-                            <span>${originalPrice.toFixed(2)}</span>
+                            <span className="text-lg font-semibold text-gray-900">
+                              ${originalPrice.toFixed(2)}
+                            </span>
                           )}
                         </div>
                       </Link>
                     );
                   })}
                 </div>
-                {/* Pagination */}
-                <nav className="my-8" aria-label="Pagination">
-                  <ul className="flex justify-center">
-                    {renderPaginationButtons()}
-                  </ul>
-                </nav>
+
+                {/* eBay-style pagination */}
+                <div className="flex justify-center mt-10">
+                  <nav
+                    className="inline-flex rounded-md shadow"
+                    aria-label="Pagination"
+                  >
+                    <button
+                      className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      disabled={currentPage === 1}
+                      onClick={() => paginate(currentPage - 1)}
+                    >
+                      Previous
+                    </button>
+
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      // Show current page and up to 2 pages before and after
+                      const pageNumberToShow =
+                        totalPages <= 5
+                          ? i + 1
+                          : currentPage <= 3
+                          ? i + 1
+                          : currentPage >= totalPages - 2
+                          ? totalPages - 4 + i
+                          : currentPage - 2 + i;
+
+                      return (
+                        <button
+                          key={pageNumberToShow}
+                          onClick={() => paginate(pageNumberToShow)}
+                          className={`relative inline-flex items-center px-4 py-2 border ${
+                            pageNumberToShow === currentPage
+                              ? "bg-blue-600 text-white border-blue-600 z-10"
+                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                          } text-sm font-medium`}
+                        >
+                          {pageNumberToShow}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      className="relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      disabled={currentPage === totalPages}
+                      onClick={() => paginate(currentPage + 1)}
+                    >
+                      Next
+                    </button>
+                  </nav>
+                </div>
               </>
             )}
           </div>
