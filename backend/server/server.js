@@ -119,6 +119,7 @@ const productSchema = new mongoose.Schema({
       name: { type: String, required: true },
       comment: { type: String, required: true },
       reviewImg: [{ type: String }],
+      rating: { type: Number, default: 0 },
       date: { type: String, required: true },
     },
   ],
@@ -152,6 +153,7 @@ const NewProductSchema = new mongoose.Schema({
       name: { type: String, required: true },
       comment: { type: String, required: true },
       reviewImg: [{ type: String }],
+      rating: { type: Number, default: 0 },
       date: { type: String, required: true },
     },
   ],
@@ -218,7 +220,7 @@ app.get("/orders/:userId", async (req, res) => {
 // Endpoint to save comments for a product or new product by ID
 app.post(["/products/:id/comments"], async (req, res) => {
   const { id } = req.params;
-  const { userId, name, comment, reviewImg, date } = req.body;
+  const { userId, name, comment, reviewImg, rating, date } = req.body;
 
   // Validate required fields
   if (!userId) {
@@ -247,6 +249,7 @@ app.post(["/products/:id/comments"], async (req, res) => {
       name: name || "Anonymous",
       comment,
       reviewImg: Array.isArray(reviewImg) ? reviewImg : [],
+      rating: rating || 0,
       date,
     };
 

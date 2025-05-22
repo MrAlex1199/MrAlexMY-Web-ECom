@@ -14,6 +14,8 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [ratingStar, setRating] = useState(0);
+
 
   const openModal = (images, imageIndex) => {
     setCurrentImages(images);
@@ -39,7 +41,7 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddComment(commentText, uploadedImages);
+    onAddComment(commentText, uploadedImages, ratingStar);
     // Reset form after submission
     setCommentText("");
     setUploadedImages([]);
@@ -67,6 +69,22 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
                   <p className="text-sm font-medium text-gray-900">
                     {comment.name}
                   </p>
+                  {comment.rating > 0 && (
+                    <div className="flex items-center my-1">
+                      {[0, 1, 2, 3, 4].map((star) => (
+                        <StarIcon
+                          key={star}
+                          className={classNames(
+                            comment.rating > star
+                              ? "text-yellow-400"
+                              : "text-gray-300",
+                            "h-5 w-5 flex-shrink-0"
+                          )}
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                  )}
                   <p className="text-xs text-gray-500">{comment.date}</p>
                 </div>
                 {/* Delete button, only show if user is the comment owner */}
@@ -126,6 +144,30 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
+            <div className="mb-4"></div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Your rating
+            </label>
+            <div className="flex items-center space-x-1 my-4">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  className="focus:outline-none"
+                  onClick={() => setRating(star)}
+                  tabIndex={0}
+                  aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
+                >
+                  <StarIcon
+                    className={classNames(
+                      ratingStar >= star ? "text-yellow-400" : "text-gray-300",
+                      "h-6 w-6"
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+              ))}
+            </div>
             <div>
               <label
                 htmlFor="comment"
@@ -444,7 +486,7 @@ export default function ProductsDetails({ userId, userData }) {
   };
 
   // Function to add a new comment
-const handleAddComment = async (commentText, reviewImages) => {
+const handleAddComment = async (commentText, reviewImages, ratingStar) => {
   try {
     const now = new Date();
     const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
@@ -463,6 +505,8 @@ const handleAddComment = async (commentText, reviewImages) => {
 
     const reviewImgArray = Array.isArray(reviewImages) ? 
       reviewImages.filter(img => typeof img === "string") : [];
+
+    console.log("Rating:", ratingStar);
     
     const response = await fetch(
       `http://localhost:3001/products/${id}/comments`,
@@ -474,6 +518,7 @@ const handleAddComment = async (commentText, reviewImages) => {
           name: userData?.fname || "Anonymous",
           comment: commentText,
           reviewImg: reviewImgArray,
+          rating: ratingStar,
           date,
         }),
       }
