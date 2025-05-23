@@ -8,14 +8,18 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) => {
+const CommentsSection = ({
+  comments,
+  onAddComment,
+  onDeleteComment,
+  userData,
+}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
   const [ratingStar, setRating] = useState(0);
-
 
   const openModal = (images, imageIndex) => {
     setCurrentImages(images);
@@ -91,7 +95,11 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
                 {userData && userData.userId === comment.userId && (
                   <button
                     onClick={() => {
-                      if (window.confirm("Are you sure you want to delete this comment?")) {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to delete this comment?"
+                        )
+                      ) {
                         // You may want to pass comment id to the delete handler
                         // If your backend supports deleting by comment id, update the handler accordingly
                         if (onDeleteComment) onDeleteComment(comment.id);
@@ -129,7 +137,9 @@ const CommentsSection = ({ comments, onAddComment, onDeleteComment, userData }) 
             </div>
           ))
         ) : (
-          <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+          <p className="text-gray-500">
+            No comments yet. Be the first to comment!
+          </p>
         )}
       </div>
 
@@ -402,7 +412,7 @@ export default function ProductsDetails({ userId, userData }) {
 
   const navigateImage = (direction) => {
     if (!product || !product.images) return;
-    
+
     const newIndex =
       (selectedImage + direction + product.images.length) %
       product.images.length;
@@ -419,13 +429,13 @@ export default function ProductsDetails({ userId, userData }) {
           ? `http://localhost:3001/api/new-products/${id}`
           : `http://localhost:3001/api/products/${id}`;
       const response = await fetch(endpoint);
-      
+
       if (!response.ok) {
         throw new Error(`Error fetching product: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (data) {
         setProduct(data);
         setSelectedColor(data.colors?.[0]?.name || "");
@@ -486,64 +496,66 @@ export default function ProductsDetails({ userId, userData }) {
   };
 
   // Function to add a new comment
-const handleAddComment = async (commentText, reviewImages, ratingStar) => {
-  try {
-    const now = new Date();
-    const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
-      now.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
+  const handleAddComment = async (commentText, reviewImages, ratingStar) => {
+    try {
+      const now = new Date();
+      const date = `${now.getHours()}:${now.getMinutes()}UTC+7 - ${now.getFullYear()}-${(
+        now.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
 
-    // Check if either userId or userData._id is available
-    const commentUserId = userId || userData?._id;
-    
-    if (!commentUserId) {
-      alert("You must be logged in to comment.");
-      return;
-    }
+      // Check if either userId or userData._id is available
+      const commentUserId = userId || userData?._id;
 
-    const reviewImgArray = Array.isArray(reviewImages) ? 
-      reviewImages.filter(img => typeof img === "string") : [];
-
-    console.log("Rating:", ratingStar);
-    
-    const response = await fetch(
-      `http://localhost:3001/products/${id}/comments`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: commentUserId,
-          name: userData?.fname || "Anonymous",
-          comment: commentText,
-          reviewImg: reviewImgArray,
-          rating: ratingStar,
-          date,
-        }),
+      if (!commentUserId) {
+        alert("You must be logged in to comment.");
+        return;
       }
-    );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Error response:", errorText);
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
+      const reviewImgArray = Array.isArray(reviewImages)
+        ? reviewImages.filter((img) => typeof img === "string")
+        : [];
 
-    // Refresh product data to get updated comments
-    await fetchProduct();
-    
-  } catch (error) {
-    console.error("Error adding comment:", error);
-    
-    // Provide more detailed error messaging
-    if (error.message.includes("Failed to fetch")) {
-      alert("Connection error: Cannot reach the server. Please check if the server is running and try again.");
-    } else {
-      alert(`Failed to add comment: ${error.message}`);
+      console.log("Rating:", ratingStar);
+
+      const response = await fetch(
+        `http://localhost:3001/products/${id}/comments`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: commentUserId,
+            name: userData?.fname || "Anonymous",
+            comment: commentText,
+            reviewImg: reviewImgArray,
+            rating: ratingStar,
+            date,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      // Refresh product data to get updated comments
+      await fetchProduct();
+    } catch (error) {
+      console.error("Error adding comment:", error);
+
+      // Provide more detailed error messaging
+      if (error.message.includes("Failed to fetch")) {
+        alert(
+          "Connection error: Cannot reach the server. Please check if the server is running and try again."
+        );
+      } else {
+        alert(`Failed to add comment: ${error.message}`);
+      }
     }
-  }
-};
+  };
 
   // function to handle Delete Comment by comment id
   const handleDeleteComment = async (commentId) => {
@@ -567,7 +579,9 @@ const handleAddComment = async (commentText, reviewImages, ratingStar) => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">Loading...</div>
+    );
   }
 
   if (error) {
@@ -665,25 +679,45 @@ const handleAddComment = async (commentText, reviewImages, ratingStar) => {
               <h3 className="sr-only">Reviews</h3>
               <div className="flex items-center">
                 <div className="flex items-center">
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        product.reviewsAvg > rating
-                          ? "text-gray-900"
-                          : "text-gray-200",
-                        "h-5 w-5 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
+                  {(() => {
+                    // Calculate average rating from comments
+                    const ratings = (product.comments || [])
+                      .map((c) => (typeof c.rating === "number" ? c.rating : 0))
+                      .filter((r) => r > 0);
+                    const avg =
+                      ratings.length > 0
+                        ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+                        : 0;
+                    return [0, 1, 2, 3, 4].map((rating) => (
+                      <StarIcon
+                        key={rating}
+                        className={classNames(
+                          avg > rating ? "text-gray-900" : "text-gray-200",
+                          "h-5 w-5 flex-shrink-0"
+                        )}
+                        aria-hidden="true"
+                      />
+                    ));
+                  })()}
                 </div>
-                <p className="sr-only">{product.reviewsAvg} out of 5 stars</p>
+                <p className="sr-only">
+                  {(() => {
+                    const ratings = (product.comments || [])
+                      .map((c) => (typeof c.rating === "number" ? c.rating : 0))
+                      .filter((r) => r > 0);
+                    const avg =
+                      ratings.length > 0
+                        ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+                        : 0;
+                    return avg.toFixed(2);
+                  })()}{" "}
+                  out of 5 stars
+                </p>
                 <a
                   href={product.reviewsHref}
                   className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
                 >
-                  {product.reviewsCount} reviews
+                  {product.comments.length} reviews
                 </a>
               </div>
             </div>
@@ -854,12 +888,12 @@ const handleAddComment = async (commentText, reviewImages, ratingStar) => {
             </div>
 
             {/* Comments section */}
-          <CommentsSection
-            comments={product.comments || []}
-            onAddComment={handleAddComment}
-            onDeleteComment={handleDeleteComment}
-            userData={userData}
-          />
+            <CommentsSection
+              comments={product.comments || []}
+              onAddComment={handleAddComment}
+              onDeleteComment={handleDeleteComment}
+              userData={userData}
+            />
           </div>
         </div>
       </div>
