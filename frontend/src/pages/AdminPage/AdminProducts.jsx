@@ -16,7 +16,7 @@ export default function AdminManageProducts({ adminData }) {
 
   // Fetch products from the database
   const [products, setProducts] = useState([]);
-  console.log("Products: ", products);
+  // console.log("Products: ", products);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -232,6 +232,37 @@ export default function AdminManageProducts({ adminData }) {
                 <textarea
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Enter product description"
+                ></textarea>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Breadcrumbs</label>
+                <input
+
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product breadcrumbs"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Colors</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product colors (comma separated)"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Highlights</label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product highlights (comma separated)"
+                ></textarea>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Details</label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Enter product details"
                 ></textarea>
               </div>
               <div className="mb-4 grid grid-cols-2 gap-4">

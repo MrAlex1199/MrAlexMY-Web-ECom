@@ -162,7 +162,7 @@ export default function Navbar({
     <div className="bg-white">
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
+        <Dialog as="div" className="relative z-50 lg:hidden" onClose={setOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -175,7 +175,7 @@ export default function Navbar({
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 z-40 flex">
+          <div className="fixed inset-0 z-50 flex">
             <Transition.Child
               as={Fragment}
               enter="transition ease-in-out duration-300 transform"
@@ -185,7 +185,7 @@ export default function Navbar({
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
+              <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl z-50">
                 <div className="flex px-4 pb-2 pt-5">
                   <button
                     type="button"
@@ -419,7 +419,7 @@ export default function Navbar({
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                           >
-                            <Popover.Panel className="absolute inset-x-0 top-full text-sm text-gray-500">
+                            <Popover.Panel className="absolute inset-x-0 top-full text-sm text-gray-500 z-50">
                               {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                               <div
                                 className="absolute inset-0 top-1/2 bg-white shadow"
@@ -534,7 +534,7 @@ export default function Navbar({
                               {userData.fname} {userData.lname}
                             </button>
                             {dropdownOpen && (
-                              <div className="absolute right-0 mt-6 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                              <div className="absolute right-0 mt-6 w-48 bg-white rounded-md overflow-hidden shadow-xl z-50">
                                 <a
                                   href="/Orderstatus"
                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
