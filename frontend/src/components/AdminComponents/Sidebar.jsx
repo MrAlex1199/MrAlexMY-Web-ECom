@@ -33,6 +33,7 @@ export default function Sidebar() {
     }
     fetchOrders();
   }, []);
+  
   return (
     <div className="font-semibold bg-white text-slate-900 w-70 p-5 sticky top-0">
       <h2 className="text-2xl font-bold mb-6">SERGENTX™</h2>

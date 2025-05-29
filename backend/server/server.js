@@ -1017,6 +1017,75 @@ app.post("/save-address", async (req, res) => {
   }
 });
 
+// Endpoint to save edited user address by ID and address ID
+app.put("/edit-address/:userId/:addressId", async (req, res) => {
+  try {
+    const { userId, addressId } = req.params;
+    const {
+      firstName,
+      lastName,
+      city,
+      postalCode,
+      country,
+      address,
+      phone,
+      age,
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !firstName ||
+      !lastName ||
+      !city ||
+      !postalCode ||
+      !country ||
+      !address
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const addressIndex = user.address.findIndex(
+      (addr) => addr._id.toString() === addressId
+    );
+    if (addressIndex === -1) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Address not found" });
+    }
+
+    user.address[addressIndex] = {
+      ...user.address[addressIndex]._doc,
+      firstName,
+      lastName,
+      city,
+      postalCode,
+      country,
+      address,
+      phone,
+      age,
+    };
+
+    await user.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Address updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update address" });
+  }
+});
+
 // Registration endpoint
 app.post("/register", async (req, res) => {
   try {
