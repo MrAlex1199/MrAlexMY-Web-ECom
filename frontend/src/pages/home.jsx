@@ -103,9 +103,9 @@ export default function Home() {
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
                   <h2 className="text-3xl font-bold mb-2">{item.title}</h2>
                   <p className="text-xl mb-4">{item.description}</p>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+                  <Link to="/products" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
                     {item.buttonText}
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

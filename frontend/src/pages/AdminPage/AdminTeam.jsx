@@ -109,7 +109,16 @@ export default function AdminTeam({ adminData }) {
       ? teamMembers.filter((member) => member.role === "Manager")
       : filter === "Developers"
       ? teamMembers.filter((member) => member.role === "Developer")
-      : teamMembers.filter((member) => member.role === "Designer");
+      : filter === "Designers"
+      ? teamMembers.filter((member) => member.role === "Designer")
+      : filter === "Testers"
+      ? teamMembers.filter((member) => member.role === "Tester")
+      : filter === "Support"
+      ? teamMembers.filter((member) => member.role === "Support")
+      : filter === "HR"
+      ? teamMembers.filter((member) => member.role === "HR")
+      : teamMembers;
+  // Paginated data
   const CurrentAdminTeamFilter = FilterAdminTeam.slice(
     indexOfFirstItem,
     indexOfLastItem
@@ -286,12 +295,12 @@ export default function AdminTeam({ adminData }) {
           </h2>
           {/* Tabs for different roles */}
           <div className="flex space-x-4 mb-4">
-            {["All Members", "Managers", "Developers", "Designers"].map(
+            {["All Members", "Managers", "Developers", "Designers", "Tester", "Support", "HR"].map(
               (tab, index) => (
                 <button
                   key={index}
                   className={`px-4 py-2 rounded-lg ${
-                    index === 0
+                    filter === tab
                       ? "bg-purple-500 text-white"
                       : "bg-gray-200 text-gray-700"
                   } hover:bg-purple-600 hover:text-white transition duration-300`}

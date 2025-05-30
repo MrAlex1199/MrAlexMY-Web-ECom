@@ -34,7 +34,7 @@ const chartOptions = {
 export default function Finance({ adminData }) {
   // Sample data for pie chart
   const pieChartData = {
-    labels: ["18-22", "23-30", "31-40", "41-50", "51+"],
+    labels: ["Electronics", "Clothing", "Home Appliances", "Books", "Others"],
     datasets: [
       {
         data: [35.3, 27.8, 7.3, 5.8, 23.8], // Sample data
@@ -210,7 +210,7 @@ export default function Finance({ adminData }) {
           {/* Pie Chart */}
           <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Customer Age Group
+              Products group Sells
             </h2>
             <div className="w-[400px] h-[400px]">
               <Pie data={pieChartData} options={pieChartOptions} />
@@ -233,7 +233,7 @@ export default function Finance({ adminData }) {
           {/* Line Chart */}
           <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Day Revenue
+                Day Sells Report
             </h2>
             <div className="h-64">
               <Line data={lineChartDataW} options={chartOptions} />
@@ -246,7 +246,7 @@ export default function Finance({ adminData }) {
           {/* Line Chart */}
           <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Weekly Revenue
+              Weekly Sells Report
             </h2>
             <div className="h-64">
               <Line data={lineChartDataW} options={chartOptions} />
@@ -261,7 +261,7 @@ export default function Finance({ adminData }) {
             {/* Line Chart */}
             <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Monthly Revenue
+                Monthly Sells Report
               </h2>
               <div className="h-64">
                 <Line data={lineChartDataMM} options={chartOptions} />
@@ -273,7 +273,7 @@ export default function Finance({ adminData }) {
             {/* Line Chart */}
             <div className="bg-white shadow rounded-lg p-6 flex-1 min-w-[300px]">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                Yearly Revenue
+                Yearly Sells Report
               </h2>
               <div className="h-64">
                 <Line data={lineChartDataW} options={chartOptions} />

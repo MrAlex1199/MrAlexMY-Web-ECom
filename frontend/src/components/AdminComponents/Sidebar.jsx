@@ -67,7 +67,7 @@ export default function Sidebar() {
           }
         >
           Orders
-          <span className="ml-2 text-xs bg-red-500 text-gray-700 px-2 py-1 rounded-full">
+          <span className="ml-2 text-xs text-white bg-red-500 text-gray-700 px-2 py-1 rounded-full">
             {orderCount}
           </span>
         </NavLink>
