@@ -14,6 +14,12 @@
 
 ### Run `npm install` in both terminal
 
-Start the project in the frontend and backend terminal by run
+4.Start the project in the frontend and backend terminal by run
 
 ### `npm start` in both terminal
+
+5.Go to /AdminRegister For Register but need to edit EMPLOYEE_ID in .env file in server side before Register
+
+6.Go to /AdminProducts to upload ProductData.csv file and HomeProduct.csv file
+
+All Done
