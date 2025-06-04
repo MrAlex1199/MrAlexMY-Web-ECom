@@ -4,28 +4,28 @@ export default function About() {
     const testimonials = [
         {
             name: "Bonnie Green",
-            title: "Developer at Open AI",
+            title: "Developer at SERGENTX™",
             image: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png",
             headline: "Very easy this was to integrate",
             quote: "If you care for your time, I hands down would go with this."
         },
         {
             name: "Roberta Casas",
-            title: "Lead designer at Dropbox",
+            title: "Lead designer at SERGENTX™",
             image: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png",
             headline: "Solid foundation for any project",
             quote: "Designing with Figma components that can be easily translated to the utility classes of Tailwind CSS is a huge timesaver!"
         },
         {
             name: "Jese Leos",
-            title: "Software Engineer at Facebook",
+            title: "Software Engineer at SERGENTX™",
             image: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png",
             headline: "Mindblowing workflow",
             quote: "Aesthetically, the well designed components are beautiful and will undoubtedly level up your next application."
         },
         {
             name: "Joseph McFall",
-            title: "CTO at Google",
+            title: "CTO at SERGENTX™",
             image: "https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png",
             headline: "Efficient Collaborating",
             quote: "You have many examples that can be used to create a fast prototype for your team."

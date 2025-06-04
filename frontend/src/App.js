@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Styles/App.css";
 import Footer from "./components/footer";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./pages/home";
 import About from "./pages/About";
@@ -258,10 +258,23 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />
+            !isLoggedIn ? (
+              <Login setIsLoggedIn={setIsLoggedIn} setUserData={setUserData} />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={
+            !isLoggedIn ? (
+              <Register />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route
           path="/admin-login"
