@@ -401,6 +401,7 @@ export default function ProductsDetails({ userId, userData }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAddToBagPopup, setShowAddToBagPopup] = useState(false);
 
   const openModal = (imageIndex) => {
     setSelectedImage(imageIndex);
@@ -438,8 +439,9 @@ export default function ProductsDetails({ userId, userData }) {
 
       if (data) {
         setProduct(data);
-        setSelectedColor(data.colors?.[0]?.name || "");
-        setSelectedSize(data.sizes?.[0]?.name || "");
+        // Fix: set selectedColor/selectedSize to the first object, not just name
+        setSelectedColor(data.colors?.[0] || "");
+        setSelectedSize(data.sizes?.[0] || "");
       } else {
         throw new Error("Product not found or data is null");
       }
@@ -485,6 +487,9 @@ export default function ProductsDetails({ userId, userData }) {
       );
 
       if (response.ok) {
+        // Show popup
+        setShowAddToBagPopup(true);
+        setTimeout(() => setShowAddToBagPopup(false), 2000);
         console.log("Product added to bag successfully");
         // You might want to add some UI feedback here
       } else {
@@ -600,6 +605,12 @@ export default function ProductsDetails({ userId, userData }) {
 
   return (
     <div className="bg-white">
+      {/* Add to bag success popup */}
+      {showAddToBagPopup && (
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded shadow-lg transition-all">
+          Product added to bag successfully!
+        </div>
+      )}
       <div className="pt-6">
         <nav aria-label="Breadcrumb">
           <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -848,7 +859,7 @@ export default function ProductsDetails({ userId, userData }) {
 
               <button
                 onClick={handleAddToBag}
-                type="submit"
+                type="button" // <-- changed from "submit" to "button"
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3  text-white font-medium rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Add to bag

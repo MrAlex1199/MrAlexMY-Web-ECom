@@ -1,10 +1,12 @@
 {
   "name": "user-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server/server.js",
   "type": "module",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "bun run dev",
+    "dev": "bun --watch server/server.js",
+    "build": "bun build ./server/server.js --outdir ./dist"
   },
   "keywords": [],
   "author": "",

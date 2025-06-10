@@ -12,11 +12,15 @@
 
 3.install all dependencies required by run 
 
-### Run `npm install` in both terminal
+### Run `npm install` in frontend terminal
+
+### Run `bun install` in backend terminal
 
 4.Start the project in the frontend and backend terminal by run
 
-### `npm start` in both terminal
+### `npm start` in frontend terminal
+
+### `bun start` in backend terminal
 
 5.Go to /AdminRegister For Register but need to edit EMPLOYEE_ID in .env file in server side before Register
 
