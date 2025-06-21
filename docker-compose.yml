@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: ["npm", "start"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    working_dir: /app
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongo # <--- Add this dependency for MongoDB
+    environment:
+      # This overrides your local .env MONGO variable for the container
+      MONGO: mongodb://mongo:27017/userDB # <--- CRITICAL CHANGE: Use 'mongo' as the hostname
+      PORT: 3001 # Pass your PORT variable too, or ensure your app defaults to it
+
+  mongo: # <--- NEW SERVICE: MongoDB
+    image: mongo:latest # Use the official MongoDB image
+    ports:
+      - "27017:27017" # Optional: Expose MongoDB to the host for external tools (e.g., MongoDB Compass)
+    volumes:
+      - mongo-data:/data/db # Persist MongoDB data to a named volume
+
+# Define the named volume for MongoDB data persistence
+volumes:
+  mongo-data:

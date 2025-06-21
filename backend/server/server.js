@@ -17,16 +17,20 @@ const __dirname = dirname(__filename);
 const upload = multer({ dest: join(__dirname, "uploads/") });
 
 const app = express();
-const PORT = process.env.PORT;
+const mongoURI = process.env.MONGO || 'mongodb://localhost:27017/userDB';
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB (replace with your connection URI in .evn file)
-mongoose
-  .connect(process.env.MONGO)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Error connecting to MongoDB", err));
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('MongoDB connected successfully to:', mongoURI);
+    })
+    .catch(err => {
+        console.error('Error connecting to MongoDB:', err);
+    });
 
 // User schema with email and hashed password
 const userSchema = new mongoose.Schema({
