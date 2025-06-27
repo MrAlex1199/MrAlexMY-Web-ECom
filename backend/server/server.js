@@ -17,20 +17,21 @@ const __dirname = dirname(__filename);
 const upload = multer({ dest: join(__dirname, "uploads/") });
 
 const app = express();
-const mongoURI = process.env.MONGO || 'mongodb://localhost:27017/userDB';
+const mongoURI = process.env.MONGO || "mongodb://localhost:27017/userDB";
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB (replace with your connection URI in .evn file)
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('MongoDB connected successfully to:', mongoURI);
-    })
-    .catch(err => {
-        console.error('Error connecting to MongoDB:', err);
-    });
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("MongoDB connected successfully to:", mongoURI);
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
 
 // User schema with email and hashed password
 const userSchema = new mongoose.Schema({
@@ -150,7 +151,7 @@ const NewProductSchema = new mongoose.Schema({
   reviewsAvg: { type: Number, default: 0 },
   reviewsCount: { type: Number, default: 0 },
   reviewsHref: { type: String, default: "#" },
-    comments: [
+  comments: [
     {
       id: { type: Number, required: true },
       userId: { type: String },
@@ -266,7 +267,9 @@ app.post(["/products/:id/comments"], async (req, res) => {
       productType: isNewProduct ? "newProduct" : "product",
     });
   } catch (error) {
-    res.status(500).json({ message: "Error adding comment", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding comment", error: error.message });
   }
 });
 
@@ -665,7 +668,11 @@ app.get("/admin", async (req, res) => {
       return res.status(403).json({ success: false, message: "Access denied" });
     }
     const admin = await Admin.findById(decodedToken.id); // Assuming admin ID is stored in the token
-
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
+    }
     res.status(200).json({
       success: true,
       adminId: admin._id,
@@ -745,12 +752,10 @@ app.put("/admin/orders/:orderid", async (req, res) => {
       .json({ success: true, message: "Order updated successfully", order });
   } catch (error) {
     console.error("Error updating order:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: `Failed to update order: ${error.message}`,
-      });
+    res.status(500).json({
+      success: false,
+      message: `Failed to update order: ${error.message}`,
+    });
   }
 });
 
@@ -1472,33 +1477,35 @@ app.delete("/deleteAccount/:userId", async (req, res) => {
 // Endpoint to delete a comment
 app.delete("/api/products/:id/comments/:commentId", async (req, res) => {
   const { id, commentId } = req.params;
-  
+
   try {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    
+
     // Convert commentId to number since it's stored as number in schema
     const commentIdNum = parseInt(commentId);
-    
+
     // Find the comment index
     const commentIndex = product.comments.findIndex(
-      comment => comment.id === commentIdNum
+      (comment) => comment.id === commentIdNum
     );
-    
+
     if (commentIndex === -1) {
       return res.status(404).json({ message: "Comment not found" });
     }
-    
+
     // Remove the comment
     product.comments.splice(commentIndex, 1);
     await product.save();
-    
+
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
     console.error("Error deleting comment:", error);
-    res.status(500).json({ message: "Error deleting comment", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting comment", error: error.message });
   }
 });
 
