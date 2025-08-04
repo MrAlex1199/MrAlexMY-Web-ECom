@@ -25,7 +25,7 @@ app.use(express.json());
 
 // Connect to MongoDB (replace with your connection URI in .evn file)
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoURI)
   .then(() => {
     console.log("MongoDB connected successfully to:", mongoURI);
   })
