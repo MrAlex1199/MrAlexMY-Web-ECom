@@ -23,3 +23,12 @@
 6.Go to /AdminProducts to upload ProductData.csv file and HomeProduct.csv file
 
 All Done
+
+To run your application on another computer with docker, follow these steps:
+1. Install Docker and Docker Compose on the new machine.
+2. Copy the `docker-compose.deploy.yml` file to the new machine.
+3. Open a terminal or command prompt in the directory where you copied the file.
+4. Run the following command: " docker-compose -f docker-compose.deploy.yml up -d "
+
+
+
