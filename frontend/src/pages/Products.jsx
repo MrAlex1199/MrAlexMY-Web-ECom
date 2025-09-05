@@ -107,7 +107,6 @@ export default function Products() {
                   })}
                 </div>
 
-                {/* eBay-style pagination */}
                 <div className="flex justify-center mt-10">
                   <nav
                     className="inline-flex rounded-md shadow"

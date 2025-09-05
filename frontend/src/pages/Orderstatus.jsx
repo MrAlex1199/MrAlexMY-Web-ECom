@@ -228,7 +228,7 @@ export default function Orderstatus({ userId }) {
               order.status === "CancelledOrder" ||
               order.status === "returned" ? (
                 <NavLink
-                  to="/buyagain"
+                  to="/Products"
                   className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-200 text-center text-sm font-medium"
                 >
                   Buy Again
