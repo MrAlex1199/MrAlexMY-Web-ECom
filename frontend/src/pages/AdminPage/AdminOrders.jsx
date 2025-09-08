@@ -52,13 +52,13 @@ export default function AdminManageOrders({ adminData }) {
   const filterOrders =
     filter === "All Orders"
       ? orders
-      : filter === "In Transit"
-      ? orders.filter((order) => order.status.toLowerCase() === "in transit")
-      : filter === "Shipped"
-      ? orders.filter((order) => order.status.toLowerCase() === "shipped")
-      : filter === "Returned"
-      ? orders.filter((order) => order.status.toLowerCase() === "returned")
-      : orders.filter((order) => order.status.toLowerCase() === "canceled");
+      : orders.filter((order) => {
+          if (filter === "In Transit") return order.status.toLowerCase() === "in transit";
+          if (filter === "Shipped") return order.status.toLowerCase() === "shipped";
+          if (filter === "Returned") return order.status.toLowerCase() === "returned";
+          if (filter === "Cancelled") return order.status.toLowerCase() === "cancelled" || order.status.toLowerCase() === "canceled";
+          return false;
+        });
       
   const currentOrdersfilter = filterOrders.slice(
     indexOfFirstOrder,
@@ -504,8 +504,8 @@ const handleDeleteSelectedOrder = async () => {
                       value={currentEditOrder.status}
                       onChange={(e) => setCurrentEditOrder({...currentEditOrder, status: e.target.value})}
                     >
-                      <option value="shipped">Shipped</option>
                       <option value="in transit">In Transit</option>
+                      <option value="shipped">Shipped</option>
                       <option value="returned">Returned</option>
                       <option value="canceled">Canceled</option>
                     </select>
@@ -653,7 +653,7 @@ const handleDeleteSelectedOrder = async () => {
                   </button>
                   <button 
                     type="submit" 
-                    className="px-4 py-2 bg-blue-600 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+                    className="px-4 py-2 bg-blue-600 border border-gray-300 rounded-md text-white hover:bg-blue-100"
                   >
                     Update Order
                   </button>

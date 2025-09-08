@@ -9,6 +9,7 @@ import csv from "csv-parser";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import chalk from "chalk";
 
 // Get the current file's directory
 const __filename = fileURLToPath(import.meta.url);
@@ -27,10 +28,10 @@ app.use(express.json());
 mongoose
   .connect(mongoURI)
   .then(() => {
-    console.log("MongoDB connected successfully to:", mongoURI);
+    console.log(chalk.green("MongoDB connected successfully to database"));
   })
   .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
+    console.error(chalk.red("Error connecting to MongoDB:", err));
   });
 
 // User schema with email and hashed password
@@ -202,7 +203,7 @@ app.get("/admin/orders", async (req, res) => {
     const orders = await Order.find();
     res.status(200).json(orders);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ message: "Error fetching orders" });
   }
 });
@@ -217,7 +218,7 @@ app.get("/orders/:userId", async (req, res) => {
     }
     res.status(200).json(orders);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ message: "Error fetching orders" });
   }
 });
@@ -328,7 +329,7 @@ app.post("/orders/save", async (req, res) => {
     await order.save();
     res.status(201).json({ message: "Order saved successfully" });
   } catch (error) {
-    console.error("Error saving order details:", error);
+    console.error(chalk.red("Error saving order details:", error));
     res.status(500).json({ message: "Error saving order" });
   }
 });
@@ -358,7 +359,7 @@ app.post(
               !row.stock_remaining ||
               !row.imageSrc
             ) {
-              console.warn("Skipping row due to missing required fields:", row);
+              console.warn(chalk.yellow("Skipping row due to missing required fields:", row));
               return;
             }
 
@@ -416,7 +417,7 @@ app.post(
               NewProducts.push(NewProduct);
             } catch (error) {
               console.warn(
-                `Skipping row due to parsing error: ${error.message}`,
+                chalk.yellow(`Skipping row due to parsing error: ${error.message}`),
                 row
               );
             }
@@ -436,7 +437,7 @@ app.post(
         message: `${NewProducts.length} products added successfully!`,
       });
     } catch (error) {
-      console.error("Error processing CSV:", error);
+      console.error(chalk.red("Error processing CSV:", error));
       res
         .status(500)
         .json({ message: "Error uploading products", error: error.message });
@@ -445,7 +446,7 @@ app.post(
       try {
         fs.unlinkSync(filePath);
       } catch (cleanupError) {
-        console.error("Error deleting file:", cleanupError);
+        console.error(chalk.red("Error deleting file:", cleanupError));
       }
     }
   }
@@ -466,7 +467,7 @@ app.put("/api/products/:id/discount", async (req, res) => {
     await product.save();
     res.status(200).json({ message: "Discount added successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ message: "Error adding discount" });
   }
 });
@@ -493,7 +494,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
             !row.stock_remaining ||
             !row.imageSrc
           ) {
-            console.warn("Skipping row due to missing required fields:", row);
+            console.warn(chalk.yellow("Skipping row due to missing required fields:", row));
             return;
           }
 
@@ -550,7 +551,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
             products.push(product);
           } catch (error) {
             console.warn(
-              `Skipping row due to parsing error: ${error.message}`,
+              chalk.yellow(`Skipping row due to parsing error: ${error.message}`),
               row
             );
           }
@@ -570,7 +571,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
       .status(200)
       .json({ message: `${products.length} products added successfully!` });
   } catch (error) {
-    console.error("Error processing CSV:", error);
+    console.error(chalk.red("Error processing CSV:", error));
     res
       .status(500)
       .json({ message: "Error uploading products", error: error.message });
@@ -579,7 +580,7 @@ app.post("/api/upload-csv", upload.single("file"), async (req, res) => {
     try {
       fs.unlinkSync(filePath);
     } catch (cleanupError) {
-      console.error("Error deleting file:", cleanupError);
+      console.error(chalk.red("Error deleting file:", cleanupError));
     }
   }
 });
@@ -590,7 +591,7 @@ app.get("/api/new-products", async (req, res) => {
     const newProducts = await NewProduct.find();
     res.status(200).json(newProducts);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ message: "Error fetching new products" });
   }
 });
@@ -601,7 +602,7 @@ app.get("/api/products", async (req, res) => {
     const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ message: "Error fetching products" });
   }
 });
@@ -613,7 +614,7 @@ app.get("/api/products/:id", async (req, res) => {
     const product = await Product.findById(id);
     res.json(product);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).send("Server error");
   }
 });
@@ -625,7 +626,7 @@ app.get("/api/new-products/:id", async (req, res) => {
     const newProduct = await NewProduct.findById(id);
     res.json(newProduct);
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).send("Server error");
   }
 });
@@ -683,7 +684,7 @@ app.get("/admin", async (req, res) => {
       role: admin.role,
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to fetch admin details" });
@@ -704,7 +705,7 @@ app.get("/cart/:userId", async (req, res) => {
       .status(200)
       .json({ success: true, selectedProducts: user.selectedProducts });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to fetch selected products" });
@@ -751,7 +752,7 @@ app.put("/admin/orders/:orderid", async (req, res) => {
       .status(200)
       .json({ success: true, message: "Order updated successfully", order });
   } catch (error) {
-    console.error("Error updating order:", error);
+    console.error(chalk.red("Error updating order:", error));
     res.status(500).json({
       success: false,
       message: `Failed to update order: ${error.message}`,
@@ -765,7 +766,7 @@ app.put("/cart/update-quantity/:userId/:productId", async (req, res) => {
     const { userId, productId } = req.params;
     const { quantity, totalPrice } = req.body;
 
-    console.log("quantity", quantity, "totalPrice", totalPrice);
+    console.log(chalk.white("quantity", quantity, "totalPrice", totalPrice));
 
     if (isNaN(quantity) || isNaN(totalPrice)) {
       return res.status(400).json({ success: false, message: "Invalid input" });
@@ -798,7 +799,7 @@ app.put("/cart/update-quantity/:userId/:productId", async (req, res) => {
       message: "Product quantity updated successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to update product quantity" });
@@ -836,7 +837,7 @@ app.put("/change-password", async (req, res) => {
       message: "Password updated successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({
       success: false,
       UpdatedPassdWord: false,
@@ -870,7 +871,7 @@ app.put("/api/products/:id/remove-discount", async (req, res) => {
       product: product,
     });
   } catch (error) {
-    console.error("Error removing discount:", error);
+    console.error(chalk.red("Error removing discount:", error));
     res.status(500).json({
       message: "Server error while removing discount",
       error: error.message,
@@ -975,7 +976,7 @@ app.post("/save-selected-products", async (req, res) => {
       .status(201)
       .json({ success: true, message: "Selected product saved successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to save selected product" });
@@ -1021,7 +1022,7 @@ app.post("/save-address", async (req, res) => {
       .status(201)
       .json({ success: true, message: "Address saved successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ success: false, message: "Failed to save address" });
   }
 });
@@ -1088,7 +1089,7 @@ app.put("/edit-address/:userId/:addressId", async (req, res) => {
       .status(200)
       .json({ success: true, message: "Address updated successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to update address" });
@@ -1123,7 +1124,7 @@ app.post("/register", async (req, res) => {
       isLoggedIn: true,
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({
       success: false,
       message: "Registration failed",
@@ -1183,7 +1184,7 @@ app.post("/login", async (req, res) => {
       loginStatus: true,
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Login failed", isLoggedIn: false });
@@ -1241,7 +1242,7 @@ app.post("/admin-register", async (req, res) => {
       .status(201)
       .json({ success: true, message: "Admin registered successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ success: false, message: "Registration failed" });
   }
 });
@@ -1299,7 +1300,7 @@ app.post("/admin-login", async (req, res) => {
       loginStatus: true,
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Login failed", loginStatus: false });
@@ -1311,7 +1312,7 @@ app.post("/admin-logout", async (req, res) => {
   try {
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ success: false, message: "Logout failed" });
   }
 });
@@ -1321,7 +1322,7 @@ app.post("/logout", async (req, res) => {
   try {
     res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res.status(500).json({ success: false, message: "Logout failed" });
   }
 });
@@ -1351,7 +1352,7 @@ app.delete("/admin/orders/:orderid", async (req, res) => {
       .status(200)
       .json({ success: true, message: "Order deleted successfully" });
   } catch (error) {
-    console.error("Error deleting order:", error);
+    console.error(chalk.red("Error deleting order:", error));
     res.status(500).json({ success: false, message: "Failed to delete order" });
   }
 });
@@ -1377,7 +1378,7 @@ app.delete("/delete-address/:userId/:addressId", async (req, res) => {
       .status(200)
       .json({ success: true, message: "Address deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to delete address" });
@@ -1416,7 +1417,7 @@ app.delete("/cart/delete-product/:userId/:productId", async (req, res) => {
       message: "Product deleted from cart successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to delete product from cart" });
@@ -1444,7 +1445,7 @@ app.delete("/cart/clear/:userId", async (req, res) => {
       message: "All products cleared from cart successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to clear cart products" });
@@ -1467,7 +1468,7 @@ app.delete("/deleteAccount/:userId", async (req, res) => {
       .status(200)
       .json({ success: true, message: "User account deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     res
       .status(500)
       .json({ success: false, message: "Failed to delete user account" });
@@ -1502,7 +1503,7 @@ app.delete("/api/products/:id/comments/:commentId", async (req, res) => {
 
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
-    console.error("Error deleting comment:", error);
+    console.error(chalk.red("Error deleting comment:", error));
     res
       .status(500)
       .json({ message: "Error deleting comment", error: error.message });
@@ -1510,5 +1511,5 @@ app.delete("/api/products/:id/comments/:commentId", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(chalk.blue(`Server is running on port ${PORT}`));
 });

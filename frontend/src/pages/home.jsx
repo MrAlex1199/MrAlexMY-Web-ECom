@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/loader.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import bg1 from "../components/bg/bg1.jpg"; // Adjust path if needed
-import bg2 from "../components/bg/bg2.jpg"; // Adjust path if needed
-import bg3 from "../components/bg/bg3.jpg"; // Adjust path if needed
+import bg1 from "../components/bg/bg1.jpg";
+import bg2 from "../components/bg/bg2.jpg";
+import bg3 from "../components/bg/bg3.jpg";
 
 const productsPerPage = 8;
 
