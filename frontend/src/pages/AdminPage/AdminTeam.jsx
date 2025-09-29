@@ -7,7 +7,7 @@ import Header from "../../components/AdminComponents/header";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function AdminTeam({ adminData }) {
-  // Sample data for team members
+  // mockup data for team members
   const teamMembers = [
     {
       id: 1,

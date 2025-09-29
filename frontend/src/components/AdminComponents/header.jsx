@@ -51,11 +51,6 @@ export default function Header({
           {time.toLocaleTimeString()}
         </div>
         <div className="flex items-center space-x-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-64"
-          />
           <img
             src={profileImage}
             alt="Profile Avatar"
