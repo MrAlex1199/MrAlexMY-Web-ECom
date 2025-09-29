@@ -2,7 +2,9 @@
 
 ## How to run this project
 
-1.Clone project to your local environment
+1.Clone project to your local environment 
+ 1.1 Setup your mongodb database on your local environment or online mongodb
+ 1.2 And plece in to .ENV file 
 
 ### Run gitclone link
 

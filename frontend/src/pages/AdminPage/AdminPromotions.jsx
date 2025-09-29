@@ -340,7 +340,7 @@ export default function AdminPromotions({ adminData }) {
             {[
               "All Products Promotions",
               "Ative Pronotions",
-              "Rrmove Promotions",
+              "Remove Promotions",
               "Sold out Products",
             ].map((tab, index) => (
               <button
